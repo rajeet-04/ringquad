@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<!--
+  Demo course, x forward from the start pad:
+    wall    x = 2.5          1.5 m high, 4 m wide        fly over it
+    pad     x = 4.5          landing pad before the tunnel
+    tunnel  x = 5.5 .. 8.5   inside 0.5 m wide, 0.4 m high
+                             spread drone ~0.6 m wide: cannot fly through
+                             folded ~0.36 m wide, 0.26 m tall: drives through
+    goal    (10.5, 1.0)      land here
+-->
+<sdf version="1.9">
+  <world name="demo">
+    <physics name="1ms" type="dart">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.85 0.85 0.85 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <direction>-0.4 0.3 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <surface><friction><ode><mu>1.0</mu><mu2>1.0</mu2></ode></friction></surface>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>100 100</size></plane></geometry>
+          <material><ambient>0.78 0.78 0.76 1</ambient><diffuse>0.78 0.78 0.76 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- pads: visual only, 2 mm thick -->
+    <model name="start_pad">
+      <static>true</static>
+      <pose>0 0 0.001 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.5</radius><length>0.002</length></cylinder></geometry>
+          <material><ambient>0.2 0.5 0.9 1</ambient><diffuse>0.2 0.5 0.9 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="tunnel_pad">
+      <static>true</static>
+      <pose>4.5 0 0.001 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.5</radius><length>0.002</length></cylinder></geometry>
+          <material><ambient>0.95 0.75 0.1 1</ambient><diffuse>0.95 0.75 0.1 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+    <model name="goal_pad">
+      <static>true</static>
+      <pose>10.5 1.0 0.001 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><cylinder><radius>0.5</radius><length>0.002</length></cylinder></geometry>
+          <material><ambient>0.15 0.75 0.3 1</ambient><diffuse>0.15 0.75 0.3 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="wall">
+      <static>true</static>
+      <pose>2.5 0 0.75 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry><box><size>0.2 4.0 1.5</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.2 4.0 1.5</size></box></geometry>
+          <material><ambient>0.75 0.3 0.25 1</ambient><diffuse>0.75 0.3 0.25 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- tunnel: two side walls and a roof, 3 m long, centred on y = 0; side walls see-through for the camera -->
+    <model name="tunnel">
+      <static>true</static>
+      <pose>7.0 0 0 0 0 0</pose>
+      <link name="link">
+        <collision name="left">
+          <pose>0 0.3 0.225 0 0 0</pose>
+          <geometry><box><size>3.0 0.1 0.45</size></box></geometry>
+        </collision>
+        <visual name="left_visual">
+          <transparency>0.55</transparency>
+          <pose>0 0.3 0.225 0 0 0</pose>
+          <geometry><box><size>3.0 0.1 0.45</size></box></geometry>
+          <material><ambient>0.35 0.37 0.42 1</ambient><diffuse>0.35 0.37 0.42 1</diffuse></material>
+        </visual>
+        <collision name="right">
+          <pose>0 -0.3 0.225 0 0 0</pose>
+          <geometry><box><size>3.0 0.1 0.45</size></box></geometry>
+        </collision>
+        <visual name="right_visual">
+          <transparency>0.55</transparency>
+          <pose>0 -0.3 0.225 0 0 0</pose>
+          <geometry><box><size>3.0 0.1 0.45</size></box></geometry>
+          <material><ambient>0.35 0.37 0.42 1</ambient><diffuse>0.35 0.37 0.42 1</diffuse></material>
+        </visual>
+        <collision name="roof">
+          <pose>0 0 0.425 0 0 0</pose>
+          <geometry><box><size>3.0 0.7 0.05</size></box></geometry>
+        </collision>
+        <visual name="roof_visual">
+          <pose>0 0 0.425 0 0 0</pose>
+          <geometry><box><size>3.0 0.7 0.05</size></box></geometry>
+          <material><ambient>0.28 0.3 0.34 1</ambient><diffuse>0.28 0.3 0.34 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+  </world>
+</sdf>

@@ -126,10 +126,12 @@ Take off, fly over a wall, land, fold, drive through a low tunnel it cannot fly 
 
 ## 14. Status and next steps
 
-Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving and turning, mode switching; unit and end-to-end tests.
+Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving and turning, mode switching; unit and end-to-end tests. Demo course (wall + tunnel) and autonomous mission (`demo.launch.py`): fly over the wall, land, fold, drive through the tunnel with Stanley line following, unfold, fly to the goal pad. Recorded in `media/`.
+
+The mission uses known waypoints and ground-truth odometry; it does not perceive the course yet.
 
 Next:
 1. Hinge spring-damper suspension in DRIVE (currently a stiff hold).
 2. State estimation from IMU instead of ground-truth odometry.
-3. Sensors (depth camera, 2D LiDAR) and the demo world: wall to fly over, low tunnel to drive through.
-4. Mission script for the demo, and a recorded video.
+3. Sensors (depth camera, 2D LiDAR) so the robot finds the wall and tunnel itself.
+4. GPU rendering (Vulkan through Podman's libkrun to Metal) to speed up the GUI and recording.

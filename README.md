@@ -2,6 +2,10 @@
 
 A quadrotor whose ring propellers fold down into wheels. Flies over obstacles, drives through spaces it cannot fly through. ROS 2 Jazzy + Gazebo Harmonic. Design: [DESIGN.md](DESIGN.md).
 
+![Demo: fly over the wall, land, fold into wheels, drive through the tunnel, unfold, fly to the goal](media/demo.gif)
+
+The demo course ([worlds/demo.sdf](src/ringquad_description/worlds/demo.sdf)): a 1.5 m wall to fly over, then a tunnel 0.5 m wide and 0.4 m high. Spread out the drone is about 0.6 m wide and cannot fly through; folded it is about 0.36 m wide and drives through. The whole run is autonomous: 46–51 s, worst sideways error in the tunnel 0.1–1.7 cm, landing within 0–8 cm of the goal pad centre over four runs. GIF at 2x; [demo.mp4](media/demo.mp4) is real time.
+
 ## Run (macOS or Linux with Podman)
 
 ```bash
@@ -20,7 +24,12 @@ ros2 launch ringquad_control sim.launch.py
 ros2 launch ringquad_description display.launch.py
 ```
 
-From the Mac, `scripts/sim_restart.sh` (re)starts the simulation in the running container.
+```bash
+# demo course + autonomous mission
+ros2 launch ringquad_control demo.launch.py
+```
+
+From the Mac, `scripts/sim_restart.sh` (re)starts the simulation in the running container; it passes its arguments to `sim.launch.py` (for example `scripts/sim_restart.sh world:=demo`).
 
 ## Commands
 
@@ -72,8 +81,9 @@ python3 ~/ringquad_ws/scripts/mission_test.py
 | Path | What |
 |---|---|
 | `src/ringquad_description/urdf/ringquad.urdf.xacro` | Robot model, motor models, fold controllers, sensors |
-| `src/ringquad_description/worlds/ringquad.sdf` | World (1 ms physics, IMU system) |
-| `src/ringquad_control/ringquad_control/` | `params.py` vehicle constants, `mixer.py` allocation and skid steering, `flight.py` geometric controller, `ground.py` yaw-rate loop, `node.py` ROS node and modes |
+| `src/ringquad_description/worlds/` | `ringquad.sdf` empty world, `demo.sdf` demo course (1 ms physics, IMU system) |
+| `src/ringquad_control/ringquad_control/` | `params.py` vehicle constants, `mixer.py` allocation and skid steering, `flight.py` geometric controller, `ground.py` yaw-rate loop and line following, `node.py` ROS node and modes, `mission.py` demo mission |
+| `media/` | Demo video and GIF |
 | `scripts/mission_test.py` | End-to-end test |
 | `scripts/flight_log.py`, `scripts/motor_probe.py` | Diagnostics: log a take-off, hold a motor speed |
 | `geometry.py` | Fold geometry and sizing calculator |

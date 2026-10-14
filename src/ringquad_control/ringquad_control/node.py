@@ -60,7 +60,7 @@ class RingQuadController(Node):
         self.create_subscription(String, '/ringquad/mode', self.on_mode, 10)
         self.create_subscription(PoseStamped, '/ringquad/goal', self.on_goal, 10)
         self.create_subscription(Twist, '/cmd_vel', self.on_cmd_vel, 10)
-        self.create_timer(0.5, self.publish_state)
+        self.create_timer(0.1, self.publish_state)
 
     # ---------- inputs ----------
     def on_odom(self, msg):

@@ -12,22 +12,23 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
     share = get_package_share_directory('ringquad_description')
     robot_description = xacro.process_file(os.path.join(share, 'urdf', 'ringquad.urdf.xacro')).toxml()
-    world = os.path.join(share, 'worlds', 'ringquad.sdf')
+    world = PathJoinSubstitution([share, 'worlds', [LaunchConfiguration('world'), '.sdf']])
 
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')),
-        launch_arguments={'gz_args': f'-r {world}'}.items())
+        launch_arguments={'gz_args': ['-r ', world]}.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true'),
+        DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
         SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.dirname(share)),
         gz_sim,
         Node(package='robot_state_publisher', executable='robot_state_publisher',

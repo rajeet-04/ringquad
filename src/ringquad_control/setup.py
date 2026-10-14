@@ -23,6 +23,7 @@ setup(
     entry_points={
         'console_scripts': [
             'controller = ringquad_control.node:main',
+            'mission = ringquad_control.mission:main',
         ],
     },
 )
