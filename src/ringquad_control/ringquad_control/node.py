@@ -34,6 +34,8 @@ LAND_SPEED = 0.5
 TOUCHDOWN_HEIGHT = 0.06   # above the take-off height
 ON_GROUND_HEIGHT = 0.15   # above the last ground height
 CMD_VEL_TIMEOUT = 0.5
+FOLD_SPIN_MAX = 5.0       # rad/s: rings must be (nearly) stopped before folding
+FOLD_RATE = 0.4           # rad/s: ~3.5 s for the full 80 deg fold
 
 
 class RingQuadController(Node):
@@ -46,6 +48,9 @@ class RingQuadController(Node):
         self.last_odom_t = None
         self.ground_z = None
         self.hinges = {}
+        self.spin = {}
+        self.fold_allowed = False  # latched once the rings have stopped in drive mode
+        self.fold_cmd = None       # ramped fold command (rad)
         self.goal_pos, self.goal_yaw = None, 0.0
         self.cmd_vel, self.cmd_vel_t = (0.0, 0.0), -1.0
         self.last_imu_t = None
@@ -77,6 +82,7 @@ class RingQuadController(Node):
 
     def on_joints(self, msg):
         self.hinges.update((n, a) for n, a in zip(msg.name, msg.position) if n in HINGES)
+        self.spin.update((n, v) for n, v in zip(msg.name, msg.velocity) if n.startswith('spin_'))
 
     def on_goal(self, msg):
         q = msg.pose.orientation
@@ -108,6 +114,7 @@ class RingQuadController(Node):
             self.goal_yaw = yaw_of(self.rot)
         self.flight.reset()
         self.yaw_rate.reset()
+        self.fold_allowed = False
         self.get_logger().info(f'mode {self.mode} -> {mode}')
         self.mode = mode
 
@@ -120,6 +127,15 @@ class RingQuadController(Node):
 
     def fold_reached(self, target):
         return len(self.hinges) == 4 and all(abs(a - target) < FOLD_TOLERANCE for a in self.hinges.values())
+
+    def fold_to(self, target, dt):
+        """Ramp the fold command toward target. A fast fold drags the ring edges across the
+        floor against the motor brake and can twist the robot by tens of degrees."""
+        if self.fold_cmd is None:
+            self.fold_cmd = float(np.mean(list(self.hinges.values()))) if self.hinges else target
+        step = FOLD_RATE * dt
+        self.fold_cmd += float(np.clip(target - self.fold_cmd, -step, step))
+        self.fold_pub.publish(Float64(data=self.fold_cmd))
 
     def send_motors(self, commands):
         self.motor_pub.publish(Actuators(velocity=[float(c) for c in commands]))
@@ -139,7 +155,15 @@ class RingQuadController(Node):
         rate = np.array([msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z])
 
         if self.mode == 'drive':
-            self.fold_pub.publish(Float64(data=p.FOLD_GROUND))
+            # Never fold spinning rings: tipping a spinning ring's axis makes a gyroscopic torque
+            # that twists the whole robot (each 60 g ring holds ~0.4 Nms at landing speed).
+            if not self.fold_allowed:
+                self.fold_allowed = len(self.spin) == 4 and max(abs(v) for v in self.spin.values()) < FOLD_SPIN_MAX
+            if not self.fold_allowed:
+                self.fold_to(p.FOLD_FLIGHT, dt)
+                self.send_motors(np.zeros(4))
+                return
+            self.fold_to(p.FOLD_GROUND, dt)
             if not self.fold_reached(p.FOLD_GROUND):
                 self.send_motors(np.zeros(4))
                 return
@@ -149,7 +173,7 @@ class RingQuadController(Node):
             self.ground_z = self.pos[2]
             return
 
-        self.fold_pub.publish(Float64(data=p.FOLD_FLIGHT))
+        self.fold_to(p.FOLD_FLIGHT, dt)
         if self.mode == 'idle' or not self.fold_reached(p.FOLD_FLIGHT):
             self.send_motors(np.zeros(4))
             if self.mode == 'idle' and abs(self.vel[2]) < 0.05:

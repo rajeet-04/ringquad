@@ -11,12 +11,22 @@ def run(rate_sp, seconds=3.0, dt=0.004, efficiency=0.8):
     return rate
 
 
-def test_tracks_turn_left():
-    assert abs(run(1.0) - 1.0) < 0.05
+def test_tracks_gentle_turn():
+    assert abs(run(0.5) - 0.5) < 0.05
 
 
 def test_tracks_turn_right_with_more_scrub():
-    assert abs(run(-0.5, efficiency=0.6) + 0.5) < 0.05
+    assert abs(run(-0.4, efficiency=0.6) + 0.4) < 0.05
+
+
+def test_no_windup_when_robot_cannot_turn():
+    """Grippy floor: the robot does not turn at all. Command must stay small and bounded."""
+    from ringquad_control.ground import YawRateController
+    ctl = YawRateController()
+    for _ in range(2000):
+        cmd = ctl.update(1.0, 0.0, 0.004)
+    assert abs(cmd) <= ctl.g.cmd_max
+    assert abs(ctl.integral) <= ctl.g.i_max
 
 
 def test_zero_request_stays_still():

@@ -1,4 +1,4 @@
-# Morphing Aerial-Ground Quad: Design Spec (v0.4)
+# Morphing Aerial-Ground Quad: Design Spec (v0.5)
 
 Status: layout and fold geometry agreed, pre-build. Simulation first (ROS 2 Jazzy, Gazebo Harmonic), hardware later.
 
@@ -110,7 +110,7 @@ Take off, fly over a wall, land, fold, drive through a low tunnel it cannot fly 
 
 ## 12. Findings from simulation
 
-**Ring inertia dominates yaw.** Each ring (60 g at 12–13.5 cm radius) has about 12x the spin inertia of a plain 10-inch prop. When the mixer changes rotor speeds to make yaw torque, the reaction from spinning the rings up or down kicks the body in yaw like a reaction wheel. For a step command this kick is roughly 300x the aerodynamic drag torque the mixer plans for. With normal quad yaw gains the motors chattered between full and zero and the vehicle lost roll control. Fix: yaw gains about 50x lower than roll/pitch (attitude 2, rate 0.4). The unit-test simulator models motor lag and ring inertia, so it catches this.
+**Ring inertia dominates yaw.** Each ring (60 g at 12–13.5 cm radius) has about 12x the spin inertia of a plain 10-inch prop. When the mixer changes rotor speeds to make yaw torque, the reaction from spinning the rings up or down kicks the body in yaw like a reaction wheel. For a step command this kick is roughly 300x the aerodynamic drag torque the mixer plans for. With normal quad yaw gains the motors chattered between full and zero and the vehicle lost roll control. Fix: yaw gains much lower than roll/pitch (attitude 2, rate 0.4). The unit-test simulator models motor lag and ring inertia, so it catches this.
 - Hardware consequence: ring mass is a first-order design parameter. Lighter rings (or rings that do not spin, i.e. a fixed duct with the prop inside) give much better yaw control.
 
 **Skid-steer turning jams in the physics engine.** DART limits tyre friction per direction (a pyramid), so a tyre sliding forward still grips fully sideways. With wheelbase/track 1.09 the robot could not turn on the spot until it broke loose in jerks. Fix in simulation: sideways tread friction 0.6, forward 1.0 (it must stay below 0.92 x forward). A yaw-rate loop on the IMU then tracks turn commands (1.01 rad/s for 1 rad/s).
@@ -118,20 +118,62 @@ Take off, fly over a wall, land, fold, drive through a low tunnel it cannot fly 
 
 **Same motors fly and drive.** One motor model per ring takes signed speed commands. Positive = upward thrust in flight; on the ground the controller maps body speed and yaw rate to signed wheel speeds. Spin direction per motor is handled in `mixer.py`.
 
-## 13. Open questions
+## 13. Realistic tests (v0.5)
 
-- Ring weight and whether the ring spins with the prop (see findings).
+The first simulation used ideal motors: the physics engine could spin the rings up with up to 50 Nm. Real hardware cannot. These tests replace the ideal assumptions with real limits and are now the default in Gazebo and the unit tests.
+
+**What was added**
+- Motors: 0.4 Nm peak (10-inch class, ~700 KV on 4S), rotor inertia, blade drag and an estimate of rim skin drag. Python model in `ringquad_control/plant.py`; in Gazebo as the spin joints' torque limit (0.33 Nm after blade drag) and damping. Gazebo spin-up matches the model (~300 rad/s^2 for the 60 g ring).
+- Sensing: 8 ms delay plus position, velocity, attitude and gyro noise in the model sweeps; gyro and accelerometer noise on the Gazebo IMU.
+- `scripts/realism_sweep.py` compares rotors and gains; `scripts/drive_test.py` checks ground steering.
+
+**Flight results** (model, 8 ms delay + noise, final gains)
+
+| Rotor | 1 m step settle | max tilt | 1.5 N gust | hover power | flight time (4S 3000 mAh) |
+|---|---|---|---|---|---|
+| plain 10-inch prop | 2.6 s | 16 deg | 22 cm | 137 W | 10.9 min |
+| ring 20 g | 2.6 s | 16 deg | 22 cm | 333 W | 4.5 min |
+| ring 40 g | 2.6 s | 17 deg | 22 cm | 353 W | 4.2 min |
+| ring 60 g (spec) | 2.6 s | 17 deg | 22 cm | 386 W | 3.9 min |
+
+- **The 60 g ring flies, but only with gentler control.** With the first roll/pitch tuning it diverges; at 0.7x and 0.6x it crashes on a 2.8 m diagonal move; 0.5x works (attitude bandwidth ~6 rad/s). The lighter rings and a plain prop fly at every scale tested. Final gains: 0.5x, kept for all rotors.
+- **Rim drag is the biggest cost.** The rim moves at ~70 m/s at hover; its skin drag (estimated ~0.09 Nm per ring, about as much as the blades) more than doubles hover power. Flight time drops from ~11 min to ~4–4.5 min whatever the ring weight. This is an estimate and the first thing to measure on a thrust stand.
+- **Heavy rings also waste power on noise.** With sensor noise the 60 g rings burn ~15% more than the 20 g rings, constantly spun up and down by the controller.
+- In Gazebo with realistic motors and a noisy IMU: take-off 2.1 cm, waypoint + 90 deg yaw 2.6 cm / 0.1 deg, landing fine.
+
+**Ground results**
+- **All-rubber tread cannot reliably skid-steer.** Direct-drive motors push each wheel with at most ~0.4 Nm / 0.135 m = 3 N. The four wheels then make at most ~1.5–1.8 Nm of turning moment, while the tyres' sideways grip resists with ~1.6 Nm (more on real rubber). In Gazebo, turning on the spot gave 0.00 rad/s, and large left/right speed differences made the wheels fight and stall the robot. The yaw-rate loop is now limited with anti-windup so it never stalls the drive.
+- **Never fold with spinning rings.** A ring spinning at landing speed holds ~0.4 Nms; tipping its axis twists the robot. The controller now waits until all rings are below 5 rad/s.
+- **Fold slowly.** A fast fold drags the ring edges over the floor against the motor brake; with realistic torque it twisted the robot by up to 80 deg. The fold is now ramped at 0.4 rad/s (~3.5 s); the twist dropped to about 1–2 deg.
+- **Candidate fix: omni rollers on the tread.** Passive rollers around the rim cut sideways friction to ~0.05 and the turning resistance to ~0.14 Nm. In Gazebo (`tread:=omni`) arc turns then track exactly (0.30 / 0.60 / 0.99 rad/s for 0.3 / 0.6 / 1.0 requested), but the robot has no sideways grip and skids on corrections. `tread:=mixed` (omni front, rubber rear) is the standard answer (it pivots about the rear axle like a wheelchair on casters) and also tracks arcs exactly, but line following was erratic and inconsistent between runs, while the same follower converges in a kinematic model with lag.
+- **Simulation limit.** Results that depend on tyre contact (directional friction on a cambered ring edge, rollers) were not consistent between runs in DART: with the rubber tread a 0.3 rad/s turn request while driving gave 0.00 rad/s in one session and 0.30 rad/s in another. They should be settled on a physical test rig, not by more simulation tuning.
+
+**Demo course with realistic settings: does not pass yet.** The flight legs work. The tunnel leg fails: with the spec rubber tread the robot cannot steer and needs ~0.9 deg alignment to clear the 7–8 cm gaps over 4 m, which landing + folding do not reliably give (+-2 deg); with the mixed tread, line following is not yet reliable in simulation. The mission now lines up in the air, checks alignment after folding, hops and retries if needed, and stops safely on drift. The recorded demo in `media/` was made with ideal motors before these tests.
+
+**Would it work if built?** Flight: yes with a 20–40 g ring (or the 60 g ring with gentle control), but expect ~4 min flights unless rim drag is lower than estimated. Ground: not with an all-rubber tread on grippy floors; it needs a steerable tread (mixed omni/rubber is the best candidate) or turns done in the air.
+
+## 14. Recommended physical tests before building the full robot
+
+1. **Thrust stand, one ring propeller** (60 g and a ~20 g carbon version): thrust, shaft power and spin-up time vs speed. Confirms or kills the rim-drag estimate and the motor sizing.
+2. **Folding arm prototype:** play, locking, weight, and folding with the ring stopped vs spinning.
+3. **Two-axle test cart** with the folded geometry and the candidate treads (rubber, omni, mixed) on the target floors: turning on the spot, arcs, straight-line drift.
+
+## 15. Open questions
+
+- Ring weight and whether the ring spins with the prop (see findings and section 13).
+- Tread: rubber, omni or mixed (section 13).
 - Fold motor type: servo, geared brushless or lead screw.
 - Failure policy when a motor fails in DRIVE.
 
-## 14. Status and next steps
+## 16. Status and next steps
 
-Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving and turning, mode switching; unit and end-to-end tests. Demo course (wall + tunnel) and autonomous mission (`demo.launch.py`): fly over the wall, land, fold, drive through the tunnel with Stanley line following, unfold, fly to the goal pad. Recorded in `media/`.
+Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving, mode switching; unit and end-to-end tests. Demo course (wall + tunnel) and autonomous mission (`demo.launch.py`), recorded in `media/` with ideal motors. Realistic motors, drag and sensor noise are now the default (section 13): flight passes, the tunnel leg does not yet.
 
 The mission uses known waypoints and ground-truth odometry; it does not perceive the course yet.
 
 Next:
-1. Hinge spring-damper suspension in DRIVE (currently a stiff hold).
-2. State estimation from IMU instead of ground-truth odometry.
-3. Sensors (depth camera, 2D LiDAR) so the robot finds the wall and tunnel itself.
-4. GPU rendering (Vulkan through Podman's libkrun to Metal) to speed up the GUI and recording.
+1. The physical tests in section 14, then pick the ring weight and tread.
+2. Hinge spring-damper suspension in DRIVE (currently a stiff hold).
+3. State estimation from IMU instead of ground-truth odometry.
+4. Sensors (depth camera, 2D LiDAR) so the robot finds the wall and tunnel itself.
+5. GPU rendering (Vulkan through Podman's libkrun to Metal) to speed up the GUI and recording.

@@ -5,6 +5,10 @@ Drives the controller node through its public interface only (/ringquad/mode, /r
 aborts the mission and lands (or stops, if driving).
 
 Positions are world/odom frame (the odometry publisher reports world poses).
+
+Ground steering is weak with realistic motors (see ground.py), so the robot lines up in the
+air, lands, folds, and checks it is still lined up; if not, it hops (unfold, take off, re-align,
+land) and tries again. In the tunnel it drives straight and stops if it drifts too far.
 """
 import math
 import time
@@ -17,7 +21,7 @@ from rclpy.node import Node
 from sensor_msgs.msg import JointState
 from std_msgs.msg import String
 
-from .ground import follow_line
+from .ground import follow_line, wrap
 
 HINGES = ('hinge_fl', 'hinge_fr', 'hinge_rl', 'hinge_rr')
 FOLD_GROUND = math.radians(80)
@@ -30,6 +34,16 @@ WALL_X = 2.5
 TUNNEL_PAD = (4.5, 0.0)
 TUNNEL_LINE = ((4.5, 0.0), (9.4, 0.0))   # tunnel spans x 5.5 .. 8.5
 GOAL_PAD = (10.5, 1.0)
+# After folding: the mixed tread (omni front, rubber rear) can steer, so a rough line-up is
+# enough and the line follower corrects it before the tunnel. The spec all-rubber tread cannot
+# steer with realistic motors and would need ~0.9 deg to clear the tunnel, which landing and
+# folding do not reliably give (+-2 deg), so with that tread the run stops on drift.
+ALIGN_HEADING_TOL = math.radians(10)
+ALIGN_CROSS_TOL = 0.05                  # m
+DRIVE_CROSS_ABORT = 0.05                # m, from TUNNEL_STRICT_FROM onward (tunnel: ~8 cm each side)
+APPROACH_CROSS_ABORT = 0.15             # m, on the open approach before that
+TUNNEL_STRICT_FROM = 5.2                # m (x): 0.3 m before the tunnel entrance
+ALIGN_ATTEMPTS = 3
 
 
 class MissionAbort(Exception):
@@ -99,7 +113,7 @@ class DemoMission(Node):
                 raise MissionAbort(f'timed out: {what}')
             yield
 
-    def fly_to(self, target, timeout=20.0, tol=0.15):
+    def fly_to(self, target, timeout=20.0, tol=0.15, yaw=0.0):
         """Move a carrot from the current position to target at FLY_SPEED; wait to arrive."""
         target = np.asarray(target, float)
         carrot = self.pos.copy() if self.goal is None else self.goal.copy()
@@ -109,7 +123,7 @@ class DemoMission(Node):
             dist = np.linalg.norm(step)
             carrot = target.copy() if dist < FLY_SPEED * TICK else carrot + step / dist * FLY_SPEED * TICK
             self.goal = carrot
-            self.send_goal(carrot)
+            self.send_goal(carrot, yaw)
             if dist < 1e-6 and np.linalg.norm(self.pos - target) < tol and np.linalg.norm(self.vel) < 0.2:
                 return
             if time.time() > end:
@@ -131,14 +145,50 @@ class DemoMission(Node):
         yield from self.set_mode('drive')
         yield from self.wait_until(
             lambda: len(self.hinges) == 4 and all(abs(a - FOLD_GROUND) < 0.05 for a in self.hinges.values()),
-            6.0, 'folding')
+            12.0, 'folding')
+
+    def line_error(self, start, end):
+        """(heading error rad, cross-track m) of the robot relative to the line."""
+        _, _, _, cross = follow_line(self.pos, self.yaw, start, end, DRIVE_SPEED)
+        line_yaw = math.atan2(end[1] - start[1], end[0] - start[0])
+        return wrap(self.yaw - line_yaw), cross
+
+    def land_folded_on_line(self, start, end):
+        """Land at the line start facing along it, fold, and check alignment; hop and retry if off."""
+        line_yaw = math.atan2(end[1] - start[1], end[0] - start[0])
+        for attempt in range(1, ALIGN_ATTEMPTS + 1):
+            yield from self.fly_to((start[0], start[1], 0.8), yaw=line_yaw)
+            yield from self.land()
+            yield from self.fold_into_wheels()
+            yield from self.pause(0.5)
+            heading, cross = self.line_error(start, end)
+            self.get_logger().info(f'folded on the line: heading {math.degrees(heading):+.2f} deg, '
+                                   f'cross-track {cross * 100:+.1f} cm (attempt {attempt})')
+            if abs(heading) <= ALIGN_HEADING_TOL and abs(cross) <= ALIGN_CROSS_TOL:
+                return
+            if attempt == ALIGN_ATTEMPTS:
+                raise MissionAbort('could not line up with the tunnel')
+            self.get_logger().info('not lined up: unfold, hop and land again')
+            yield from self.set_mode('idle')
+            yield from self.pause(6.0)
+            yield from self.take_off()
 
     def drive_line(self, start, end, timeout=40.0):
         deadline = time.time() + timeout
         worst = 0.0
+        next_log = time.time()
         while True:
             v, w, remaining, cross = follow_line(self.pos, self.yaw, start, end, DRIVE_SPEED)
             worst = max(worst, abs(cross))
+            if time.time() >= next_log:
+                heading, _ = self.line_error(start, end)
+                self.get_logger().info(f'  x {self.pos[0]:5.2f} m  cross-track {cross * 100:+5.1f} cm  '
+                                       f'heading {math.degrees(heading):+5.1f} deg  yaw-rate cmd {w:+.2f}')
+                next_log += 0.5
+            limit = DRIVE_CROSS_ABORT if self.pos[0] >= TUNNEL_STRICT_FROM else APPROACH_CROSS_ABORT
+            if abs(cross) > limit:
+                self.send_cmd(0.0, 0.0)
+                raise MissionAbort(f'drifted {cross * 100:.1f} cm off the line, stopped')
             if remaining <= 0.02:
                 self.send_cmd(0.0, 0.0)
                 self.get_logger().info(f'drive done, worst cross-track {worst * 100:.1f} cm')
@@ -164,16 +214,14 @@ class DemoMission(Node):
         log('2/6 climb and fly over the wall')
         yield from self.fly_to((self.pos[0], self.pos[1], CRUISE_ALT))
         yield from self.fly_to((TUNNEL_PAD[0], TUNNEL_PAD[1], CRUISE_ALT))
-        yield from self.fly_to((TUNNEL_PAD[0], TUNNEL_PAD[1], 0.8))
-        log('3/6 land at the tunnel pad')
-        yield from self.land()
-        log('4/6 fold into wheels and drive through the tunnel')
-        yield from self.fold_into_wheels()
+        log('3/6 land at the tunnel pad, lined up, and fold into wheels')
+        yield from self.land_folded_on_line(*TUNNEL_LINE)
+        log('4/6 drive through the tunnel')
         yield from self.drive_line(*TUNNEL_LINE)
         yield from self.pause(1.0)
         log('5/6 unfold and take off')
         yield from self.set_mode('idle')
-        yield from self.pause(3.0)
+        yield from self.pause(6.0)
         yield from self.take_off()
         log('6/6 fly to the goal pad and land')
         yield from self.fly_to((GOAL_PAD[0], GOAL_PAD[1], 1.0))

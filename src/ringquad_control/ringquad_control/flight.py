@@ -37,11 +37,15 @@ class Gains:
     ki: np.ndarray = field(default_factory=lambda: np.array([0.5, 0.5, 1.5]))
     i_max: float = 2.0                 # m/s^2, integrator clamp
     i_zone: float = 0.3                # m, integrate only within this error
-    # Yaw gains are ~50x lower than roll/pitch: a yaw torque command changes rotor speeds, and
+    # Yaw gains are ~20x lower than roll/pitch: a yaw torque command changes rotor speeds, and
     # spinning the heavy rings up/down kicks the body far harder than the drag torque the
     # mixer plans for (see params.RING_IZZ). Higher yaw gains chatter and saturate the motors.
-    k_att: np.ndarray = field(default_factory=lambda: np.array([150.0, 150.0, 2.0]))
-    k_rate: np.ndarray = field(default_factory=lambda: np.array([20.0, 20.0, 0.4]))
+    # Roll/pitch are 0.5x the first tuning (attitude bandwidth ~6 rad/s): with realistic
+    # torque-limited motors the 60 g rings spin up too slowly for faster attitude control.
+    # The first tuning diverges; 0.7x and 0.6x crash on a 2.8 m diagonal move
+    # (scripts/realism_sweep.py, test_flight.py). Lighter rings and plain props fly fine at 0.5x.
+    k_att: np.ndarray = field(default_factory=lambda: np.array([37.5, 37.5, 2.0]))
+    k_rate: np.ndarray = field(default_factory=lambda: np.array([10.0, 10.0, 0.4]))
     max_tilt: float = math.radians(30)
     max_accel_z: float = 5.0
 

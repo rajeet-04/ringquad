@@ -6,19 +6,21 @@ Raw fold command (no controller):
 """
 import os
 
-import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
     share = get_package_share_directory('ringquad_description')
-    robot_description = xacro.process_file(os.path.join(share, 'urdf', 'ringquad.urdf.xacro')).toxml()
+    robot_description = ParameterValue(
+        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread')]),
+        value_type=str)
     world = PathJoinSubstitution([share, 'worlds', [LaunchConfiguration('world'), '.sdf']])
 
     gz_sim = IncludeLaunchDescription(
@@ -29,6 +31,7 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
+        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
         SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.dirname(share)),
         gz_sim,
         Node(package='robot_state_publisher', executable='robot_state_publisher',

@@ -1,61 +1,34 @@
-"""Closed-loop check of controller + mixer on a rigid body with motor lag and ring inertia.
-
-Matches what Gazebo does: each rotor speed follows its command with a first-order lag,
-thrust = k w^2, and the body feels both the drag torque and the reaction torque of
-spinning the heavy ring up or down.
-"""
+"""Closed-loop checks of controller + mixer on the realistic plant (ringquad_control/plant.py):
+torque-limited motors, 60 g rings, blade and rim drag."""
 import math
 
 import numpy as np
 
 from ringquad_control import mixer
-from ringquad_control import params as p
-from ringquad_control.flight import E3, FlightController, yaw_of
+from ringquad_control.flight import FlightController, Gains, yaw_of
+from ringquad_control.plant import Plant, Rotor
 
 
-def skew(v):
-    return np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]])
-
-
-def simulate(pos_sp, yaw_sp, seconds, pos0=(0, 0, 0), ctl_dt=0.004, gains=None):
-    dt = 0.001
+def simulate(pos_sp, yaw_sp, seconds, pos0=(0, 0, 0), ctl_dt=0.004, gains=None, rotor=None):
+    plant = Plant(rotor=rotor or Rotor())
+    plant.pos[:] = pos0
     ctl = FlightController(gains)
-    pos, vel = np.array(pos0, float), np.zeros(3)
-    rot, rate = np.eye(3), np.zeros(3)
-    joint_vel = np.zeros(4)            # signed rotor speeds about body z (dir x speed)
-    cmd = np.zeros(4)
-    x, y = p.ROTOR_XY[:, 0], p.ROTOR_XY[:, 1]
-    steps_per_ctl = round(ctl_dt / dt)
+    steps = round(ctl_dt / plant.dt)
     max_tilt = 0.0
-    for i in range(int(seconds / dt)):
-        if i % steps_per_ctl == 0:
-            thrust, torque = ctl.update(pos, vel, rot, rate, np.array(pos_sp, float), yaw_sp, ctl_dt)
+    cmd = np.zeros(4)
+    for i in range(int(seconds / plant.dt)):
+        if i % steps == 0:
+            thrust, torque = ctl.update(plant.pos, plant.vel, plant.rot, plant.rate,
+                                        np.array(pos_sp, float), yaw_sp, ctl_dt)
             cmd = mixer.thrusts_to_commands(mixer.wrench_to_thrusts(thrust, torque))
-        target = p.ROTOR_DIR * cmd
-        tau = np.where(np.abs(target) > np.abs(joint_vel), p.MOTOR_TAU_UP, p.MOTOR_TAU_DOWN)
-        joint_acc = (target - joint_vel) / tau
-        joint_vel += joint_acc * dt
-
-        speed = np.abs(joint_vel)
-        f = p.K_THRUST * speed ** 2
-        torque_body = np.array([
-            y @ f,
-            -x @ f,
-            -(p.ROTOR_DIR * p.K_MOMENT) @ f - p.RING_IZZ * joint_acc.sum(),  # drag + spin-up reaction
-        ])
-        acc = rot @ E3 * f.sum() / p.MASS - p.GRAVITY * E3
-        ang_acc = np.linalg.solve(p.INERTIA, torque_body - np.cross(rate, p.INERTIA @ rate))
-        vel += acc * dt
-        pos += vel * dt
-        rate += ang_acc * dt
-        rot = rot @ (np.eye(3) + skew(rate * dt))
-        u, _, vt = np.linalg.svd(rot)  # keep rot orthonormal
-        rot = u @ vt
-        max_tilt = max(max_tilt, math.degrees(math.acos(min(1.0, rot[2, 2]))))
-    return pos, vel, rot, rate, max_tilt
+        plant.step(cmd)
+        max_tilt = max(max_tilt, plant.tilt_deg())
+        if max_tilt > 80:
+            break
+    return plant.pos, plant.vel, plant.rot, plant.rate, max_tilt
 
 
-def test_takeoff_to_one_metre():
+def test_climb_one_metre():
     pos, vel, _, rate, max_tilt = simulate([0, 0, 1], 0.0, 6.0)
     assert np.linalg.norm(pos - [0, 0, 1]) < 0.05
     assert np.linalg.norm(vel) < 0.05
@@ -70,8 +43,28 @@ def test_step_sideways():
     assert max_tilt < 32.0
 
 
+def test_large_diagonal_move():
+    pos, _, rot, _, max_tilt = simulate([2, 2, 1], 0.0, 10.0, pos0=(0, 0, 1))
+    assert np.linalg.norm(pos - [2, 2, 1]) < 0.05
+    assert max_tilt < 35.0
+
+
 def test_yaw_ninety_degrees():
     pos, _, rot, rate, _ = simulate([0, 0, 1], math.radians(90), 10.0, pos0=(0, 0, 1))
     assert abs(yaw_of(rot) - math.radians(90)) < math.radians(3)
     assert np.linalg.norm(pos - [0, 0, 1]) < 0.05
     assert abs(rate[2]) < 0.05
+
+
+def test_first_tuning_is_unstable_with_realistic_motors():
+    """Documents why the roll/pitch gains were lowered: the first tuning diverges."""
+    first = Gains()
+    first.k_att = np.array([150.0, 150.0, 2.0])
+    first.k_rate = np.array([20.0, 20.0, 0.4])
+    *_, max_tilt = simulate([1, 0, 1], 0.0, 8.0, pos0=(0, 0, 1), gains=first)
+    assert max_tilt > 80
+
+
+def test_same_gains_fly_a_plain_prop():
+    pos, *_ = simulate([1, 0, 1], 0.0, 8.0, pos0=(0, 0, 1), rotor=Rotor.plain_prop())
+    assert np.linalg.norm(pos - [1, 0, 1]) < 0.05

@@ -1,9 +1,12 @@
-"""Ground-mode yaw-rate loop for skid steering.
+"""Ground-mode yaw-rate loop for skid steering, and line following.
 
-With the tread friction set up as in the xacro (lower sideways than forward grip, to stand in
-for a real tyre's friction circle), turning on the spot follows the kinematic command closely.
-Feedforward does most of the work; PI on the IMU yaw rate removes the remaining scrub loss and
-holds a straight line when no turn is requested.
+With ideal motors, turning on the spot followed the kinematic command closely. With realistic
+motor torque (0.33-0.4 Nm, direct drive) the wheels cannot push hard enough to scrub the tyres
+sideways: the most turning moment they can make (~1.5-1.8 Nm) is less than the sideways friction
+resists with (~1.6 Nm at mu 0.6, more on real rubber). So on grippy ground this footprint can
+barely turn, and a large left/right speed difference just makes the wheels fight and stall
+the robot. The loop is therefore limited to small corrections, with anti-windup, so it never
+stalls the drive; real turns are done in the air (see mission.py).
 """
 import math
 from dataclasses import dataclass
@@ -16,8 +19,8 @@ class YawRateGains:
     k_ff: float = 1.0       # kinematic yaw command per rad/s requested
     kp: float = 2.0
     ki: float = 5.0
-    i_max: float = 2.0
-    cmd_max: float = 6.0    # kinematic yaw command limit (rad/s)
+    i_max: float = 0.5
+    cmd_max: float = 1.0    # kinematic yaw command limit (rad/s): small, so the wheels never fight
 
 
 class YawRateController:
@@ -32,7 +35,10 @@ class YawRateController:
         """Returns the kinematic yaw-rate command to feed mixer.drive_commands()."""
         g = self.g
         err = rate_sp - rate_meas
-        self.integral = float(np.clip(self.integral + g.ki * err * dt, -g.i_max, g.i_max))
+        unclipped = g.k_ff * rate_sp + g.kp * err + self.integral
+        if abs(unclipped) < g.cmd_max or np.sign(err) != np.sign(unclipped):
+            # anti-windup: stop integrating while saturated in the direction of the error
+            self.integral = float(np.clip(self.integral + g.ki * err * dt, -g.i_max, g.i_max))
         return float(np.clip(g.k_ff * rate_sp + g.kp * err + self.integral, -g.cmd_max, g.cmd_max))
 
 

@@ -18,11 +18,13 @@ def generate_launch_description():
     sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ringquad_control'), 'launch', 'sim.launch.py')),
-        launch_arguments={'world': 'demo', 'rviz': LaunchConfiguration('rviz')}.items())
+        launch_arguments={'world': 'demo', 'rviz': LaunchConfiguration('rviz'),
+                          'tread': LaunchConfiguration('tread')}.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='false'),
         DeclareLaunchArgument('mission', default_value='true'),
+        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
         sim,
         # the mission waits for odometry and the controller itself; the delay just lets Gazebo settle
         TimerAction(period=10.0, actions=[

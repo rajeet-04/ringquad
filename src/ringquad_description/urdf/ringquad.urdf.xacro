@@ -12,6 +12,13 @@
 -->
 <robot name="ringquad" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
+  <!--
+    tread: rubber (spec), omni (passive rollers around every rim: low sideways friction), or
+    mixed (omni front rings, rubber rear rings: pivots about the rear axle like a differential-drive
+    robot on casters; the only option that both turns and holds a line with realistic motors)
+  -->
+  <xacro:arg name="tread" default="rubber"/>
+
   <!-- ===== parameters (metres, kg) ===== -->
   <xacro:property name="body_l" value="0.16"/>
   <xacro:property name="body_w" value="0.16"/>
@@ -31,6 +38,15 @@
   <xacro:property name="blade_pitch" value="${radians(15)}"/>
 
   <xacro:property name="fold_max" value="${radians(80)}"/>
+  <!-- sideways tread friction per axle. Rubber 0.6 when all four rings must scrub to turn (see
+       the tyre friction note); real rubber 1.0 in mixed, where the rear rings never scrub; omni ~0.05 -->
+  <xacro:property name="tread" value="$(arg tread)"/>
+  <xacro:property name="front_lateral_mu" value="${0.6 if tread == 'rubber' else 0.05}"/>
+  <xacro:property name="rear_lateral_mu" value="${0.6 if tread == 'rubber' else (0.05 if tread == 'omni' else 1.0)}"/>
+
+  <!-- realistic motors: see the spin joint and ringquad_control/params.py -->
+  <xacro:property name="motor_torque" value="0.33"/>
+  <xacro:property name="rim_damping" value="1.79e-4"/>
 
   <!-- ===== materials ===== -->
   <material name="body_grey"><color rgba="0.25 0.27 0.30 1"/></material>
@@ -56,7 +72,7 @@
   </xacro:macro>
 
   <!-- ===== one arm + ring ===== -->
-  <xacro:macro name="corner" params="name x y yaw axis_x blade_mat">
+  <xacro:macro name="corner" params="name x y yaw axis_x blade_mat lateral_mu">
     <joint name="hinge_${name}" type="revolute">
       <parent link="chassis"/>
       <child link="arm_${name}"/>
@@ -90,9 +106,15 @@
       <child link="ring_${name}"/>
       <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
       <axis xyz="0 0 1"/>
-      <!-- the physics engine uses this effort as the force limit when it enforces the motor model's speed -->
-      <limit effort="50.0" velocity="1000"/>
-      <dynamics damping="0.0005"/>
+      <!--
+        Realistic motor (ringquad_control/params.py). The physics engine enforces the motor
+        model's speed with at most this torque, so spin-up is limited by the ring's inertia:
+        0.4 Nm peak motor torque minus the ~0.07 Nm blade drag at hover (which the motor model
+        applies to the body, not to this joint). Damping stands in for the rim's skin drag,
+        linearised at hover: 0.092 Nm / 514 rad/s.
+      -->
+      <limit effort="${motor_torque}" velocity="1000"/>
+      <dynamics damping="${rim_damping}"/>
     </joint>
 
     <link name="ring_${name}">
@@ -147,7 +169,7 @@
       the turning a real tyre's friction circle gives; it must stay below 0.92 x forward.
     -->
     <gazebo reference="ring_${name}">
-      <mu1>0.6</mu1>
+      <mu1>${lateral_mu}</mu1>
       <mu2>1.0</mu2>
       <fdir1>0 0 1</fdir1>
     </gazebo>
@@ -179,10 +201,10 @@
   </link>
 
   <!-- orange blades at the front, blue at the rear -->
-  <xacro:corner name="fl" x="${body_l / 2}"  y="${body_w / 2}"  yaw="${radians(45)}"   axis_x="-1" blade_mat="blade_front"/>
-  <xacro:corner name="fr" x="${body_l / 2}"  y="${-body_w / 2}" yaw="${radians(-45)}"  axis_x="1"  blade_mat="blade_front"/>
-  <xacro:corner name="rl" x="${-body_l / 2}" y="${body_w / 2}"  yaw="${radians(135)}"  axis_x="-1" blade_mat="blade_rear"/>
-  <xacro:corner name="rr" x="${-body_l / 2}" y="${-body_w / 2}" yaw="${radians(-135)}" axis_x="1"  blade_mat="blade_rear"/>
+  <xacro:corner lateral_mu="${front_lateral_mu}" name="fl" x="${body_l / 2}"  y="${body_w / 2}"  yaw="${radians(45)}"   axis_x="-1" blade_mat="blade_front"/>
+  <xacro:corner lateral_mu="${front_lateral_mu}" name="fr" x="${body_l / 2}"  y="${-body_w / 2}" yaw="${radians(-45)}"  axis_x="1"  blade_mat="blade_front"/>
+  <xacro:corner lateral_mu="${rear_lateral_mu}" name="rl" x="${-body_l / 2}" y="${body_w / 2}"  yaw="${radians(135)}"  axis_x="-1" blade_mat="blade_rear"/>
+  <xacro:corner lateral_mu="${rear_lateral_mu}" name="rr" x="${-body_l / 2}" y="${-body_w / 2}" yaw="${radians(-135)}" axis_x="1"  blade_mat="blade_rear"/>
 
   <!-- ===== Gazebo Harmonic plugins ===== -->
   <gazebo>
@@ -200,10 +222,23 @@
   </gazebo>
 
   <gazebo reference="chassis">
+    <!-- noise: gyro 0.05 rad/s, accel 0.3 m/s^2 (sensor noise plus typical airframe vibration) -->
     <sensor name="imu" type="imu">
       <always_on>true</always_on>
       <update_rate>250</update_rate>
       <topic>/imu</topic>
+      <imu>
+        <angular_velocity>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.05</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.05</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.05</stddev></noise></z>
+        </angular_velocity>
+        <linear_acceleration>
+          <x><noise type="gaussian"><mean>0</mean><stddev>0.3</stddev></noise></x>
+          <y><noise type="gaussian"><mean>0</mean><stddev>0.3</stddev></noise></y>
+          <z><noise type="gaussian"><mean>0</mean><stddev>0.3</stddev></noise></z>
+        </linear_acceleration>
+      </imu>
     </sensor>
   </gazebo>
 

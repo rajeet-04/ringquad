@@ -20,11 +20,13 @@ def generate_launch_description():
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ringquad_description'), 'launch', 'gazebo.launch.py')),
-        launch_arguments={'rviz': LaunchConfiguration('rviz'), 'world': LaunchConfiguration('world')}.items())
+        launch_arguments={'rviz': LaunchConfiguration('rviz'), 'world': LaunchConfiguration('world'),
+                          'tread': LaunchConfiguration('tread')}.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad'),
+        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
         gazebo,
         Node(package='ringquad_control', executable='controller',
              parameters=[{'use_sim_time': True}], output='screen'),
