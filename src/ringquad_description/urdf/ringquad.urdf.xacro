@@ -8,7 +8,7 @@
   same positive command folds all four.
 
   Ring spin on the ground: left ring axis points left, right ring axis points right.
-  Driving forward = positive velocity on left rings, negative on right rings.
+  Driving forward = positive joint velocity on left rings, negative on right rings.
 -->
 <robot name="ringquad" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
@@ -90,7 +90,8 @@
       <child link="ring_${name}"/>
       <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
       <axis xyz="0 0 1"/>
-      <limit effort="1.0" velocity="1000"/>
+      <!-- the physics engine uses this effort as the force limit when it enforces the motor model's speed -->
+      <limit effort="50.0" velocity="1000"/>
       <dynamics damping="0.0005"/>
     </joint>
 
@@ -138,9 +139,17 @@
       </inertial>
     </link>
 
+    <!--
+      Tyre friction. DART limits friction per direction (a pyramid, not a circle), so a tyre
+      sliding forward still grips fully sideways. With wheelbase/track 1.09 that jams
+      turns on the spot (sideways grip x half-wheelbase beats drive x half-track) until it
+      breaks loose in jerks. Lower sideways friction (along the ring axis, fdir1) restores
+      the turning a real tyre's friction circle gives; it must stay below 0.92 x forward.
+    -->
     <gazebo reference="ring_${name}">
-      <mu1>1.0</mu1>
+      <mu1>0.6</mu1>
       <mu2>1.0</mu2>
+      <fdir1>0 0 1</fdir1>
     </gazebo>
   </xacro:macro>
 
@@ -186,8 +195,16 @@
       <robot_base_frame>base_link</robot_base_frame>
       <odom_topic>/odom</odom_topic>
       <dimensions>3</dimensions>
-      <odom_publish_frequency>50</odom_publish_frequency>
+      <odom_publish_frequency>250</odom_publish_frequency>
     </plugin>
+  </gazebo>
+
+  <gazebo reference="chassis">
+    <sensor name="imu" type="imu">
+      <always_on>true</always_on>
+      <update_rate>250</update_rate>
+      <topic>/imu</topic>
+    </sensor>
   </gazebo>
 
   <!-- One fold command drives all four hinges, like the single fold motor and linkage. -->
@@ -208,13 +225,31 @@
     </gazebo>
   </xacro:macro>
 
-  <!-- Ring speed per corner (rad/s); used for driving in ground mode. -->
-  <xacro:macro name="ring_controller" params="name">
+  <!--
+    One motor per ring, used in both modes (all four read /ringquad/motor_speed,
+    index = number). Flight: thrust = k w^2 along the ring axis, drag torque about it.
+    Ground: the same commanded speed spins the ring as a wheel; negative commands reverse it.
+    Joint velocity = turning direction (ccw +1, cw -1) x command. Positive command = upward thrust.
+    Values must match ringquad_control/params.py.
+  -->
+  <xacro:macro name="rotor" params="name number direction">
     <gazebo>
-      <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
-        <joint_name>spin_${name}</joint_name>
-        <topic>/ringquad/ring_${name}</topic>
-        <initial_velocity>0</initial_velocity>
+      <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>ringquad</robotNamespace>
+        <jointName>spin_${name}</jointName>
+        <linkName>ring_${name}</linkName>
+        <turningDirection>${direction}</turningDirection>
+        <timeConstantUp>0.0125</timeConstantUp>
+        <timeConstantDown>0.025</timeConstantDown>
+        <maxRotVelocity>800.0</maxRotVelocity>
+        <motorConstant>1.56e-05</motorConstant>
+        <momentConstant>0.016</momentConstant>
+        <commandSubTopic>motor_speed</commandSubTopic>
+        <actuator_number>${number}</actuator_number>
+        <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+        <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+        <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim>
+        <motorType>velocity</motorType>
       </plugin>
     </gazebo>
   </xacro:macro>
@@ -223,8 +258,9 @@
   <xacro:fold_controller name="fr"/>
   <xacro:fold_controller name="rl"/>
   <xacro:fold_controller name="rr"/>
-  <xacro:ring_controller name="fl"/>
-  <xacro:ring_controller name="fr"/>
-  <xacro:ring_controller name="rl"/>
-  <xacro:ring_controller name="rr"/>
+  <!-- diagonal pairs spin the same way so the reaction torques cancel in hover -->
+  <xacro:rotor name="fl" number="0" direction="ccw"/>
+  <xacro:rotor name="fr" number="1" direction="cw"/>
+  <xacro:rotor name="rl" number="2" direction="cw"/>
+  <xacro:rotor name="rr" number="3" direction="ccw"/>
 </robot>

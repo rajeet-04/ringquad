@@ -3,7 +3,7 @@ project(ringquad_description)
 
 find_package(ament_cmake REQUIRED)
 
-install(DIRECTORY urdf launch rviz config
+install(DIRECTORY urdf launch rviz config worlds
   DESTINATION share/${PROJECT_NAME})
 
 ament_package()

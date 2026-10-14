@@ -1,4 +1,4 @@
-# Morphing Aerial-Ground Quad: Design Spec (v0.3)
+# Morphing Aerial-Ground Quad: Design Spec (v0.4)
 
 Status: layout and fold geometry agreed, pre-build. Simulation first (ROS 2 Jazzy, Gazebo Harmonic), hardware later.
 
@@ -108,17 +108,28 @@ Take off, fly over a wall, land, fold, drive through a low tunnel it cannot fly 
 5. Motor direction switch between modes is correct for all four motors.
 6. Fault case: one motor failure during transition, and the mode-switch response.
 
-## 12. Open questions
+## 12. Findings from simulation
 
-- Size: total weight and ring diameter (default about 1.5 to 2 kg, 10-inch rings; sizing in section 3 assumes this).
-- Ring weight: heavy rings respond slowly to throttle changes and make flight sluggish. Keep light and model their inertia.
+**Ring inertia dominates yaw.** Each ring (60 g at 12–13.5 cm radius) has about 12x the spin inertia of a plain 10-inch prop. When the mixer changes rotor speeds to make yaw torque, the reaction from spinning the rings up or down kicks the body in yaw like a reaction wheel. For a step command this kick is roughly 300x the aerodynamic drag torque the mixer plans for. With normal quad yaw gains the motors chattered between full and zero and the vehicle lost roll control. Fix: yaw gains about 50x lower than roll/pitch (attitude 2, rate 0.4). The unit-test simulator models motor lag and ring inertia, so it catches this.
+- Hardware consequence: ring mass is a first-order design parameter. Lighter rings (or rings that do not spin, i.e. a fixed duct with the prop inside) give much better yaw control.
+
+**Skid-steer turning jams in the physics engine.** DART limits tyre friction per direction (a pyramid), so a tyre sliding forward still grips fully sideways. With wheelbase/track 1.09 the robot could not turn on the spot until it broke loose in jerks. Fix in simulation: sideways tread friction 0.6, forward 1.0 (it must stay below 0.92 x forward). A yaw-rate loop on the IMU then tracks turn commands (1.01 rad/s for 1 rad/s).
+- Hardware consequence: on real tyres the friction circle helps, but a wheelbase/track ratio near or above 1 still makes skid steering scrub hard. Keep the track at least as wide as the wheelbase.
+
+**Same motors fly and drive.** One motor model per ring takes signed speed commands. Positive = upward thrust in flight; on the ground the controller maps body speed and yaw rate to signed wheel speeds. Spin direction per motor is handled in `mixer.py`.
+
+## 13. Open questions
+
+- Ring weight and whether the ring spins with the prop (see findings).
 - Fold motor type: servo, geared brushless or lead screw.
 - Failure policy when a motor fails in DRIVE.
 
-## 13. Next steps
+## 14. Status and next steps
 
-1. Confirm size (arm length and steering are decided).
-2. Write the model and check it loads in Gazebo Harmonic; animate the fold to check for collisions.
-3. Hover with the flight controller in simulation.
-4. Ground controller and driving.
-5. Mode-switch node and the full demo mission.
+Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving and turning, mode switching; unit and end-to-end tests.
+
+Next:
+1. Hinge spring-damper suspension in DRIVE (currently a stiff hold).
+2. State estimation from IMU instead of ground-truth odometry.
+3. Sensors (depth camera, 2D LiDAR) and the demo world: wall to fly over, low tunnel to drive through.
+4. Mission script for the demo, and a recorded video.
