@@ -32,11 +32,22 @@ for r in fl rl; do ros2 topic pub --once /ringquad/ring_$r std_msgs/msg/Float64 
 for r in fr rr; do ros2 topic pub --once /ringquad/ring_$r std_msgs/msg/Float64 "{data: -10.0}"; done
 ```
 
+## Smoke test
+
+With `gazebo.launch.py` running:
+
+```bash
+python3 ~/ringquad_ws/scripts/smoke_test.py
+```
+
+Folds to 80 deg, drives forward 4 s, unfolds. Prints PASS/FAIL per step.
+
 ## Layout
 
 | Path | What |
 |---|---|
 | `src/ringquad_description/urdf/ringquad.urdf.xacro` | Robot model and Gazebo plugins |
 | `src/ringquad_description/launch/` | `display.launch.py` (RViz), `gazebo.launch.py` (Gazebo + RViz) |
+| `scripts/smoke_test.py` | Fold / drive / unfold check against a running sim |
 | `geometry.py` | Fold geometry and sizing calculator |
 | `DESIGN.md` | Design spec |

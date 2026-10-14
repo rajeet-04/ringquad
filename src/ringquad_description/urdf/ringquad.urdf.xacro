@@ -62,7 +62,7 @@
       <child link="arm_${name}"/>
       <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
       <axis xyz="${axis_x} 0 0"/>
-      <limit lower="0" upper="${fold_max}" effort="5.0" velocity="2.0"/>
+      <limit lower="0" upper="${fold_max}" effort="20.0" velocity="2.0"/>
       <dynamics damping="0.05" friction="0.01"/>
     </joint>
 
@@ -85,7 +85,7 @@
       </inertial>
     </link>
 
-    <joint name="ring_${name}" type="continuous">
+    <joint name="spin_${name}" type="continuous">
       <parent link="arm_${name}"/>
       <child link="ring_${name}"/>
       <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
@@ -180,6 +180,14 @@
     <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
       <topic>/joint_states</topic>
     </plugin>
+    <!-- ground-truth odometry from the simulator -->
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <odom_frame>odom</odom_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <odom_topic>/odom</odom_topic>
+      <dimensions>3</dimensions>
+      <odom_publish_frequency>50</odom_publish_frequency>
+    </plugin>
   </gazebo>
 
   <!-- One fold command drives all four hinges, like the single fold motor and linkage. -->
@@ -188,13 +196,14 @@
       <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
         <joint_name>hinge_${name}</joint_name>
         <topic>/ringquad/fold</topic>
-        <p_gain>20</p_gain>
-        <i_gain>0.5</i_gain>
-        <d_gain>0.5</d_gain>
-        <i_max>1</i_max>
-        <i_min>-1</i_min>
-        <cmd_max>5</cmd_max>
-        <cmd_min>-5</cmd_min>
+        <!-- stiff hold: the real fold drive is self-locking (DESIGN.md section 6) -->
+        <p_gain>100</p_gain>
+        <i_gain>20</i_gain>
+        <d_gain>2</d_gain>
+        <i_max>5</i_max>
+        <i_min>-5</i_min>
+        <cmd_max>20</cmd_max>
+        <cmd_min>-20</cmd_min>
       </plugin>
     </gazebo>
   </xacro:macro>
@@ -203,7 +212,7 @@
   <xacro:macro name="ring_controller" params="name">
     <gazebo>
       <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
-        <joint_name>ring_${name}</joint_name>
+        <joint_name>spin_${name}</joint_name>
         <topic>/ringquad/ring_${name}</topic>
         <initial_velocity>0</initial_velocity>
       </plugin>

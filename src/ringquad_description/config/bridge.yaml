@@ -10,6 +10,12 @@
   gz_type_name: gz.msgs.Model
   direction: GZ_TO_ROS
 
+- ros_topic_name: /odom
+  gz_topic_name: /odom
+  ros_type_name: nav_msgs/msg/Odometry
+  gz_type_name: gz.msgs.Odometry
+  direction: GZ_TO_ROS
+
 - ros_topic_name: /ringquad/fold
   gz_topic_name: /ringquad/fold
   ros_type_name: std_msgs/msg/Float64

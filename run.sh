@@ -17,6 +17,7 @@ else
   podman run -d --name "$NAME" \
     -p 6080:80 \
     --shm-size=1g \
+    --sysctl net.ipv4.ip_unprivileged_port_start=0 \
     -v "$PWD:/home/ubuntu/ringquad_ws" \
     "$IMAGE"
 fi
