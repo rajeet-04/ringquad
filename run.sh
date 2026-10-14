@@ -22,5 +22,14 @@ else
     "$IMAGE"
 fi
 
+# The desktop's screensaver locks the session behind a password; turn it off.
+sleep 5
+podman exec -u ubuntu -e DISPLAY=:1 "$NAME" bash -c '
+  pid=$(pgrep -u ubuntu -f "[m]ate-session" | head -1)
+  [ -n "$pid" ] && export $(tr "\0" "\n" < /proc/$pid/environ | grep ^DBUS_SESSION_BUS_ADDRESS=)
+  gsettings set org.mate.screensaver lock-enabled false
+  gsettings set org.mate.screensaver idle-activation-enabled false
+  pkill -u ubuntu -f "[m]ate-screensaver"' || true
+
 echo "Desktop: http://localhost:6080"
 echo "Shell:   podman exec -it -u ubuntu $NAME bash"
