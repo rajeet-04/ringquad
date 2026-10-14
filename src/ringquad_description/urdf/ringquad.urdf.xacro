@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<!--
+  Morphing ring-propeller quad (DESIGN.md v0.3, medium size).
+  Frames: x forward, y left, z up. Hinges at the body corners, at CoM height.
+
+  Fold: every hinge turns 0 (flight, arms in X) to 80 deg (ground, arms 45 deg down,
+  rings upright with 10 deg camber). Left hinges use axis -x, right hinges +x, so the
+  same positive command folds all four.
+
+  Ring spin on the ground: left ring axis points left, right ring axis points right.
+  Driving forward = positive velocity on left rings, negative on right rings.
+-->
+<robot name="ringquad" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ===== parameters (metres, kg) ===== -->
+  <xacro:property name="body_l" value="0.16"/>
+  <xacro:property name="body_w" value="0.16"/>
+  <xacro:property name="body_h" value="0.08"/>
+  <xacro:property name="body_m" value="1.0"/>
+
+  <xacro:property name="arm_len" value="0.12"/>      <!-- hinge to ring centre -->
+  <xacro:property name="arm_r" value="0.008"/>
+  <xacro:property name="arm_m" value="0.11"/>        <!-- arm + motor -->
+  <xacro:property name="ring_offset" value="0.035"/> <!-- ring plane offset along motor axis -->
+
+  <xacro:property name="ring_r_out" value="0.135"/>
+  <xacro:property name="ring_r_in" value="0.12"/>
+  <xacro:property name="ring_w" value="0.03"/>
+  <xacro:property name="ring_m" value="0.06"/>
+  <xacro:property name="ring_segments" value="24"/>
+  <xacro:property name="blade_pitch" value="${radians(15)}"/>
+
+  <xacro:property name="fold_max" value="${radians(80)}"/>
+
+  <!-- ===== materials ===== -->
+  <material name="body_grey"><color rgba="0.25 0.27 0.30 1"/></material>
+  <material name="arm_black"><color rgba="0.08 0.08 0.08 1"/></material>
+  <material name="tread"><color rgba="0.12 0.12 0.12 1"/></material>
+  <material name="blade_front"><color rgba="0.95 0.45 0.10 1"/></material>
+  <material name="blade_rear"><color rgba="0.20 0.55 0.95 1"/></material>
+
+  <!-- ===== ring tread: segments around a circle (recursive) ===== -->
+  <xacro:macro name="ring_segment" params="i">
+    <xacro:if value="${i > 0}">
+      <xacro:property name="a" value="${2 * pi * i / ring_segments}"/>
+      <visual>
+        <origin xyz="${(ring_r_in + ring_r_out) / 2 * cos(a)} ${(ring_r_in + ring_r_out) / 2 * sin(a)} 0"
+                rpy="0 0 ${a}"/>
+        <geometry>
+          <box size="${ring_r_out - ring_r_in} ${2 * pi * ring_r_out / ring_segments * 1.05} ${ring_w}"/>
+        </geometry>
+        <material name="tread"/>
+      </visual>
+      <xacro:ring_segment i="${i - 1}"/>
+    </xacro:if>
+  </xacro:macro>
+
+  <!-- ===== one arm + ring ===== -->
+  <xacro:macro name="corner" params="name x y yaw axis_x blade_mat">
+    <joint name="hinge_${name}" type="revolute">
+      <parent link="chassis"/>
+      <child link="arm_${name}"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+      <axis xyz="${axis_x} 0 0"/>
+      <limit lower="0" upper="${fold_max}" effort="5.0" velocity="2.0"/>
+      <dynamics damping="0.05" friction="0.01"/>
+    </joint>
+
+    <link name="arm_${name}">
+      <visual>
+        <origin xyz="${arm_len / 2 * cos(yaw)} ${arm_len / 2 * sin(yaw)} 0" rpy="0 ${pi / 2} ${yaw}"/>
+        <geometry><cylinder radius="${arm_r}" length="${arm_len}"/></geometry>
+        <material name="arm_black"/>
+      </visual>
+      <!-- motor bell at the arm tip -->
+      <visual>
+        <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset / 2}"/>
+        <geometry><cylinder radius="0.014" length="${ring_offset}"/></geometry>
+        <material name="arm_black"/>
+      </visual>
+      <inertial>
+        <origin xyz="${0.75 * arm_len * cos(yaw)} ${0.75 * arm_len * sin(yaw)} 0"/>
+        <mass value="${arm_m}"/>
+        <inertia ixx="1.5e-4" iyy="1.5e-4" izz="2.5e-4" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <joint name="ring_${name}" type="continuous">
+      <parent link="arm_${name}"/>
+      <child link="ring_${name}"/>
+      <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
+      <axis xyz="0 0 1"/>
+      <limit effort="1.0" velocity="1000"/>
+      <dynamics damping="0.0005"/>
+    </joint>
+
+    <link name="ring_${name}">
+      <xacro:ring_segment i="${ring_segments}"/>
+      <!-- hub -->
+      <visual>
+        <geometry><cylinder radius="0.02" length="0.012"/></geometry>
+        <material name="arm_black"/>
+      </visual>
+      <!-- four pitched blades (spokes) from hub to rim -->
+      <xacro:property name="blade_len" value="${ring_r_in - 0.02}"/>
+      <xacro:property name="blade_mid" value="${0.02 + blade_len / 2}"/>
+      <visual>
+        <origin xyz="${blade_mid} 0 0" rpy="${blade_pitch} 0 0"/>
+        <geometry><box size="${blade_len} 0.025 0.003"/></geometry>
+        <material name="${blade_mat}"/>
+      </visual>
+      <visual>
+        <origin xyz="0 ${blade_mid} 0" rpy="${blade_pitch} 0 ${pi / 2}"/>
+        <geometry><box size="${blade_len} 0.025 0.003"/></geometry>
+        <material name="${blade_mat}"/>
+      </visual>
+      <visual>
+        <origin xyz="${-blade_mid} 0 0" rpy="${blade_pitch} 0 ${pi}"/>
+        <geometry><box size="${blade_len} 0.025 0.003"/></geometry>
+        <material name="${blade_mat}"/>
+      </visual>
+      <visual>
+        <origin xyz="0 ${-blade_mid} 0" rpy="${blade_pitch} 0 ${-pi / 2}"/>
+        <geometry><box size="${blade_len} 0.025 0.003"/></geometry>
+        <material name="${blade_mat}"/>
+      </visual>
+      <!-- the outer rim is the tyre: a disc of the rim's outer radius -->
+      <collision>
+        <geometry><cylinder radius="${ring_r_out}" length="${ring_w}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="${ring_m}"/>
+        <!-- annulus: Izz = m/2 (ri^2 + ro^2), Ixx = m/12 (3 (ri^2 + ro^2) + w^2) -->
+        <inertia ixx="${ring_m / 12 * (3 * (ring_r_in**2 + ring_r_out**2) + ring_w**2)}"
+                 iyy="${ring_m / 12 * (3 * (ring_r_in**2 + ring_r_out**2) + ring_w**2)}"
+                 izz="${ring_m / 2 * (ring_r_in**2 + ring_r_out**2)}"
+                 ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <gazebo reference="ring_${name}">
+      <mu1>1.0</mu1>
+      <mu2>1.0</mu2>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- ===== body ===== -->
+  <link name="base_link"/>
+
+  <joint name="base_to_chassis" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+  </joint>
+
+  <link name="chassis">
+    <visual>
+      <geometry><box size="${body_l} ${body_w} ${body_h}"/></geometry>
+      <material name="body_grey"/>
+    </visual>
+    <collision>
+      <geometry><box size="${body_l} ${body_w} ${body_h}"/></geometry>
+    </collision>
+    <inertial>
+      <mass value="${body_m}"/>
+      <inertia ixx="${body_m / 12 * (body_w**2 + body_h**2)}"
+               iyy="${body_m / 12 * (body_l**2 + body_h**2)}"
+               izz="${body_m / 12 * (body_l**2 + body_w**2)}"
+               ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- orange blades at the front, blue at the rear -->
+  <xacro:corner name="fl" x="${body_l / 2}"  y="${body_w / 2}"  yaw="${radians(45)}"   axis_x="-1" blade_mat="blade_front"/>
+  <xacro:corner name="fr" x="${body_l / 2}"  y="${-body_w / 2}" yaw="${radians(-45)}"  axis_x="1"  blade_mat="blade_front"/>
+  <xacro:corner name="rl" x="${-body_l / 2}" y="${body_w / 2}"  yaw="${radians(135)}"  axis_x="-1" blade_mat="blade_rear"/>
+  <xacro:corner name="rr" x="${-body_l / 2}" y="${-body_w / 2}" yaw="${radians(-135)}" axis_x="1"  blade_mat="blade_rear"/>
+
+  <!-- ===== Gazebo Harmonic plugins ===== -->
+  <gazebo>
+    <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+      <topic>/joint_states</topic>
+    </plugin>
+  </gazebo>
+
+  <!-- One fold command drives all four hinges, like the single fold motor and linkage. -->
+  <xacro:macro name="fold_controller" params="name">
+    <gazebo>
+      <plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+        <joint_name>hinge_${name}</joint_name>
+        <topic>/ringquad/fold</topic>
+        <p_gain>20</p_gain>
+        <i_gain>0.5</i_gain>
+        <d_gain>0.5</d_gain>
+        <i_max>1</i_max>
+        <i_min>-1</i_min>
+        <cmd_max>5</cmd_max>
+        <cmd_min>-5</cmd_min>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Ring speed per corner (rad/s); used for driving in ground mode. -->
+  <xacro:macro name="ring_controller" params="name">
+    <gazebo>
+      <plugin filename="gz-sim-joint-controller-system" name="gz::sim::systems::JointController">
+        <joint_name>ring_${name}</joint_name>
+        <topic>/ringquad/ring_${name}</topic>
+        <initial_velocity>0</initial_velocity>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+  <xacro:fold_controller name="fl"/>
+  <xacro:fold_controller name="fr"/>
+  <xacro:fold_controller name="rl"/>
+  <xacro:fold_controller name="rr"/>
+  <xacro:ring_controller name="fl"/>
+  <xacro:ring_controller name="fr"/>
+  <xacro:ring_controller name="rl"/>
+  <xacro:ring_controller name="rr"/>
+</robot>
