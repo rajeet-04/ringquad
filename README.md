@@ -107,9 +107,9 @@ The first version simulated ideal motors. Now the motors have a 0.4 Nm torque li
 
 ## Tunnel-control experiment
 
-The demo now defaults to `tread:=omni`. Rubber and mixed remain selectable; their ground steering is not validated by the demo results. The simulated tyre collision is a convex rounded profile with the original 0.135 m outer radius and 0.03 m width; ring mass and inertia are unchanged. It approximates rounded tread contact, not individual omni rollers. DART uses the Bullet collision detector. These contact assumptions require hardware validation.
+The demo now defaults to `tread:=omni`. Rubber and mixed remain selectable. The validation runner isolates every ROS domain and Gazebo transport partition and removes server descendants after each run; see SIMULATION_RESULTS.md for tread-specific results. The simulated tyre collision is a convex rounded profile with the original 0.135 m outer radius and 0.03 m width; ring mass and inertia are unchanged. It approximates rounded tread contact, not individual omni rollers. DART uses the Bullet collision detector. These contact assumptions require hardware validation.
 
-Before driving, the mission actively aligns its heading within 1 degree after folding, with a 30 s timeout. Forward motion previously began with up to 10 degrees of heading error despite weak steering. Cross-track abort limits remain 5 cm at the tunnel and 15 cm on the open approach.
+Before driving, the mission actively aligns its heading within 1 degree after folding. If ground alignment stalls for 60 simulated seconds, it stops, compensates the measured heading error in the next aerial landing, and retries, up to three landing attempts. Forward motion previously began with up to 10 degrees of heading error despite weak steering. Cross-track abort limits remain 5 cm at the tunnel and 15 cm on the open approach.
 
 Headless repeatability check (inside the sourced ROS workspace):
 
@@ -118,3 +118,9 @@ python3 scripts/demo_test.py --runs 3 --tread omni
 ```
 
 Each run starts a fresh world and fails on mission abort, timeout, or missing completion. Logs default to `/tmp/ringquad-demo`. To run without the Gazebo desktop, pass `gui:=false rviz:=false` to either launch command. `scripts/generate_tread.py` regenerates the collision mesh from the repository root.
+
+The test runner takes a file lock on its ROS domain so concurrent runs do not share topics. Each run gets a unique Gazebo partition. This prevents orphaned or concurrent simulators from contaminating commands and odometry.
+
+## Optional front steering
+
+`steering:=front tread:=rubber` adds two simulated steering knuckles and Ackermann wheel control. The original mechanism remains the default (`steering:=fixed`). See [STEERING.md](STEERING.md) for hardware assumptions, flight trim, limitations and test commands.

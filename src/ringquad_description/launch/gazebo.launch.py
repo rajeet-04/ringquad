@@ -19,7 +19,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     share = get_package_share_directory('ringquad_description')
     robot_description = ParameterValue(
-        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread')]),
+        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering')]),
         value_type=str)
     world = PathJoinSubstitution([share, 'worlds', [LaunchConfiguration('world'), '.sdf']])
 
@@ -30,10 +30,12 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true'),
+        DeclareLaunchArgument('steering', default_value='fixed', choices=['fixed', 'front']),
         DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
         SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.dirname(share)),
+        SetEnvironmentVariable('GZ_SIM_SYSTEM_PLUGIN_PATH', os.path.join(share, '..', '..', 'lib') + os.pathsep + os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', '')),
         gz_sim,
         Node(package='robot_state_publisher', executable='robot_state_publisher',
              parameters=[{'robot_description': robot_description, 'use_sim_time': True}]),

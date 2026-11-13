@@ -18,6 +18,7 @@
     robot on casters; the only option that both turns and holds a line with realistic motors)
   -->
   <xacro:arg name="tread" default="rubber"/>
+  <xacro:arg name="steering" default="fixed"/>
 
   <!-- ===== parameters (metres, kg) ===== -->
   <xacro:property name="body_l" value="0.16"/>
@@ -101,10 +102,28 @@
       </inertial>
     </link>
 
+    <xacro:property name="steered" value="${'$(arg steering)' == 'front' and name in ['fl', 'fr']}"/>
+    <xacro:if value="${steered}">
+      <joint name="steer_${name}" type="revolute">
+        <parent link="arm_${name}"/><child link="knuckle_${name}"/>
+        <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
+        <!-- Near vertical when folded, zero angle locked for flight. -->
+        <axis xyz="0 ${axis_x} 0"/>
+        <limit lower="-0.63" upper="0.63" effort="1.0" velocity="1.5"/>
+        <dynamics damping="0.05"/>
+      </joint>
+      <link name="knuckle_${name}">
+        <inertial><mass value="0.02"/><inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/></inertial>
+      </link>
+      <gazebo><plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+        <joint_name>steer_${name}</joint_name><topic>/ringquad/steer_${name}</topic>
+        <p_gain>100</p_gain><d_gain>0.3</d_gain><cmd_max>1</cmd_max><cmd_min>-1</cmd_min>
+      </plugin></gazebo>
+    </xacro:if>
     <joint name="spin_${name}" type="continuous">
-      <parent link="arm_${name}"/>
+      <xacro:if value="${steered}"><parent link="knuckle_${name}"/><origin xyz="0 0 0"/></xacro:if>
+      <xacro:unless value="${steered}"><parent link="arm_${name}"/><origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/></xacro:unless>
       <child link="ring_${name}"/>
-      <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
       <axis xyz="0 0 1"/>
       <!--
         Realistic motor (ringquad_control/params.py). The physics engine enforces the motor
@@ -204,6 +223,9 @@
   <xacro:corner lateral_mu="${rear_lateral_mu}" name="rl" x="${-body_l / 2}" y="${body_w / 2}"  yaw="${radians(135)}"  axis_x="-1" blade_mat="blade_rear"/>
   <xacro:corner lateral_mu="${rear_lateral_mu}" name="rr" x="${-body_l / 2}" y="${-body_w / 2}" yaw="${radians(-135)}" axis_x="1"  blade_mat="blade_rear"/>
 
+  <xacro:if value="${'$(arg steering)' == 'front'}">
+    <gazebo><plugin filename="libringquad_steering_lock.so" name="ringquad::SteeringLock"/></gazebo>
+  </xacro:if>
   <!-- ===== Gazebo Harmonic plugins ===== -->
   <gazebo>
     <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">

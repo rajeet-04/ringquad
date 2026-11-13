@@ -20,6 +20,7 @@ class YawRateGains:
     k_ff: float = 1.0       # kinematic yaw command per rad/s requested
     kp: float = 1.2
     ki: float = 2.5
+    rate_filter_tau: float = 0.05  # s; suppress gyro noise before the low-speed PI loop
     i_max: float = 0.35
     cmd_max: float = 1.0    # kinematic yaw command limit (rad/s): small, so the wheels never fight
 
@@ -28,17 +29,17 @@ class YawRateController:
     def __init__(self, gains=None):
         self.g = gains or YawRateGains()
         self.integral = 0.0
+        self.filtered_rate = 0.0
 
     def reset(self):
         self.integral = 0.0
+        self.filtered_rate = 0.0
 
     def update(self, rate_sp, rate_meas, dt):
         """Returns the kinematic yaw-rate command to feed mixer.drive_commands()."""
         g = self.g
-        err = rate_sp - rate_meas
-        if self.integral != 0.0 and np.sign(err) != np.sign(self.integral):
-            # Bleed stored integrator windup when error crosses zero to prevent tunnel S-curves
-            self.integral *= 0.5
+        self.filtered_rate += dt / (g.rate_filter_tau + dt) * (rate_meas - self.filtered_rate)
+        err = rate_sp - self.filtered_rate
         unclipped = g.k_ff * rate_sp + g.kp * err + self.integral
         if abs(unclipped) < g.cmd_max or np.sign(err) != np.sign(unclipped):
             # anti-windup: stop integrating while saturated in the direction of the error

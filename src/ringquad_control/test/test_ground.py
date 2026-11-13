@@ -85,3 +85,16 @@ def test_coupled_line_follow_with_yaw_lag_and_lever_arm():
         if com_x >= 5.2:
             worst_in_tunnel = max(worst_in_tunnel, abs(cross))
     assert worst_in_tunnel < 0.025
+
+
+def test_gentle_turn_tracks_with_gyro_noise_larger_than_request():
+    import numpy as np
+    rng = np.random.default_rng(42)
+    ctl, rate = YawRateController(), 0.0
+    rates = []
+    for i in range(2500):
+        command = ctl.update(0.05, rate + rng.normal(0.0, 0.05), 0.004)
+        rate += (0.6 * command - rate) * 0.004 / 0.1
+        if i > 2000:
+            rates.append(rate)
+    assert abs(float(np.mean(rates)) - 0.05) < 0.01

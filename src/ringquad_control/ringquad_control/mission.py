@@ -20,6 +20,7 @@ from sensor_msgs.msg import JointState
 from std_msgs.msg import String
 
 from .ground import LineFollowGains, follow_line, wrap
+from . import params as p
 
 HINGES = ('hinge_fl', 'hinge_fr', 'hinge_rl', 'hinge_rr')
 FOLD_GROUND = math.radians(80)
@@ -42,6 +43,7 @@ DRIVE_CROSS_ABORT = 0.05                # m, from TUNNEL_STRICT_FROM onward (tun
 APPROACH_CROSS_ABORT = 0.15             # m, on the open approach before that
 TUNNEL_STRICT_FROM = 5.2                # m (x): 0.3 m before the tunnel entrance
 ALIGN_ATTEMPTS = 3
+GROUND_ALIGN_TIMEOUT = 60.0  # ground turning is slow; cheaper than another flight hop
 
 
 class MissionAbort(Exception):
@@ -51,6 +53,7 @@ class MissionAbort(Exception):
 class DemoMission(Node):
     def __init__(self):
         super().__init__('ringquad_mission')
+        self.active_steering = self.declare_parameter('steering', 'fixed').value == 'front'
         self.pos = self.yaw = None
         self.vel = np.zeros(3)
         self.state = ''
@@ -122,17 +125,19 @@ class DemoMission(Node):
         """Move a carrot from the current position to target at FLY_SPEED; wait to arrive."""
         target = np.asarray(target, float)
         carrot = self.pos.copy() if self.goal is None else self.goal.copy()
-        end = self.now() + timeout
+        end = self.now() + timeout * (1.5 if getattr(self, 'active_steering', False) else 1.0)
         while True:
             step = target - carrot
             dist = np.linalg.norm(step)
             carrot = target.copy() if dist < FLY_SPEED * TICK else carrot + step / dist * FLY_SPEED * TICK
             self.goal = carrot
             self.send_goal(carrot, yaw)
-            if dist < 1e-6 and np.linalg.norm(self.pos - target) < tol and np.linalg.norm(self.vel) < 0.2:
+            if (dist < 1e-6 and np.linalg.norm(self.pos - target) < tol
+                    and np.linalg.norm(self.vel) < 0.2
+                    and abs(wrap(self.yaw - yaw)) < math.radians(1.0)):
                 return
             if self.now() > end:
-                raise MissionAbort(f'timed out flying to {target.round(2).tolist()}')
+                raise MissionAbort(f'timed out flying to {target.round(2).tolist()}; position {self.pos.round(2).tolist()}, speed {np.linalg.norm(self.vel):.2f} m/s, yaw error {math.degrees(wrap(self.yaw-yaw)):.1f} deg')
             yield
 
     def take_off(self):
@@ -161,17 +166,20 @@ class DemoMission(Node):
     def land_folded_on_line(self, start, end):
         """Land at the line start facing along it, fold, and check alignment; hop and retry if off."""
         line_yaw = math.atan2(end[1] - start[1], end[0] - start[0])
+        landing_yaw = line_yaw
         for attempt in range(1, ALIGN_ATTEMPTS + 1):
-            yield from self.fly_to((start[0], start[1], 0.8), yaw=line_yaw)
+            yield from self.fly_to((start[0], start[1], 0.8), yaw=landing_yaw)
             yield from self.land()
             yield from self.fold_into_wheels()
             yield from self.pause(0.5)
-            deadline = self.now() + 30.0
+            deadline = self.now() + GROUND_ALIGN_TIMEOUT
             while abs(wrap(line_yaw - self.yaw)) > ALIGN_HEADING_TOL:
                 if self.now() > deadline:
                     self.send_cmd(0.0, 0.0)
-                    raise MissionAbort('ground heading alignment timed out')
-                self.send_cmd(0.0, float(np.clip(3.0 * wrap(line_yaw - self.yaw), -0.8, 0.8)))
+                    self.get_logger().warn('ground alignment stalled; retrying in the air')
+                    break
+                self.send_cmd((0.08 if int((deadline-self.now())/3) % 2 == 0 else -0.08) if getattr(self, 'active_steering', False) else 0.0,
+                              float(np.clip(3.0 * wrap(line_yaw - self.yaw), -0.8, 0.8)))
                 yield
             self.send_cmd(0.0, 0.0)
             yield from self.pause(0.5)
@@ -182,7 +190,8 @@ class DemoMission(Node):
                 return
             if attempt == ALIGN_ATTEMPTS:
                 raise MissionAbort('could not line up with the tunnel')
-            self.get_logger().info('not lined up: unfold, hop and land again')
+            landing_yaw = wrap(landing_yaw - heading)
+            self.get_logger().info('not lined up: compensate fold heading, unfold, hop and land again')
             yield from self.set_mode('idle')
             yield from self.pause(6.0)
             yield from self.take_off()
@@ -211,6 +220,11 @@ class DemoMission(Node):
             if self.now() > deadline:
                 self.send_cmd(0.0, 0.0)
                 raise MissionAbort('timed out driving')
+            if getattr(self, 'active_steering', False) and self.pos[0] >= TUNNEL_STRICT_FROM:
+                # Keep the swept front-ring envelope small in the narrow corridor.
+                tangent = math.tan(math.radians(10))
+                limit = abs(v) * tangent / (2*p.ARM_XY + p.TRACK/2*tangent)
+                w = float(np.clip(w, -limit, limit))
             self.send_cmd(v, w)
             yield
 

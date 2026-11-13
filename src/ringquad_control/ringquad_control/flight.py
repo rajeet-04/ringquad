@@ -51,7 +51,8 @@ class Gains:
 
 
 class FlightController:
-    def __init__(self, gains=None):
+    def __init__(self, gains=None, mass=p.MASS):
+        self.mass = mass
         self.g = gains or Gains()
         self.integral = np.zeros(3)
 
@@ -76,7 +77,7 @@ class FlightController:
         if a_xy > a_xy_max:
             acc[:2] *= a_xy_max / a_xy
 
-        force = p.MASS * (acc + p.GRAVITY * E3)
+        force = self.mass * (acc + p.GRAVITY * E3)
         thrust = float(force @ (rot @ E3))
 
         b3 = force / np.linalg.norm(force)

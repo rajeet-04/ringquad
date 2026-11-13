@@ -148,7 +148,7 @@ The first simulation used ideal motors: the physics engine could spin the rings 
 - **Candidate fix: omni rollers on the tread.** Passive rollers around the rim cut sideways friction to ~0.05 and the turning resistance to ~0.14 Nm. In Gazebo (`tread:=omni`) arc turns then track exactly (0.30 / 0.60 / 0.99 rad/s for 0.3 / 0.6 / 1.0 requested), but the robot has no sideways grip and skids on corrections. `tread:=mixed` (omni front, rubber rear) is the standard answer (it pivots about the rear axle like a wheelchair on casters) and also tracks arcs exactly, but line following was erratic and inconsistent between runs, while the same follower converges in a kinematic model with lag.
 - **Simulation limit.** Results that depend on tyre contact (directional friction on a cambered ring edge, rollers) were not consistent between runs in DART: with the rubber tread a 0.3 rad/s turn request while driving gave 0.00 rad/s in one session and 0.30 rad/s in another. They should be settled on a physical test rig, not by more simulation tuning.
 
-**Demo course with realistic settings: does not pass yet.** The flight legs work. The tunnel leg fails: with the spec rubber tread the robot cannot steer and needs ~0.9 deg alignment to clear the 7–8 cm gaps over 4 m, which landing + folding do not reliably give (+-2 deg); with the mixed tread, line following is not yet reliable in simulation. The mission now lines up in the air, checks alignment after folding, hops and retries if needed, and stops safely on drift. The recorded demo in `media/` was made with ideal motors before these tests.
+**Historical cylinder-contact demo results (before the tunnel-control branch).** The flight legs work. The tunnel leg fails: with the spec rubber tread the robot cannot steer and needs ~0.9 deg alignment to clear the 7–8 cm gaps over 4 m, which landing + folding do not reliably give (+-2 deg); with the mixed tread, line following is not yet reliable in simulation. The mission now lines up in the air, checks alignment after folding, hops and retries if needed, and stops safely on drift. The recorded demo in `media/` was made with ideal motors before these tests.
 
 **Would it work if built?** Flight: yes with a 20–40 g ring (or the 60 g ring with gentle control), but expect ~4 min flights unless rim drag is lower than estimated. Ground: not with an all-rubber tread on grippy floors; it needs a steerable tread (mixed omni/rubber is the best candidate) or turns done in the air.
 
@@ -167,7 +167,7 @@ The first simulation used ideal motors: the physics engine could spin the rings 
 
 ## 16. Status and next steps
 
-Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving, mode switching; unit and end-to-end tests. Demo course (wall + tunnel) and autonomous mission (`demo.launch.py`), recorded in `media/` with ideal motors. Realistic motors, drag and sensor noise are now the default (section 13): flight passes, the tunnel leg does not yet.
+Done in simulation: model, fold, flight (take-off, waypoint + yaw, land), driving, mode switching; unit and end-to-end tests. Demo course (wall + tunnel) and autonomous mission (`demo.launch.py`), recorded in `media/` with ideal motors. Realistic motors, drag and sensor noise are now the default (section 13): the original tunnel leg failed; isolated validation of the updated mission is documented in section 17 and SIMULATION_RESULTS.md.
 
 The mission uses known waypoints and ground-truth odometry; it does not perceive the course yet.
 
@@ -180,8 +180,16 @@ Next:
 
 ## 17. Tunnel-control branch (2026-11-13)
 
-The experiment uses a convex rounded tread collision mesh and DART's Bullet collision detector. The full demo defaults to omni tread; mixed and rubber remain options but are not validated tunnel configurations. This is a contact approximation, not a model of individual passive rollers or proof of hardware capability.
+The experiment uses a convex rounded tread collision mesh and DART's Bullet collision detector. The full demo defaults to omni tread; mixed and rubber are also exercised in isolated full-mission tests; see SIMULATION_RESULTS.md. This is a contact approximation, not a model of individual passive rollers or proof of hardware capability.
 
-The mission now actively aligns on the ground to within 1 degree before forward motion, with a 30 s timeout, rather than accepting up to 10 degrees after folding. It uses ROS simulation time, a landing point at x=3.8 m, and retains the original 5 cm strict cross-track stop. Headless launch is available through `gui:=false`. `scripts/demo_test.py` starts fresh worlds and fails on abort, timeout, or missing completion; run it in the sourced ROS workspace.
+The mission now actively aligns on the ground to within 1 degree before forward motion, with a 60 s ground-alignment timeout and compensated aerial retries, rather than accepting up to 10 degrees after folding. It uses ROS simulation time, a landing point at x=3.8 m, and retains the original 5 cm strict cross-track stop. Headless launch is available through `gui:=false`. `scripts/demo_test.py` starts fresh worlds and fails on abort, timeout, or missing completion; run it in the sourced ROS workspace.
 
-The historical mixed-tread failures in section 13 remain relevant. Successful omni-tread runs do not resolve them.
+The original tests did not isolate Gazebo transport between runs. Orphaned servers were found during follow-up validation, so those inconsistent runs cannot distinguish contact dynamics from cross-talk. The corrected harness uses locked ROS domains, unique Gazebo partitions, and full process-group cleanup. Ground-alignment stalls now use the existing aerial retry with measured heading compensation, bounded to three attempts. See SIMULATION_RESULTS.md for isolated mixed/rubber/omni validation; none of these tests establish hardware steering bandwidth.
+
+## 18. Isolated follow-up validation
+
+The follow-up fixes test isolation/cleanup, noisy low-rate yaw integration, and stalled alignment recovery. Waypoint completion also waits for yaw convergence. The final ground alignment allowance is 60 simulated seconds, with three landing attempts and the original 5 cm strict cross-track stop. Two isolated complete missions per tread (mixed, rubber, omni) passed; see SIMULATION_RESULTS.md for per-run timing, configuration differences, and remaining steering-bandwidth limitations. No steering mechanism or motor/friction limit was changed.
+
+## 19. Optional front-steering mechanism
+
+The user-authorized hardware variant adds two 20 g front steering knuckles and ideal positive locks that engage when the arms are below 75 degrees fold. Ground control uses Ackermann angles and wheel speeds; flight allocation accounts for added mass and forward CoM shift. Servo-only steering hold caused a flight regression and was replaced by the explicit lock. The fixed-wheel model remains the default. See STEERING.md and SIMULATION_RESULTS.md for hardware assumptions, measured yaw tracking, and complete-mission validation.

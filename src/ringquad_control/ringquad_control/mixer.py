@@ -22,7 +22,11 @@ def allocation_matrix():
 _A_INV = np.linalg.inv(allocation_matrix())
 
 
-def wrench_to_thrusts(thrust, torque):
+def wrench_to_thrusts(thrust, torque, centre_of_mass=None):
+    if centre_of_mass is not None:
+        # Allocation uses rotor positions about the chassis origin; requested
+        # torque is about the vehicle CoM, shifted by added steering hardware.
+        torque = np.asarray(torque) + np.cross(centre_of_mass, [0.0, 0.0, thrust])
     f = _A_INV @ np.array([thrust, *torque])
     return np.clip(f, 0.0, p.MAX_THRUST)
 
@@ -42,3 +46,23 @@ def drive_commands(speed, yaw_rate):
     v_right = speed + yaw_rate * p.TRACK / 2
     joint_vel = np.where(p.LEFT, v_left, -v_right) / p.WHEEL_RADIUS
     return np.clip(p.ROTOR_DIR * joint_vel, -p.MAX_ROTOR_SPEED, p.MAX_ROTOR_SPEED)
+
+
+def steered_drive_commands(speed, yaw_rate):
+    """Ackermann front steering; commands refer to rear axle centre velocity.
+
+    Clamp curvature to the inner wheel's 35 degree steering limit. At rest,
+    brake all motors; this geometry cannot pivot on the spot.
+    """
+    import math
+    wheelbase = 2 * p.ARM_XY
+    if abs(speed) < 1e-6:
+        return np.zeros(4), np.zeros(2)
+    curvature_max = math.tan(math.radians(35)) / (wheelbase + p.TRACK / 2 * math.tan(math.radians(35)))
+    rate = float(np.clip(yaw_rate, -abs(speed)*curvature_max, abs(speed)*curvature_max))
+    sides = np.array([speed-rate*p.TRACK/2, speed+rate*p.TRACK/2])
+    angles = np.arctan(wheelbase*rate/sides)
+    forward = np.copysign(np.hypot(sides, wheelbase*rate), speed)
+    wheel_speeds = np.array([forward[0], forward[1], sides[0], sides[1]])
+    joint_vel = np.where(p.LEFT, wheel_speeds, -wheel_speeds) / p.WHEEL_RADIUS
+    return np.clip(p.ROTOR_DIR * joint_vel, -p.MAX_ROTOR_SPEED, p.MAX_ROTOR_SPEED), angles / math.sin(p.FOLD_GROUND)
