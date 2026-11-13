@@ -5,12 +5,12 @@ import numpy as np
 
 GRAVITY = 9.81
 
-# Mass: body 1.0 + 4 x (arm with motor 0.11 + ring 0.06)
+# Legacy mass retained for the optional shared-drive comparison.
 LEGACY_MASS = 1.0 + 4 * (0.11 + 0.06)
-MASS = LEGACY_MASS + 4 * (0.050 + 0.015)  # wheel drive budget + independent propeller
+MASS = LEGACY_MASS + .102 + 4 * (0.170 + 0.012 + 0.015)  # provisional 1102g body + four 280g arms/72g rings/15g props, excluding steering
 
 # Rough inertia about the CoM in flight pose (body box + arms and rings as point masses + ring spin inertia).
-INERTIA = np.diag([0.030, 0.030, 0.055])
+INERTIA = np.diag([0.0443, 0.0443, 0.0804])
 
 # Rotor centres in the body frame, flight pose: hinge (+-0.08, +-0.08) + 0.12 m along the 45 deg diagonal.
 ARM_XY = 0.08 + 0.12 * math.cos(math.radians(45))
@@ -34,9 +34,9 @@ MOTOR_TAU_UP = 0.0125    # s, motor model timeConstantUp
 MOTOR_TAU_DOWN = 0.025   # s, motor model timeConstantDown
 
 LEGACY_K_THRUST = 1.56e-5
-K_THRUST = LEGACY_K_THRUST * (.115/.12)**4      # N / (rad/s)^2
+K_THRUST = 8.4e-6  # provisional conservative 9-inch prop map; installed calibration required; N/(rad/s)^2
 K_MOMENT = 0.016        # drag torque / thrust (m)
-MAX_ROTOR_SPEED = 800.0  # rad/s
+MAX_ROTOR_SPEED = 1090.0  # rad/s
 MAX_THRUST = K_THRUST * MAX_ROTOR_SPEED ** 2
 
 # ---- Real-hardware limits (used by plant.py and the realistic Gazebo motors) ----
@@ -55,7 +55,9 @@ def ring_izz(mass):
     """Spin inertia of a ring propeller of the given mass (same geometry as the model)."""
     return mass / 2 * (0.12 ** 2 + 0.135 ** 2)
 
-# Ground mode (geometry.py, 12 cm arm, upright rings, 80 mm axis standoff)
+# Ground mode (geometry.py, 12 cm arm, upright rings, 100 mm axis standoff)
+STEERING_KNUCKLE_MASS = .04
+
 FOLD_FLIGHT = 0.0
 FOLD_GROUND = math.radians(90)
 WHEEL_RADIUS = 0.135

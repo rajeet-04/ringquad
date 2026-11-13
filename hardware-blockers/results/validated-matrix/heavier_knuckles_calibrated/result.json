@@ -1,0 +1,12 @@
+{
+  "case": "heavier_knuckles_calibrated",
+  "settings": {
+    "knuckle_mass": ".06"
+  },
+  "passed": true,
+  "returncode": 0,
+  "duration_s": 108,
+  "goal_error_cm": 1,
+  "cross_track_cm": 3.2,
+  "buffered_margin_mm": 26.1
+}

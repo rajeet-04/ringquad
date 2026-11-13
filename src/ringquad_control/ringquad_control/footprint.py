@@ -25,9 +25,15 @@ def lateral_bounds(yaw, folds, steering, ring_offset):
         normal_y = sy*nx+cy*ny
         centre_x = front*p.ARM_XY
         centre_y = side*(.08+.12/math.sqrt(2)*cf+ring_offset*sf)
-        centre = sy*centre_x+cy*centre_y - .010*normal_y
-        extent = p.WHEEL_RADIUS*math.sqrt(max(0., 1-normal_y**2))+.025*abs(normal_y)
+        centre = sy*centre_x+cy*centre_y - .0125*normal_y
+        extent = p.WHEEL_RADIUS*math.sqrt(max(0., 1-normal_y**2))+.0275*abs(normal_y)
         lo, hi = min(lo, centre-extent), max(hi, centre+extent)
+        # Outboard wheel motor case extends behind the carrier plane.
+        axle_centre = sy*centre_x+cy*centre_y
+        local_x_lateral = sy*ca+cy*sf*sa
+        motor_centre = axle_centre+front*.09*local_x_lateral-.0636*normal_y
+        motor_extent = .0102*math.sqrt(max(0.,1-normal_y**2))+.0218*abs(normal_y)
+        lo, hi = min(lo,motor_centre-motor_extent), max(hi,motor_centre+motor_extent)
     return lo, hi
 
 

@@ -1,0 +1,34 @@
+{
+  "measurement_source": "unmeasured design assumptions",
+  "battery": "4S 3Ah; pack resistance <=15mOhm; mass <=330g; cell maker limits required",
+  "current_limit_A": {
+    "16.8": 90.0,
+    "14.8": 90.0,
+    "14.2": 58.8235294117647,
+    "13.2": 0.0
+  },
+  "loaded_voltage_at_14_8V_90A": 13.270000000000001,
+  "unlimited_128A_voltage": 12.624,
+  "motor_180s_C_at_35C": 70.78403101752542,
+  "motor_180s_C_at_45C": 80.78403101752542,
+  "motor_180s_C_if_thermal_resistance_doubles": 89.02780261133202,
+  "battery_180s_C_at_40A_35C_adiabatic": 48.09090909090909,
+  "battery_capacity_used_Ah": 2.0,
+  "rotor_limit_rad_s": 1090.0,
+  "rotor_speed_rpm": 10408.733278209955,
+  "APC_9in_MR_rpm_limit": 11666.666666666666,
+  "thermal_parameters": {
+    "motor_heat_W": 10,
+    "motor_R_K_W": 4,
+    "motor_C_J_K": 20,
+    "battery_C_J_K": 330
+  },
+  "hardware_enforcement_required": [
+    "pack current and voltage sensing; ESC current, RPM and temperature telemetry",
+    "limit aggregate current using measured pack resistance; land before voltage headroom is exhausted",
+    "75C motor case trip and 55C battery trip subject to component maker limits",
+    "6V servo BEC >=4A continuous/10A peak; separate 12V wheel/fold rail >=15A peak"
+  ],
+  "coupled_electrical_flight_simulation_passed": false,
+  "physical_thermal_test_passed": false
+}

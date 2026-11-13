@@ -1,0 +1,18 @@
+{
+  "standoff_combined_stress_Pa": 79430721.22413215,
+  "carrier_root_stress_Pa": 94152360.51502149,
+  "carrier_tip_deflection_m": 0.0006405696025377871,
+  "pin_proof_shear_Pa": 53051647.697298445,
+  "ears_proof_bearing_Pa": 55555555.55555555,
+  "ears_proof_bending_Pa": 54421768.707482986,
+  "material_allowable_assumed_Pa": 100000000.0,
+  "wheel_torque_available_at_0_4m_s_Nm": 0.5792989533410413,
+  "friction_drive_torque_at_minimum_mu_Nm": 0.412,
+  "wheel_required_peak_Nm": 0.33,
+  "roller_ratio": 7.923076923076923,
+  "stress_screen_passed": true,
+  "deflection_screen_passed": true,
+  "drive_screen_passed": true,
+  "physical_proof_passed": false,
+  "assumptions": "150N concentrated on one carrier arm; 1.5 carrier and 1.3 standoff stress factors; isotropic 6061-T6 E69GPa; assumed 100MPa allowable requires material certificates and joint/strain/proof validation"
+}

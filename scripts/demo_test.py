@@ -5,6 +5,9 @@ Run in the ROS container after sourcing install/setup.bash:
   python3 scripts/demo_test.py --runs 3 --output /tmp/ringquad-demo
 """
 import argparse
+import json
+import re
+from validation_sources import snapshot, drift
 import fcntl
 import uuid
 import os
@@ -25,7 +28,7 @@ def main():
     args = parser.parse_args()
     if args.runs < 1:
         parser.error('--runs must be positive')
-    allowed = {'drivetrain','fold_ground_deg','servo_torque','servo_speed','friction_scale','knuckle_mass','ring_offset','steering_limit_deg','self_collision','tread_collision'}
+    allowed = {'lock_break_torque','drivetrain','fold_ground_deg','servo_torque','servo_speed','friction_scale','knuckle_mass','ring_offset','steering_limit_deg','self_collision','tread_collision'}
     for name, value in args.model_arg:
         if name not in allowed:
             parser.error(f'unsupported model argument: {name}')
@@ -40,6 +43,13 @@ def main():
             if not math.isfinite(float(value)) or float(value) <= 0:
                 parser.error('numeric model arguments must be finite and positive')
     args.output.mkdir(parents=True, exist_ok=True)
+    sources=snapshot();rows=[]
+    (args.output/'source-hashes.json').write_text(json.dumps(sources,indent=2))
+    def finish(code):
+        changed=drift(sources,snapshot())
+        result={'passed':code==0 and not changed,'sources_unchanged':not changed,'changed_sources':changed,'runs':rows}
+        (args.output/'result.json').write_text(json.dumps(result,indent=2))
+        return 1 if code or changed else 0
     for run in range(1, args.runs + 1):
         path = args.output / f'run-{run}.log'
         passed = False
@@ -89,11 +99,19 @@ def main():
                     pass
                 domain_lock.close()
         print(f'run {run}: {"PASS" if passed else "FAIL"} ({path})', flush=True)
+        content=path.read_text()
+        goal=re.search(r'mission complete in (\d+) s, (\d+) cm',content)
+        drive=re.search(r'drive done, worst cross-track ([\d.]+) cm; minimum buffered footprint margin ([\d.-]+) mm',content)
+        row={'run':run,'completed':passed,'duration_s':int(goal[1]) if goal else None,
+             'goal_error_cm':int(goal[2]) if goal else None,'cross_track_cm':float(drive[1]) if drive else None,
+             'buffered_margin_mm':float(drive[2]) if drive else None}
+        passed=passed and goal is not None and drive is not None and int(goal[2])<=10 and float(drive[1])<=5 and float(drive[2])>0
+        row['passed']=passed;rows.append(row)
         if not passed:
             print('\n'.join(line for line in path.read_text().splitlines()
                             if 'ringquad_mission' in line)[-3000:])
-            return 1
-    return 0
+            return finish(1)
+    return finish(0)
 
 
 if __name__ == '__main__':

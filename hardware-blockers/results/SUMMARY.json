@@ -1,0 +1,65 @@
+{
+  "simulation_acceptance_passed": true,
+  "physical_release_ready": false,
+  "checks": {
+    "python_tests": true,
+    "native_actuator_and_latch_checks": true,
+    "nominal_missions": true,
+    "sensitivity_missions": true,
+    "image_mission": true,
+    "load_mission": true,
+    "interface_and_steering": true,
+    "fault_inhibit": true,
+    "flight_sweep": true,
+    "geometry": true,
+    "mass_budget": true,
+    "structural_screen": true,
+    "cad_parts": true
+  },
+  "python_tests_passed": 61,
+  "full_missions_passed": 10,
+  "full_missions_total": 10,
+  "worst_goal_error_cm": 6,
+  "worst_cross_track_cm": 5.0,
+  "minimum_buffered_margin_mm": 20.7,
+  "steering_measurements": [
+    {
+      "requested_yaw_rate": 0.2,
+      "measured_yaw_rate": 0.19489918970499162,
+      "steering": {
+        "steer_fl": 0.17890188097953796,
+        "steer_fr": 0.15001587569713593
+      },
+      "max_prop_speed_rad_s": 0.08370810747146606,
+      "mean_wheel_speed_rad_s": 2.939807713031769
+    },
+    {
+      "requested_yaw_rate": -0.2,
+      "measured_yaw_rate": -0.1996963959589189,
+      "steering": {
+        "steer_fl": -0.1496424525976181,
+        "steer_fr": -0.17883408069610596
+      },
+      "max_prop_speed_rad_s": 0.037273555994033813,
+      "mean_wheel_speed_rad_s": 2.9869977831840515
+    }
+  ],
+  "numerical_flight_runs_passed": 60,
+  "sampled_front_knuckle_loads": {
+    "samples": 52773,
+    "discarded_partial_rows": 1,
+    "max_force_norm_N": 141.09070271470762,
+    "max_moment_norm_Nm": 9.263084465529397,
+    "max_latch_torque_Nm": 0.720029,
+    "last_sample_time_s": 120.048,
+    "limit": "250Hz samples in joint frames; not continuous peak loads, stress/strain or proof tests"
+  },
+  "engine_version": "189471c86fa06ffad9c9bdb199f6928eb2fc02f3:9c0f4a6e9d3d79e2798345be0f59d5209356e4111a91ab26d0b14bf2de5c3707:origin-rpath-v1",
+  "physical_gates": [
+    "final parts, full assembly and fold actuator/linkage selection",
+    "installed thrust and mass/CG calibration",
+    "thermal/current enforcement and endurance",
+    "floor/contact/preload/wear calibration",
+    "structural proof/fatigue and rotor containment"
+  ]
+}

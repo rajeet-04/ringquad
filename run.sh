@@ -22,6 +22,9 @@ else
     "$IMAGE"
 fi
 
+# Existing containers receive the same pinned engine as newly built images.
+podman exec -u ubuntu "$NAME" bash -lc 'cd /home/ubuntu/ringquad_ws && bash hardware-blockers/physics/build.sh build/ringquad-physics'
+
 # The desktop's screensaver locks the session behind a password; turn it off.
 sleep 5
 podman exec -u ubuntu -e DISPLAY=:1 "$NAME" bash -c '

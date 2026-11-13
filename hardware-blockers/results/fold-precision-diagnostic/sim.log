@@ -1,0 +1,45 @@
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-17-50-34-432870-e61717a2ec2a-4048
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [4072]
+[INFO] [robot_state_publisher-2]: process started with pid [4073]
+[INFO] [create-3]: process started with pid [4074]
+[INFO] [parameter_bridge-4]: process started with pid [4075]
+[INFO] [controller-5]: process started with pid [4077]
+[create-3] [INFO] [1794592235.117882237] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1794592235.128635794] [robot_state_publisher]: Robot initialized
+[gazebo-1] Unable to find or download file 
+[ERROR] [gazebo-1]: process has died [pid 4072, exit code 255, cmd 'ruby /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz sim -r -s /home/ubuntu/ringquad_ws/install/ringquad_description/share/ringquad_description/worlds/ringquad_precision.sdf --force-version 8'].
+[parameter_bridge-4] [INFO] [1794592236.148957261] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.150928772] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.161329744] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.165445557] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.166119769] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.167040524] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.169366870] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.169845539] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.170238958] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/wheel_speed (actuator_msgs/msg/Actuators) -> /ringquad/wheel_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794592236.170712960] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/ringquad/lock_fault (gz.msgs.Boolean) -> /ringquad/lock_fault (std_msgs/msg/Bool)] (Lazy 0)
+[create-3] [INFO] [1794592240.118373577] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592245.119319503] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592250.119956886] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592255.120501643] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592260.122435074] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592265.123244083] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592270.125190306] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592275.125930481] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592280.126666239] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592285.127295914] [ros_gz_sim]: Requesting list of world names.
+[create-3] [INFO] [1794592290.128075589] [ros_gz_sim]: Requesting list of world names.
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [controller-5]: sending signal 'SIGINT' to process[controller-5]
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[INFO] [create-3]: sending signal 'SIGINT' to process[create-3]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[parameter_bridge-4] [INFO] [1794592290.708705593] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[create-3] [INFO] [1794592290.709116387] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-2] [INFO] [1794592290.709780474] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 4075]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 4073]
+[INFO] [controller-5]: process has finished cleanly [pid 4077]
+[create-3] [INFO] [1794592295.128911806] [ros_gz_sim]: Timed out when getting world names.
+[ERROR] [create-3]: process has died [pid 4074, exit code 255, cmd '/opt/ros/jazzy/lib/ros_gz_sim/create -topic robot_description -name ringquad -z 0.1 --ros-args'].

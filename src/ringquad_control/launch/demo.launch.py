@@ -20,17 +20,18 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ringquad_control'), 'launch', 'sim.launch.py')),
         launch_arguments={'world': 'demo', 'rviz': LaunchConfiguration('rviz'),
-                          'tread': LaunchConfiguration('tread'), 'gui': LaunchConfiguration('gui'), 'steering': LaunchConfiguration('steering'), 'tread_collision': LaunchConfiguration('tread_collision'), 'self_collision': LaunchConfiguration('self_collision'), 'servo_torque': LaunchConfiguration('servo_torque'), 'servo_speed': LaunchConfiguration('servo_speed'), 'friction_scale': LaunchConfiguration('friction_scale'), 'knuckle_mass': LaunchConfiguration('knuckle_mass'), 'ring_offset': LaunchConfiguration('ring_offset'), 'steering_limit_deg': LaunchConfiguration('steering_limit_deg'), 'fold_ground_deg': LaunchConfiguration('fold_ground_deg'), 'drivetrain': LaunchConfiguration('drivetrain')}.items())
+                          'tread': LaunchConfiguration('tread'), 'gui': LaunchConfiguration('gui'), 'steering': LaunchConfiguration('steering'), 'tread_collision': LaunchConfiguration('tread_collision'), 'self_collision': LaunchConfiguration('self_collision'), 'servo_torque': LaunchConfiguration('servo_torque'), 'servo_speed': LaunchConfiguration('servo_speed'), 'friction_scale': LaunchConfiguration('friction_scale'), 'knuckle_mass': LaunchConfiguration('knuckle_mass'), 'ring_offset': LaunchConfiguration('ring_offset'), 'steering_limit_deg': LaunchConfiguration('steering_limit_deg'), 'fold_ground_deg': LaunchConfiguration('fold_ground_deg'), 'drivetrain': LaunchConfiguration('drivetrain'), 'lock_break_torque': LaunchConfiguration('lock_break_torque')}.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('tread_collision', default_value='crowned', choices=['rounded','cylinder','crowned']),
         DeclareLaunchArgument('self_collision', default_value='true'),
         DeclareLaunchArgument('fold_ground_deg', default_value='90'),
         DeclareLaunchArgument('drivetrain', default_value='separate', choices=['separate','shared']),
+        DeclareLaunchArgument('lock_break_torque', default_value='8.0'),
         DeclareLaunchArgument('servo_torque', default_value='1.0'),
         DeclareLaunchArgument('servo_speed', default_value='1.5'),
         DeclareLaunchArgument('friction_scale', default_value='1.0'),
-        DeclareLaunchArgument('knuckle_mass', default_value='0.02'),
+        DeclareLaunchArgument('knuckle_mass', default_value='0.04'),
         DeclareLaunchArgument('ring_offset', default_value='0.1'),
         DeclareLaunchArgument('steering_limit_deg', default_value='25'),
         DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),

@@ -1,0 +1,12 @@
+{
+  "case": "servo_slow",
+  "settings": {
+    "servo_speed": ".5"
+  },
+  "passed": true,
+  "returncode": 0,
+  "duration_s": 176,
+  "goal_error_cm": 6,
+  "cross_track_cm": 4.6,
+  "buffered_margin_mm": 22.8
+}

@@ -13,7 +13,7 @@ if args.physical_rim:
     # Circumscribed polygon conservatively encloses the full 30mm-wide rim sweep.
     theta=np.arange(128)*2*np.pi/128
     radius=(.135+args.envelope_padding)/np.cos(np.pi/128)
-    v=np.array([[radius*np.cos(a),radius*np.sin(a),z] for a in theta for z in ((-.035 if args.carrier else -.015)-args.envelope_padding,.015+args.envelope_padding)])
+    v=np.array([[radius*np.cos(a),radius*np.sin(a),z] for a in theta for z in ((-.040 if args.carrier else -.015)-args.envelope_padding,.015+args.envelope_padding)])
 else:
     v=mesh()
 planes=ConvexHull(v).equations

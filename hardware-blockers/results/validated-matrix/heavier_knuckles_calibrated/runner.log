@@ -1,0 +1,2 @@
+run 1: ROS domain 52, Gazebo partition ringquad-test-c2348cb4c318413185e72699dd532d7b
+run 1: PASS (hardware-blockers/results/validated-matrix/heavier_knuckles_calibrated/run-1.log)

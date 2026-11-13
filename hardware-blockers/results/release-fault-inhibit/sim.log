@@ -1,0 +1,145 @@
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-18-28-29-241398-e61717a2ec2a-10788
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [10812]
+[INFO] [robot_state_publisher-2]: process started with pid [10813]
+[INFO] [create-3]: process started with pid [10814]
+[INFO] [parameter_bridge-4]: process started with pid [10815]
+[INFO] [controller-5]: process started with pid [10817]
+[create-3] [INFO] [1794594511.013748635] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1794594511.047495088] [robot_state_publisher]: Robot initialized
+[create-3] [INFO] [1794594511.714778862] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[create-3] [INFO] [1794594512.008428808] [ros_gz_sim]: Entity creation successful.
+[parameter_bridge-4] [INFO] [1794594512.045493402] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.048339165] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.058046879] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.064235908] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.067653383] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.070477313] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.075181627] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.077082428] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.079457898] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/wheel_speed (actuator_msgs/msg/Actuators) -> /ringquad/wheel_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594512.081316782] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/ringquad/lock_fault (gz.msgs.Boolean) -> /ringquad/lock_fault (std_msgs/msg/Bool)] (Lazy 0)
+[INFO] [create-3]: process has finished cleanly [pid 10814]
+[parameter_bridge-4] [INFO] [1794594513.754235157] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/Float64 to Gazebo gz.msgs.Double (showing msg only once per type)
+[parameter_bridge-4] [INFO] [1794594513.754305949] [ros_gz_bridge]: Passing message from ROS actuator_msgs/msg/Actuators to Gazebo gz.msgs.Actuators (showing msg only once per type)
+[controller-5] [INFO] [1794594513.858895074] [ringquad_controller]: mode idle -> drive
+[controller-5] [ERROR] [1794594513.875444695] [ringquad_controller]: steering latch failure: takeoff inhibited; landing if airborne
+[controller-5] [ERROR] [1794594513.888090214] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594513.925315892] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594513.936417986] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594513.973387913] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594513.981378160] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.033182407] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.036629966] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.082549852] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.097512298] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.148977795] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.156951124] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.186995101] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.200231456] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.248680230] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.292330313] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.307976638] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.360397181] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.366664919] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.399853286] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.419424130] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.471126293] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.477413615] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.506233211] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.525962806] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.575560210] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.589590985] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.632429815] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.654893214] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.708079427] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.711921862] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.754717108] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.761671100] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.811617172] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.815109022] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.847528260] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.869360156] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.917520678] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.921368072] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.947280779] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594514.967333666] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.018574953] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.023494477] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.049254933] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.068131857] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.120476482] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.123671914] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.150392084] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.174629033] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.225179691] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.253980496] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.278050194] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.327319346] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.332763331] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.364992485] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.391942739] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.441293100] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.444685658] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.471817287] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.499071959] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.550398996] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.554986185] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.586150709] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.615775476] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.666051716] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.671307866] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.693045012] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.720477101] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.774306609] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.780656848] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.800673735] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.831811301] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.882974629] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.886784897] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.919161635] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.948740943] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594515.997612135] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.023931719] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.058684677] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.106976658] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.112959437] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.143293373] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.171079798] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.224350053] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.235765524] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.249519423] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.279454816] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.326617417] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.334198995] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.356925062] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.388146753] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.440232168] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.445896696] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.467418882] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.500243164] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.551087990] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.554939384] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.570624209] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.610692484] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.659451842] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.665704997] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.690237864] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.722412185] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.773303595] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.780528879] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.798138547] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[controller-5] [ERROR] [1794594516.837673902] [ringquad_controller]: fly refused: inspect and repair the steering latch
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [controller-5]: sending signal 'SIGINT' to process[controller-5]
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [gazebo-1]: sending signal 'SIGINT' to process[gazebo-1]
+[parameter_bridge-4] [INFO] [1794594517.102837212] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-2] [INFO] [1794594517.104351094] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 10815]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 10813]
+[INFO] [controller-5]: process has finished cleanly [pid 10817]
+[ERROR] [gazebo-1]: process[gazebo-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [gazebo-1]: sending signal 'SIGTERM' to process[gazebo-1]
+[ERROR] [gazebo-1]: process has died [pid 10812, exit code -15, cmd 'ruby /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz sim -r -s /home/ubuntu/ringquad_ws/install/ringquad_description/share/ringquad_description/worlds/ringquad.sdf --force-version 8'].

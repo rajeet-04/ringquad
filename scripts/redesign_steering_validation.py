@@ -1,5 +1,7 @@
 """Isolated yaw-tracking check for the physical crowned rim."""
+import argparse
 import json
+import math
 import os
 import signal
 import subprocess
@@ -8,7 +10,8 @@ import time
 import uuid
 from pathlib import Path
 
-folder=Path('hardware-results/redesign-steering');folder.mkdir(exist_ok=False)
+parser=argparse.ArgumentParser();parser.add_argument('--output',default='hardware-results/redesign-steering');args=parser.parse_args()
+folder=Path(args.output);folder.mkdir(parents=True,exist_ok=False)
 env=dict(os.environ,ROS_DOMAIN_ID='180',GZ_PARTITION='ringquad-steering-'+uuid.uuid4().hex)
 with (folder/'sim.log').open('w') as log:
     sim=subprocess.Popen(['ros2','launch','ringquad_control','sim.launch.py','gui:=false','rviz:=false'],stdout=log,stderr=subprocess.STDOUT,env=env,start_new_session=True)
@@ -18,7 +21,7 @@ with (folder/'sim.log').open('w') as log:
         check=subprocess.run([sys.executable,'scripts/steering_test.py'],env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True,timeout=600)
         (folder/'tracking.log').write_text(check.stdout)
         rows=[json.loads(line) for line in check.stdout.splitlines() if line.startswith('{')]
-        result={'interface_returncode':integration.returncode,'returncode':check.returncode,'passed':integration.returncode==0 and check.returncode==0 and len(rows)==2,'measurements':rows}
+        result={'interface_returncode':integration.returncode,'returncode':check.returncode,'passed':integration.returncode==0 and check.returncode==0 and len(rows)==2 and all(isinstance(row['measured_yaw_rate'],(int,float)) and math.isfinite(row['measured_yaw_rate']) for row in rows),'measurements':rows}
         (folder/'result.json').write_text(json.dumps(result,indent=2));print(json.dumps(result,indent=2),flush=True)
     finally:
         if sim.poll() is None:

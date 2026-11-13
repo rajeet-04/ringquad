@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Regression matrix for upright full-rim redesign; old failures stay untouched."""
 import argparse
-import hashlib
+from validation_sources import snapshot, drift
 import json
 import os
 import re
@@ -15,7 +15,7 @@ CASES={
     'servo_slow': {'servo_speed': '.5'},
     'low_traction': {'friction_scale': '.4'},
     'high_traction': {'friction_scale': '1.5'},
-    'heavier_knuckles_calibrated': {'knuckle_mass': '.04'},
+    'heavier_knuckles_calibrated': {'knuckle_mass': '.06'},
 }
 
 
@@ -43,8 +43,10 @@ def run(item):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',default='hardware-results/redesign-final-matrix');parser.add_argument('--workers',type=int,default=1)
     args=parser.parse_args();OUT=Path(args.output);OUT.mkdir(parents=True,exist_ok=False)
-    sources={str(p):hashlib.sha256(p.read_bytes()).hexdigest() for p in Path('src').rglob('*') if p.suffix in ('.py','.cc','.xacro') and p.is_file()}
+    sources=snapshot()
     (OUT/'source-hashes.json').write_text(json.dumps(sources,indent=2))
     with ThreadPoolExecutor(max_workers=args.workers) as pool: rows=list(pool.map(run,CASES.items()))
     (OUT/'results.json').write_text(json.dumps(rows,indent=2))
-    raise SystemExit(0 if all(r['passed'] for r in rows) else 1)
+    changed=drift(sources,snapshot())
+    (OUT/'provenance.json').write_text(json.dumps({'sources_unchanged':not changed,'changed_sources':changed},indent=2))
+    raise SystemExit(0 if all(r['passed'] for r in rows) and not changed else 1)

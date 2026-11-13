@@ -1,0 +1,48 @@
+{
+  "fit_passed": true,
+  "bench_measurements_declared": false,
+  "physical_release_ready": false,
+  "unclosed_gates": [
+    "structural proof",
+    "installed thermal run",
+    "floor/contact test",
+    "rotor containment test"
+  ],
+  "data_sha256": "c8e83e64f4e9e74836089f79482f6c69b5f5531e4bcdae0848b669fff61327ca",
+  "fits": {
+    "fl": {
+      "k_thrust": 8.4e-06,
+      "relative_rms_residual": 0.0,
+      "samples": 8
+    },
+    "fr": {
+      "k_thrust": 7.979999999999996e-06,
+      "relative_rms_residual": 1.6422318172273703e-16,
+      "samples": 8
+    },
+    "rl": {
+      "k_thrust": 7.56e-06,
+      "relative_rms_residual": 0.0,
+      "samples": 8
+    },
+    "rr": {
+      "k_thrust": 7.14e-06,
+      "relative_rms_residual": 8.744725904646218e-17,
+      "samples": 8
+    }
+  },
+  "controller_parameters": {
+    "vehicle_mass": 2.65,
+    "centre_of_mass": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "thrust_coefficients": [
+      8.4e-06,
+      7.979999999999996e-06,
+      7.56e-06,
+      7.14e-06
+    ]
+  }
+}

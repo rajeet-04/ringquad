@@ -14,8 +14,8 @@ from ringquad_control import mixer, params as p
 from ringquad_control.flight import FlightController, yaw_of
 from ringquad_control.plant import Plant, Rotor, skew
 
-NOMINAL_MASS=p.MASS+.04
-ESTIMATED_COM=np.array([.04*p.ARM_XY/NOMINAL_MASS,0.,0.])
+NOMINAL_MASS=p.MASS+2*p.STEERING_KNUCKLE_MASS
+ESTIMATED_COM=np.array([2*p.STEERING_KNUCKLE_MASS*p.ARM_XY/NOMINAL_MASS,0.,0.])
 CASES={
  'nominal':{}, 'payload_100g':{'mass':1.82}, 'payload_250g':{'mass':1.97},
  'cg_x_5mm':{'cg_x':.005}, 'cg_x_10mm':{'cg_x':.01}, 'cg_y_5mm':{'cg_y':.005},

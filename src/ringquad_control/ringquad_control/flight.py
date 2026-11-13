@@ -34,8 +34,11 @@ def yaw_of(rot):
 class Gains:
     kp: np.ndarray = field(default_factory=lambda: np.array([4.0, 4.0, 6.0]))
     kd: np.ndarray = field(default_factory=lambda: np.array([3.5, 3.5, 4.5]))
-    ki: np.ndarray = field(default_factory=lambda: np.array([0.5, 0.5, 1.5]))
-    i_max: float = 2.0                 # m/s^2, integrator clamp
+    ki: np.ndarray = field(default_factory=lambda: np.array([1.5, 1.5, 3.0]))
+    i_max: float = 4.0                 # m/s^2, integrator clamp
+    i_settle_speed: float = 0.3       # allow correction at a persistent off-target equilibrium
+    k_att_i: np.ndarray = field(default_factory=lambda: np.array([5.0, 5.0, 0.05]))
+    att_i_max: float = 8.0             # angular-acceleration bias bound, rad/s^2
     i_zone: float = 0.3                # m, integrate only within this error
     # Yaw gains are ~20x lower than roll/pitch: a yaw torque command changes rotor speeds, and
     # spinning the heavy rings up/down kicks the body far harder than the drag torque the
@@ -55,9 +58,13 @@ class FlightController:
         self.mass = mass
         self.g = gains or Gains()
         self.integral = np.zeros(3)
+        self.attitude_integral = np.zeros(3)
+        self.acc_excess = np.zeros(3)
 
     def reset(self):
         self.integral[:] = 0.0
+        self.attitude_integral[:] = 0.0
+        self.acc_excess[:] = 0.0
 
     def update(self, pos, vel, rot, rate, pos_sp, yaw_sp, dt, vel_sp=None):
         """Returns (collective thrust N, body torque Nm)."""
@@ -65,17 +72,22 @@ class FlightController:
         vel_sp = np.zeros(3) if vel_sp is None else vel_sp
 
         e_pos = pos_sp - pos
-        # integrate only near the setpoint, so large steps do not wind up and overshoot
-        near = np.abs(e_pos) < g.i_zone
-        self.integral = np.clip(self.integral + near * g.ki * e_pos * dt, -g.i_max, g.i_max)
+        # Integrate near the reference or at a settled, biased equilibrium.
+        # Freeze components that would push farther into translation saturation.
+        learning = (np.abs(e_pos) < g.i_zone) | (np.linalg.norm(vel) < g.i_settle_speed)
+        learning &= (self.acc_excess * e_pos <= 0) | (np.abs(self.acc_excess) < 1e-6)
+        self.integral = np.clip(self.integral + learning * g.ki * e_pos * dt, -g.i_max, g.i_max)
         acc = g.kp * e_pos + g.kd * (vel_sp - vel) + self.integral
 
+        requested_acc = acc.copy()
         # limit tilt and vertical acceleration
         acc[2] = np.clip(acc[2], -g.max_accel_z, g.max_accel_z)
         a_xy_max = math.tan(g.max_tilt) * (p.GRAVITY + acc[2])
         a_xy = np.linalg.norm(acc[:2])
         if a_xy > a_xy_max:
             acc[:2] *= a_xy_max / a_xy
+
+        self.acc_excess = requested_acc - acc
 
         force = self.mass * (acc + p.GRAVITY * E3)
         thrust = float(force @ (rot @ E3))
@@ -87,7 +99,12 @@ class FlightController:
         rot_sp = np.column_stack([np.cross(b2, b3), b2, b3])
 
         e_rot = 0.5 * vee(rot_sp.T @ rot - rot.T @ rot_sp)
-        ang_acc = -g.k_att * e_rot - g.k_rate * rate
+        # Learn only during moderate, settled attitude errors; large manoeuvres
+        # and high rates cannot wind up this bounded disturbance estimate.
+        if np.linalg.norm(e_rot) < .5 and np.linalg.norm(rate) < 1.0:
+            self.attitude_integral = np.clip(
+                self.attitude_integral - g.k_att_i * e_rot * dt, -g.att_i_max, g.att_i_max)
+        ang_acc = -g.k_att * e_rot - g.k_rate * rate + self.attitude_integral
         torque = p.INERTIA @ ang_acc + np.cross(rate, p.INERTIA @ rate)
 
         return max(thrust, 0.0), torque

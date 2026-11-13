@@ -10,3 +10,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN echo 'source /opt/ros/jazzy/setup.bash' >> /home/ubuntu/.bashrc \
  && echo '[ -f /home/ubuntu/ringquad_ws/install/setup.bash ] && source /home/ubuntu/ringquad_ws/install/setup.bash' >> /home/ubuntu/.bashrc
+
+RUN apt-get update && apt-get install -y --no-install-recommends cmake git g++ libeigen3-dev libbullet-dev \
+ && rm -rf /var/lib/apt/lists/*
+
+# Pin and fix Bullet Featherstone's 100 rad/s default coordinate cap.
+COPY hardware-blockers/physics /tmp/ringquad-physics-source
+RUN bash /tmp/ringquad-physics-source/build.sh /opt/ringquad-physics \
+ && rm -rf /tmp/ringquad-physics-source
+ENV GZ_SIM_PHYSICS_ENGINE_PATH=/opt/ringquad-physics/lib

@@ -1,0 +1,26 @@
+{
+  "provisional_not_weighed": true,
+  "flight_arm_g": {
+    "motor": 67.5,
+    "standoff": 41.711711059875086,
+    "mounts_allowance": 8.0
+  },
+  "flight_arm_sum_g": 117.21171105987509,
+  "flight_arm_allocation_g": 120.0,
+  "wheel_module_g": {
+    "gearmotor": 44.0,
+    "carrier": 53.16981156404011,
+    "three_rollers": 12.552547606683376,
+    "four_bearings_allowance": 20.0,
+    "fasteners_allowance": 10.0,
+    "shaft_adapter_allowance": 5.0,
+    "latch_ears": 4.978887004631109,
+    "latch_tongue": 1.9572725038592578,
+    "latch_pin": 1.3810441305180727
+  },
+  "wheel_module_sum_g": 153.03956280973193,
+  "wheel_module_allocation_g": 160.0,
+  "total_vehicle_budget_kg": 2.65,
+  "passed": true,
+  "unresolved": "complete assembly, fold linkage and final purchased parts remain unweighed; assumed mounts/bearings/fasteners/adapter masses require detailed BOM closure"
+}

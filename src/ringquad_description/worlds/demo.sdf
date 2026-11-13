@@ -12,12 +12,12 @@
   <world name="demo">
     <physics name="1ms" type="dart">
       <max_step_size>0.001</max_step_size>
-      <!-- Bullet narrow-phase handles the rounded tread collision mesh. -->
+      <!-- Bullet Featherstone is selected below; DART remains in the diagnostic world. -->
       <dart><collision_detector>bullet</collision_detector></dart>
       <real_time_factor>1.0</real_time_factor>
     </physics>
 
-    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"><engine><filename>gz-physics-ringquad-bullet-plugin</filename></engine></plugin>
     <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
     <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
     <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>

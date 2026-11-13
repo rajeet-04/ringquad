@@ -1,0 +1,9 @@
+{
+  "checks": 1801,
+  "worst": {
+    "fold_deg": 31.75,
+    "rear_floor_clearance_m": 0.0016971611761740502
+  },
+  "passed": true,
+  "assumption": "level body, ground following exact crown support; conservative rear radial envelopes and chassis 40mm support"
+}

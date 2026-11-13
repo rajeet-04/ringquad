@@ -1,0 +1,9 @@
+{
+  "physical_outer_radius_m": 0.13500000536441803,
+  "physical_inner_radius_m": 0.10099999612963585,
+  "physical_width_m": 0.03949999902397394,
+  "exact_analytic_support_max_m": -1.7801727118238464e-06,
+  "analytic_surface_samples": 12000,
+  "largest_signed_hull_distance_m": -1.821041429622694e-06,
+  "passed": true
+}

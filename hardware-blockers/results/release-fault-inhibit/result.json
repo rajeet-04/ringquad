@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "takeoff_refusal_logged": true,
+  "fault": true,
+  "state": "mode=drive z=0.15"
+}

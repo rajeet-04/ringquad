@@ -5,10 +5,11 @@ Raw fold command (no controller):
   ros2 topic pub --once /ringquad/fold std_msgs/msg/Float64 "{data: 1.396}"
 """
 import os
+from pathlib import Path
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.actions import SetEnvironmentVariable, DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PythonExpression
@@ -18,8 +19,15 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     share = get_package_share_directory('ringquad_description')
+    candidates = [str(parent / 'build/ringquad-physics/lib') for parent in Path(share).parents]
+    candidates += ['/opt/ringquad-physics/lib']
+    if os.environ.get('RINGQUAD_PHYSICS_PREFIX'):
+        candidates.insert(0, os.path.join(os.environ['RINGQUAD_PHYSICS_PREFIX'], 'lib'))
+    engine = next((path for path in candidates if os.path.isfile(os.path.join(path, 'libgz-physics-ringquad-bullet-plugin.so'))), None)
+    if engine is None:
+        raise RuntimeError('Build the required physics engine inside the ROS container: bash hardware-blockers/physics/build.sh build/ringquad-physics')
     robot_description = ParameterValue(
-        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering'), ' tread_collision:=', LaunchConfiguration('tread_collision'), ' self_collision:=', LaunchConfiguration('self_collision'), ' servo_torque:=', LaunchConfiguration('servo_torque'), ' servo_speed:=', LaunchConfiguration('servo_speed'), ' friction_scale:=', LaunchConfiguration('friction_scale'), ' knuckle_mass:=', LaunchConfiguration('knuckle_mass'), ' ring_offset:=', LaunchConfiguration('ring_offset'), ' steering_limit_deg:=', LaunchConfiguration('steering_limit_deg'), ' fold_ground_deg:=', LaunchConfiguration('fold_ground_deg'), ' drivetrain:=', LaunchConfiguration('drivetrain')]),
+        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering'), ' tread_collision:=', LaunchConfiguration('tread_collision'), ' self_collision:=', LaunchConfiguration('self_collision'), ' servo_torque:=', LaunchConfiguration('servo_torque'), ' servo_speed:=', LaunchConfiguration('servo_speed'), ' friction_scale:=', LaunchConfiguration('friction_scale'), ' knuckle_mass:=', LaunchConfiguration('knuckle_mass'), ' ring_offset:=', LaunchConfiguration('ring_offset'), ' steering_limit_deg:=', LaunchConfiguration('steering_limit_deg'), ' fold_ground_deg:=', LaunchConfiguration('fold_ground_deg'), ' drivetrain:=', LaunchConfiguration('drivetrain'), ' lock_break_torque:=', LaunchConfiguration('lock_break_torque')]),
         value_type=str)
     world = PathJoinSubstitution([share, 'worlds', [LaunchConfiguration('world'), '.sdf']])
 
@@ -29,15 +37,17 @@ def generate_launch_description():
         launch_arguments={'gz_args': [PythonExpression(["'-r -s ' if '", LaunchConfiguration('gui'), "' == 'false' else '-r '"]), world]}.items())
 
     return LaunchDescription([
+        SetEnvironmentVariable('GZ_SIM_PHYSICS_ENGINE_PATH', engine + os.pathsep + os.environ.get('GZ_SIM_PHYSICS_ENGINE_PATH', '')),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('tread_collision', default_value='crowned', choices=['rounded','cylinder','crowned']),
         DeclareLaunchArgument('self_collision', default_value='true'),
         DeclareLaunchArgument('fold_ground_deg', default_value='90'),
         DeclareLaunchArgument('drivetrain', default_value='separate', choices=['separate','shared']),
+        DeclareLaunchArgument('lock_break_torque', default_value='8.0'),
         DeclareLaunchArgument('servo_torque', default_value='1.0'),
         DeclareLaunchArgument('servo_speed', default_value='1.5'),
         DeclareLaunchArgument('friction_scale', default_value='1.0'),
-        DeclareLaunchArgument('knuckle_mass', default_value='0.02'),
+        DeclareLaunchArgument('knuckle_mass', default_value='0.04'),
         DeclareLaunchArgument('ring_offset', default_value='0.1'),
         DeclareLaunchArgument('steering_limit_deg', default_value='25'),
         DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check left/right yaw tracking in an empty sim launched with steering:=front tread:=rubber."""
 import json
+import math
 import time
 import rclpy
 from rclpy.node import Node
@@ -46,12 +47,12 @@ def main():
         for requested in (.2,-.2):
             drive(2,.4,requested)
             measured=drive(3,.4,requested)
-            print(json.dumps({'requested_yaw_rate':requested,'measured_yaw_rate':measured,
+            print(json.dumps({'requested_yaw_rate':requested,'measured_yaw_rate':measured if math.isfinite(measured) else None,
                               'steering':state['steering'], 'max_prop_speed_rad_s':max(abs(v) for v in state['prop_speed'].values()),
                               'mean_wheel_speed_rad_s':sum(abs(v) for v in state['wheel_speed'].values())/4}),flush=True)
             if len(state['wheel_speed'])!=4 or len(state['prop_speed'])!=4 or max(abs(v) for v in state['prop_speed'].values())>5:
                 raise AssertionError('independent drivetrain missing or propellers spinning while driving')
-            if abs(measured-requested)>.08:
+            if not math.isfinite(measured) or abs(measured-requested)>.08:
                 raise AssertionError('yaw tracking error exceeds 0.08 rad/s')
             drive(1,0,0)
     finally:

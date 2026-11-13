@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "sources_unchanged": true,
+  "changed_sources": [],
+  "runs": [
+    {
+      "run": 1,
+      "completed": true,
+      "duration_s": 67,
+      "goal_error_cm": 1,
+      "cross_track_cm": 3.3,
+      "buffered_margin_mm": 22.4,
+      "passed": true
+    }
+  ]
+}

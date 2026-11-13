@@ -1,4 +1,5 @@
 """Seeded flight uncertainty sweep for the non-spinning-ring architecture."""
+import argparse
 import json
 from concurrent.futures import ProcessPoolExecutor
 import hardware_flight_sweep as h
@@ -12,19 +13,20 @@ CASES={
  'inertia_minus20pct':{'inertia':.8},'inertia_plus20pct':{'inertia':1.2},
  'delay_20ms':{'delay':.02},'delay_40ms':{'delay':.04},'sensor_noise_double':{'noise':2.},
  'gust_3N':{'gust':3.},'gust_5N':{'gust':5.},
- 'drive_budget_80g_each':{'mass':h.NOMINAL_MASS+.12},
+ 'heavier_modules_30g_each':{'mass':h.NOMINAL_MASS+.12},
  'combined_adverse':{'mass':h.NOMINAL_MASS+.25,'torque':.3,'thrust':.85,'cg_x':.005,'delay':.02,'seconds':16},
 }
 
 
 def evaluate(task):
-    h.CASES={name:{'independent_propeller':True,**settings} for name,settings in CASES.items()}
+    h.CASES={name:{'independent_propeller':True,'torque':.33,**settings} for name,settings in CASES.items()}
     return h.evaluate(task)
 
 
 if __name__=='__main__':
+    parser=argparse.ArgumentParser();parser.add_argument('--output',default='hardware-results/separate-drive-flight.json');args=parser.parse_args()
     with ProcessPoolExecutor(max_workers=4) as pool: rows=list(pool.map(evaluate,[(n,s) for n in CASES for s in range(3)]))
-    result={'nominal_mass_kg':h.NOMINAL_MASS,'cases':CASES,'runs':rows,
+    result={'nominal_mass_kg':h.NOMINAL_MASS,'nominal_motor_torque_Nm':.33,'cases':CASES,'runs':rows,
       'limits':'approximate Python flight plant; separate lightweight props, stationary rims; old stress criteria retained; no CFD, contact, electrical or thermal model'}
-    open('hardware-results/separate-drive-flight.json','w').write(json.dumps(result,indent=2))
+    open(args.output,'w').write(json.dumps(result,indent=2))
     for n in CASES:print(n,sum(r['passed'] for r in rows if r['case']==n),'/3; crashes',sum(r['crash'] for r in rows if r['case']==n),flush=True)

@@ -1,0 +1,10 @@
+.git
+build
+install
+log
+**/__pycache__
+**/.pytest_cache
+hardware-results
+hardware-blockers/results
+hardware-blockers/cad
+media

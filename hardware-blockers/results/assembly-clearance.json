@@ -1,0 +1,6 @@
+{
+  "checks": 1248,
+  "failures": [],
+  "passed": true,
+  "method": "2deg folds, zero or four +/-26deg steering combinations; circumscribed convex module and motor-case envelopes with 0.2mm padding; 2mm chassis inflation; excludes wiring and unsized housings"
+}

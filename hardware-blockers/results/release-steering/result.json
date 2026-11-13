@@ -1,0 +1,27 @@
+{
+  "interface_returncode": 0,
+  "returncode": 0,
+  "passed": true,
+  "measurements": [
+    {
+      "requested_yaw_rate": 0.2,
+      "measured_yaw_rate": 0.19489918970499162,
+      "steering": {
+        "steer_fl": 0.17890188097953796,
+        "steer_fr": 0.15001587569713593
+      },
+      "max_prop_speed_rad_s": 0.08370810747146606,
+      "mean_wheel_speed_rad_s": 2.939807713031769
+    },
+    {
+      "requested_yaw_rate": -0.2,
+      "measured_yaw_rate": -0.1996963959589189,
+      "steering": {
+        "steer_fl": -0.1496424525976181,
+        "steer_fr": -0.17883408069610596
+      },
+      "max_prop_speed_rad_s": 0.037273555994033813,
+      "mean_wheel_speed_rad_s": 2.9869977831840515
+    }
+  ]
+}

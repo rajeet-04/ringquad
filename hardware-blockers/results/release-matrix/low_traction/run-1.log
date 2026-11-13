@@ -1,0 +1,89 @@
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-18-26-14-600093-e61717a2ec2a-10199
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [10203]
+[INFO] [robot_state_publisher-2]: process started with pid [10204]
+[INFO] [create-3]: process started with pid [10205]
+[INFO] [parameter_bridge-4]: process started with pid [10207]
+[INFO] [controller-5]: process started with pid [10208]
+[robot_state_publisher-2] [INFO] [1794594376.576053474] [robot_state_publisher]: Robot initialized
+[create-3] [INFO] [1794594376.637749103] [ros_gz_sim]: Requesting list of world names.
+[parameter_bridge-4] [INFO] [1794594377.667287901] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.671562838] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.683381645] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.695885538] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.702647195] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.707638844] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.718086394] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.722615749] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.727900608] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/wheel_speed (actuator_msgs/msg/Actuators) -> /ringquad/wheel_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794594377.732521963] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/ringquad/lock_fault (gz.msgs.Boolean) -> /ringquad/lock_fault (std_msgs/msg/Bool)] (Lazy 0)
+[create-3] [INFO] [1794594377.898586382] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[create-3] [INFO] [1794594378.010327583] [ros_gz_sim]: Entity creation successful.
+[INFO] [create-3]: process has finished cleanly [pid 10205]
+[parameter_bridge-4] [INFO] [1794594379.701798797] [ros_gz_bridge]: Passing message from ROS actuator_msgs/msg/Actuators to Gazebo gz.msgs.Actuators (showing msg only once per type)
+[parameter_bridge-4] [INFO] [1794594379.701876339] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/Float64 to Gazebo gz.msgs.Double (showing msg only once per type)
+[INFO] [mission-6]: process started with pid [10296]
+[mission-6] [INFO] [1794594387.799960149] [ringquad_mission]: 1/6 take off
+[controller-5] [INFO] [1794594387.878961652] [ringquad_controller]: mode idle -> fly
+[mission-6] [INFO] [1794594389.892709699] [ringquad_mission]: 2/6 climb and fly over the wall
+[mission-6] [INFO] [1794594406.943531532] [ringquad_mission]: 3/6 land at the tunnel pad, lined up, and fold into wheels
+[controller-5] [INFO] [1794594414.569971503] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794594416.564828209] [ringquad_controller]: touchdown, mode land -> idle
+[controller-5] [INFO] [1794594416.642615873] [ringquad_controller]: mode idle -> drive
+[mission-6] [INFO] [1794594422.130719118] [ringquad_mission]: folded on the line: heading -0.85 deg, cross-track +0.7 cm (attempt 1)
+[mission-6] [INFO] [1794594422.138675906] [ringquad_mission]: 4/6 drive through the tunnel
+[mission-6] [INFO] [1794594422.146131400] [ringquad_mission]:   x  3.78 m  cross-track  +0.7 cm  heading  -0.8 deg  yaw-rate cmd -0.02
+[mission-6] [INFO] [1794594422.635132989] [ringquad_mission]:   x  3.94 m  cross-track  +0.4 cm  heading  -0.9 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594423.142129288] [ringquad_mission]:   x  4.13 m  cross-track  +0.1 cm  heading  -0.5 deg  yaw-rate cmd +0.01
+[mission-6] [INFO] [1794594423.651639558] [ringquad_mission]:   x  4.33 m  cross-track  +0.1 cm  heading  -0.1 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794594424.191066471] [ringquad_mission]:   x  4.52 m  cross-track  +0.1 cm  heading  +0.1 deg  yaw-rate cmd -0.01
+[mission-6] [INFO] [1794594424.692972705] [ringquad_mission]:   x  4.73 m  cross-track  +0.1 cm  heading  -0.1 deg  yaw-rate cmd -0.01
+[mission-6] [INFO] [1794594425.200249672] [ringquad_mission]:   x  4.92 m  cross-track  +0.1 cm  heading  -0.2 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794594425.716966977] [ringquad_mission]:   x  5.12 m  cross-track  +0.1 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594426.233835782] [ringquad_mission]:   x  5.33 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594426.738784780] [ringquad_mission]:   x  5.52 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594427.247517546] [ringquad_mission]:   x  5.72 m  cross-track  +0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594427.755733726] [ringquad_mission]:   x  5.92 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594428.268917347] [ringquad_mission]:   x  6.12 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594428.786214696] [ringquad_mission]:   x  6.31 m  cross-track  +0.1 cm  heading  -0.3 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594429.318730451] [ringquad_mission]:   x  6.52 m  cross-track  +0.1 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594429.825287957] [ringquad_mission]:   x  6.72 m  cross-track  +0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594430.334677559] [ringquad_mission]:   x  6.91 m  cross-track  +0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594430.849810856] [ringquad_mission]:   x  7.12 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794594431.413003383] [ringquad_mission]:   x  7.31 m  cross-track  +0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794594431.923411407] [ringquad_mission]:   x  7.51 m  cross-track  +0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794594432.431507545] [ringquad_mission]:   x  7.71 m  cross-track  +0.1 cm  heading  +0.0 deg  yaw-rate cmd -0.01
+[mission-6] [INFO] [1794594432.956081429] [ringquad_mission]:   x  7.91 m  cross-track  +0.1 cm  heading  +0.1 deg  yaw-rate cmd -0.01
+[mission-6] [INFO] [1794594433.468018835] [ringquad_mission]:   x  8.11 m  cross-track  +0.1 cm  heading  +0.0 deg  yaw-rate cmd -0.01
+[mission-6] [INFO] [1794594434.021913943] [ringquad_mission]:   x  8.30 m  cross-track  +0.1 cm  heading  -0.1 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794594434.549146797] [ringquad_mission]:   x  8.51 m  cross-track  +0.1 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594435.065406766] [ringquad_mission]:   x  8.70 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594435.571014809] [ringquad_mission]:   x  8.90 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594436.084904808] [ringquad_mission]:   x  9.07 m  cross-track  +0.0 cm  heading  -0.2 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594436.600012897] [ringquad_mission]:   x  9.18 m  cross-track  +0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594437.114436940] [ringquad_mission]:   x  9.26 m  cross-track  +0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594437.635147138] [ringquad_mission]:   x  9.31 m  cross-track  -0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594438.140889390] [ringquad_mission]:   x  9.36 m  cross-track  -0.0 cm  heading  -0.1 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794594438.403499980] [ringquad_mission]: drive done, worst cross-track 0.7 cm; minimum buffered footprint margin 25.1 mm
+[mission-6] [INFO] [1794594439.435441289] [ringquad_mission]: 5/6 unfold and take off
+[controller-5] [INFO] [1794594439.446170007] [ringquad_controller]: mode drive -> idle
+[controller-5] [INFO] [1794594445.737367635] [ringquad_controller]: mode idle -> fly
+[mission-6] [INFO] [1794594447.259975958] [ringquad_mission]: 6/6 fly to the goal pad and land
+[controller-5] [INFO] [1794594455.733032020] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794594458.140195406] [ringquad_controller]: touchdown, mode land -> idle
+[mission-6] [INFO] [1794594458.205925179] [ringquad_mission]: mission complete in 65 s, 6 cm from the goal pad centre
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mission-6]: sending signal 'SIGINT' to process[mission-6]
+[INFO] [controller-5]: sending signal 'SIGINT' to process[controller-5]
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [gazebo-1]: sending signal 'SIGINT' to process[gazebo-1]
+[robot_state_publisher-2] [INFO] [1794594458.314388489] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [mission-6]: process has died [pid 10296, exit code -2, cmd '/home/ubuntu/ringquad_ws/install/ringquad_control/lib/ringquad_control/mission --ros-args --params-file /tmp/launch_params_p3xxpk5c'].
+[parameter_bridge-4] [INFO] [1794594458.315800538] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 10207]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 10204]
+[INFO] [controller-5]: process has finished cleanly [pid 10208]
+[ERROR] [gazebo-1]: process[gazebo-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [gazebo-1]: sending signal 'SIGTERM' to process[gazebo-1]
+[ERROR] [gazebo-1]: process has died [pid 10203, exit code -15, cmd 'ruby /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz sim -r -s /home/ubuntu/ringquad_ws/install/ringquad_description/share/ringquad_description/worlds/demo.sdf --force-version 8'].

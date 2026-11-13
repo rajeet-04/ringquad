@@ -1,0 +1,11 @@
+{
+  "source": "synthetic",
+  "operator": "",
+  "instrument_ids": [],
+  "vehicle_mass_kg": 2.65,
+  "centre_of_mass_m": [
+    0,
+    0,
+    0
+  ]
+}

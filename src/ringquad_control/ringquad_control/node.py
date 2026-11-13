@@ -19,7 +19,7 @@ from geometry_msgs.msg import PoseStamped, Twist
 from nav_msgs.msg import Odometry
 from rclpy.node import Node
 from sensor_msgs.msg import Imu, JointState
-from std_msgs.msg import Float64, String
+from std_msgs.msg import Bool, Float64, String
 
 from . import mixer
 from . import params as p
@@ -46,10 +46,20 @@ class RingQuadController(Node):
         self.active_steering = self.declare_parameter('steering', 'front').value == 'front'
         self.steering_limit_deg = self.declare_parameter('steering_limit_deg', 25.0).value
         self.fold_ground = math.radians(self.declare_parameter('fold_ground_deg', 90.0).value)
-        self.knuckle_mass = self.declare_parameter('knuckle_mass', .02).value
+        self.knuckle_mass = self.declare_parameter('knuckle_mass', p.STEERING_KNUCKLE_MASS).value
         self.contact_track = mixer.folded_contact_track(self.declare_parameter('ring_offset', .1).value, self.declare_parameter('tread_collision', 'crowned').value, self.fold_ground)
-        self.flight = FlightController(mass=self.base_mass + (2*self.knuckle_mass if self.active_steering else 0.0))
+        nominal_mass = self.base_mass + (2*self.knuckle_mass if self.active_steering else 0.0)
+        self.vehicle_mass = self.declare_parameter('vehicle_mass', nominal_mass).value
+        nominal_com = 2*self.knuckle_mass*p.ARM_XY/self.vehicle_mass if self.active_steering else 0.
+        self.centre_of_mass = np.array(self.declare_parameter('centre_of_mass', [nominal_com,0.,0.]).value)
+        self.thrust_coefficients = np.array(self.declare_parameter('thrust_coefficients', [p.K_THRUST]*4).value)
+        if not np.isfinite(self.vehicle_mass) or self.vehicle_mass <= 0 or self.centre_of_mass.shape != (3,) or not np.all(np.isfinite(self.centre_of_mass)):
+            raise ValueError('invalid measured mass or centre of mass')
+        mixer.thrusts_to_commands(np.zeros(4), self.thrust_coefficients)
+        self.flight = FlightController(mass=self.vehicle_mass)
         self.steer_pubs = [self.create_publisher(Float64, '/ringquad/steer_' + name, 10) for name in ('fl', 'fr')]
+        self.lock_fault = False
+        self.create_subscription(Bool, '/ringquad/lock_fault', self.on_lock_fault, 10)
         self.yaw_rate = YawRateController()
         self.mode = 'idle'
         self.pos = self.vel = self.rot = None
@@ -107,10 +117,21 @@ class RingQuadController(Node):
         self.cmd_vel = (msg.linear.x, msg.angular.z)
         self.cmd_vel_t = self.now()
 
+    def on_lock_fault(self, msg):
+        if not msg.data or self.lock_fault:
+            return
+        self.lock_fault = True
+        self.get_logger().error('steering latch failure: takeoff inhibited; landing if airborne')
+        if self.mode == 'fly':
+            self.on_mode(String(data='land'))
+
     def on_mode(self, msg):
         mode = msg.data.strip().lower()
         if mode not in MODES:
             self.get_logger().warn(f'unknown mode {mode!r}, expected one of {MODES}')
+            return
+        if mode == 'fly' and self.lock_fault:
+            self.get_logger().error('fly refused: inspect and repair the steering latch')
             return
         if mode == self.mode or self.pos is None:
             return
@@ -238,7 +259,7 @@ class RingQuadController(Node):
         thrust, torque = self.flight.update(self.pos, self.vel, self.rot, rate,
                                             self.goal_pos, self.goal_yaw, dt)
         self.send_motors(mixer.thrusts_to_commands(mixer.wrench_to_thrusts(thrust, torque,
-            [2*self.knuckle_mass * p.ARM_XY / (self.base_mass + 2*self.knuckle_mass), 0.0, 0.0] if self.active_steering else None)))
+            self.centre_of_mass), self.thrust_coefficients))
 
 
 def main():

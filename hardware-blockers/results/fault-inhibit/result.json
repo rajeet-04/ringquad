@@ -1,0 +1,6 @@
+{
+  "passed": false,
+  "takeoff_refusal_logged": true,
+  "fault": true,
+  "state": "mode=idle z=0.04"
+}

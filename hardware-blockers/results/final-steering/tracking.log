@@ -1,0 +1,2 @@
+{"requested_yaw_rate": 0.2, "measured_yaw_rate": NaN, "steering": {"steer_fl": 0.17921574413776398, "steer_fr": 0.15005016326904297}, "max_prop_speed_rad_s": 0.04745953530073166, "mean_wheel_speed_rad_s": 2.9210774898529053}
+{"requested_yaw_rate": -0.2, "measured_yaw_rate": NaN, "steering": {"steer_fl": -0.14991247653961182, "steer_fr": -0.17876704037189484}, "max_prop_speed_rad_s": 0.04459809511899948, "mean_wheel_speed_rad_s": 2.9794958233833313}

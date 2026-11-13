@@ -31,9 +31,12 @@ def wrench_to_thrusts(thrust, torque, centre_of_mass=None):
     return np.clip(f, 0.0, p.MAX_THRUST)
 
 
-def thrusts_to_commands(f):
+def thrusts_to_commands(f, k_thrust=p.K_THRUST):
     """Rotor speed commands (rad/s). Positive command = upward thrust for every rotor."""
-    return np.sqrt(np.clip(f, 0.0, None) / p.K_THRUST)
+    coefficients = np.asarray(k_thrust, float)
+    if coefficients.shape not in ((), (4,)) or not np.all(np.isfinite(coefficients)) or np.any(coefficients <= 0):
+        raise ValueError('thrust coefficients must be finite positive scalar or four-element vector')
+    return np.clip(np.sqrt(np.clip(f, 0.0, None) / coefficients), 0., p.MAX_ROTOR_SPEED)
 
 
 def drive_commands(speed, yaw_rate):

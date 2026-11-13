@@ -1,5 +1,7 @@
 # Independent propeller and wheel-drive redesign
 
+**Historical baseline: e9f4af1, 1.98 kg.** The current 2.65 kg component proposal, finite actuators and revised physics engine are documented in [hardware-blockers/REPORT.md](hardware-blockers/REPORT.md). The regression results below apply to the baseline, not the current candidate.
+
 The spinning-rim architecture was rejected after repeated post-unfold flight crashes. **The revised concept uses a lightweight propeller inside each independently driven wheel ring.** This is a concrete simulation and parametric geometry revision, not a fabrication release. Baseline failures remain in [HARDWARE_VALIDATION.md](HARDWARE_VALIDATION.md).
 
 ## Mechanism
