@@ -1,5 +1,7 @@
 # RingQuad
 
+**Outstanding work:** [remaining hardware blockers and closure criteria](HARDWARE_BLOCKERS.md).
+
 **Current hardware candidate:** independent propellers and wheel drives, upright 90° fold, 100 mm axis standoff, inboard rear V-race carriers, front steering with 25° stops, breakable steering latches, and self-collision enabled. The provisional mass budget is **2.65 kg**. Simulation uses finite motor torque and a pinned, patched Bullet Featherstone engine. See [hardware proposal and validation](hardware-blockers/REPORT.md), [engine setup](hardware-blockers/physics/README.md), and the historical [1.98 kg redesign](REDESIGN.md). Hardware qualification remains open.
 
 **Hardware-validation update:** deeper checks found chassis/rim interference and strong contact-model sensitivity. The successful controller demos are not hardware qualification. See [HARDWARE_VALIDATION.md](HARDWARE_VALIDATION.md) before using this model as a build specification.
