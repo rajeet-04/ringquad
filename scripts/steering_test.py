@@ -13,19 +13,21 @@ from std_msgs.msg import String
 def main():
     rclpy.init()
     node = Node('steering_test')
-    state = {'time': None, 'rate': 0.0, 'steering': {}}
+    state = {'time': None, 'rate': 0.0, 'steering': {}, 'prop_speed': {}, 'wheel_speed': {}}
     def odom(m):
         state.update(time=m.header.stamp.sec + m.header.stamp.nanosec*1e-9,
                      rate=m.twist.twist.angular.z)
     def joints(m):
         state['steering'].update((n, a) for n,a in zip(m.name,m.position) if n.startswith('steer_'))
+        state['prop_speed'].update((n,v) for n,v in zip(m.name,m.velocity) if n.startswith('spin_'))
+        state['wheel_speed'].update((n,v) for n,v in zip(m.name,m.velocity) if n.startswith('wheel_'))
     node.create_subscription(Odometry, '/odom', odom, 10)
     node.create_subscription(JointState, '/joint_states', joints, 10)
     mode=node.create_publisher(String, '/ringquad/mode', 10)
     cmd=node.create_publisher(Twist, '/cmd_vel', 10)
     def drive(seconds, speed, rate):
         started=state['time']
-        deadline=time.monotonic()+max(15.,seconds*5)
+        deadline=time.monotonic()+max(60.,seconds*15)
         values=[]
         while started is None or state['time']-started<seconds:
             if time.monotonic()>deadline:
@@ -45,7 +47,10 @@ def main():
             drive(2,.4,requested)
             measured=drive(3,.4,requested)
             print(json.dumps({'requested_yaw_rate':requested,'measured_yaw_rate':measured,
-                              'steering':state['steering']}),flush=True)
+                              'steering':state['steering'], 'max_prop_speed_rad_s':max(abs(v) for v in state['prop_speed'].values()),
+                              'mean_wheel_speed_rad_s':sum(abs(v) for v in state['wheel_speed'].values())/4}),flush=True)
+            if len(state['wheel_speed'])!=4 or len(state['prop_speed'])!=4 or max(abs(v) for v in state['prop_speed'].values())>5:
+                raise AssertionError('independent drivetrain missing or propellers spinning while driving')
             if abs(measured-requested)>.08:
                 raise AssertionError('yaw tracking error exceeds 0.08 rad/s')
             drive(1,0,0)

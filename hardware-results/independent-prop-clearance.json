@@ -1,0 +1,9 @@
+{
+  "propeller_swept_radius_m": 0.11567328540372407,
+  "minimum_rim_hole_radius_m": 0.12,
+  "radial_clearance_lower_bound_m": 0.004326714596275927,
+  "propeller_half_axial_envelope_m": 0.006,
+  "rear_carrier_to_propeller_axial_gap_m": 0.020999999999999998,
+  "limits": "rigid design dimensions; blade deflection, bearings, tolerances and detailed belt/gear packaging need CAD and tests",
+  "passed": true
+}

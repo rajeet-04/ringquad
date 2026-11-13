@@ -1,0 +1,2 @@
+run 1: ROS domain 51, Gazebo partition ringquad-test-96665aaa17a84ac78f05e69a064e5913
+run 1: PASS (hardware-results/redesign-matrix/servo_slow/run-1.log)

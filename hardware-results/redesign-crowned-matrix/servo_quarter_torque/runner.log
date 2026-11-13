@@ -1,0 +1,25 @@
+run 1: ROS domain 51, Gazebo partition ringquad-test-d26c734a7a564c7aa0b2c904dd3875b1
+run 1: FAIL (hardware-results/redesign-crowned-matrix/servo_quarter_torque/run-1.log)
+5 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583022.226352363] [ringquad_mission]:   x  6.55 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583024.657090780] [ringquad_mission]:   x  6.75 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583027.120657726] [ringquad_mission]:   x  6.95 m  cross-track  +0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583029.592320094] [ringquad_mission]:   x  7.15 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583032.021013013] [ringquad_mission]:   x  7.35 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583034.397501907] [ringquad_mission]:   x  7.55 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583036.787173728] [ringquad_mission]:   x  7.75 m  cross-track  +0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583039.143888231] [ringquad_mission]:   x  7.95 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583041.563433890] [ringquad_mission]:   x  8.15 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583044.008897025] [ringquad_mission]:   x  8.35 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583046.319434615] [ringquad_mission]:   x  8.55 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583048.430337908] [ringquad_mission]:   x  8.75 m  cross-track  -0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583050.159717357] [ringquad_mission]:   x  8.95 m  cross-track  +0.0 cm  heading  +0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583051.654270132] [ringquad_mission]:   x  9.10 m  cross-track  -0.0 cm  heading  -0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583053.014893912] [ringquad_mission]:   x  9.20 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583054.370494989] [ringquad_mission]:   x  9.27 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583055.733368868] [ringquad_mission]:   x  9.32 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd -0.00
+[mission-6] [INFO] [1794583057.062984051] [ringquad_mission]:   x  9.37 m  cross-track  +0.0 cm  heading  -0.0 deg  yaw-rate cmd +0.00
+[mission-6] [INFO] [1794583057.329566951] [ringquad_mission]: drive done, worst cross-track 0.2 cm; minimum buffered footprint margin 60.8 mm
+[mission-6] [INFO] [1794583060.083024239] [ringquad_mission]: 5/6 unfold and take off
+[mission-6] [INFO] [1794583095.245316855] [ringquad_mission]: 6/6 fly to the goal pad and land
+[mission-6] [ERROR] [1794583216.713040884] [ringquad_mission]: mission aborted: timed out flying to [10.5, 1.0, 1.0]; position [12.79, 3.43, 0.1], speed 0.00 m/s, yaw error -24.9 deg

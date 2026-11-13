@@ -1,0 +1,86 @@
+/opt/ros/jazzy/lib/python3.12/site-packages/launch/logging/__init__.py:149: UserWarning: Cannot create a symlink to latest log directory: [Errno 2] No such file or directory: '/home/ubuntu/.ros/log/latest'
+
+  warnings.warn(
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-15-07-49-351429-e61717a2ec2a-1044
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [1052]
+[INFO] [robot_state_publisher-2]: process started with pid [1054]
+[INFO] [create-3]: process started with pid [1057]
+[INFO] [parameter_bridge-4]: process started with pid [1058]
+[INFO] [controller-5]: process started with pid [1060]
+[create-3] [INFO] [1794582470.534694632] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1794582470.556832088] [robot_state_publisher]: Robot initialized
+[create-3] [INFO] [1794582471.173740525] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[create-3] [INFO] [1794582471.250600391] [ros_gz_sim]: Entity creation successful.
+[INFO] [create-3]: process has finished cleanly [pid 1057]
+[parameter_bridge-4] [INFO] [1794582471.592209898] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.592825359] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.598090795] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.600336220] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.600967972] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.601723933] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.603688440] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582471.603995942] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582472.742341881] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/Float64 to Gazebo gz.msgs.Double (showing msg only once per type)
+[parameter_bridge-4] [INFO] [1794582472.742739507] [ros_gz_bridge]: Passing message from ROS actuator_msgs/msg/Actuators to Gazebo gz.msgs.Actuators (showing msg only once per type)
+[INFO] [mission-6]: process started with pid [1239]
+[mission-6] [INFO] [1794582483.862125175] [ringquad_mission]: 1/6 take off
+[controller-5] [INFO] [1794582483.912088359] [ringquad_controller]: mode idle -> fly
+[mission-6] [INFO] [1794582487.244944415] [ringquad_mission]: 2/6 climb and fly over the wall
+[mission-6] [INFO] [1794582494.765000464] [ringquad_mission]: 3/6 land at the tunnel pad, lined up, and fold into wheels
+[controller-5] [INFO] [1794582497.363049649] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794582499.655690752] [ringquad_controller]: touchdown, mode land -> idle
+[controller-5] [INFO] [1794582499.791971504] [ringquad_controller]: mode idle -> drive
+[mission-6] [INFO] [1794582508.539049817] [ringquad_mission]: folded on the line: heading +0.92 deg, cross-track -12.7 cm (attempt 1)
+[mission-6] [INFO] [1794582508.549233980] [ringquad_mission]: not lined up: compensate fold heading, unfold, hop and land again
+[controller-5] [INFO] [1794582508.557314593] [ringquad_controller]: mode drive -> idle
+[controller-5] [INFO] [1794582514.869720030] [ringquad_controller]: mode idle -> fly
+[controller-5] [INFO] [1794582541.944123288] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794582544.155745339] [ringquad_controller]: touchdown, mode land -> idle
+[controller-5] [INFO] [1794582544.266139844] [ringquad_controller]: mode idle -> drive
+[mission-6] [INFO] [1794582550.446062393] [ringquad_mission]: folded on the line: heading +0.05 deg, cross-track +13.3 cm (attempt 2)
+[mission-6] [INFO] [1794582550.452501059] [ringquad_mission]: not lined up: compensate fold heading, unfold, hop and land again
+[controller-5] [INFO] [1794582550.459004560] [ringquad_controller]: mode drive -> idle
+[controller-5] [INFO] [1794582556.590577737] [ringquad_controller]: mode idle -> fly
+[controller-5] [INFO] [1794582587.545852231] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794582589.759076788] [ringquad_controller]: touchdown, mode land -> idle
+[controller-5] [INFO] [1794582589.898122623] [ringquad_controller]: mode idle -> drive
+[mission-6] [INFO] [1794582598.367065463] [ringquad_mission]: folded on the line: heading -0.69 deg, cross-track +43.2 cm (attempt 3)
+[mission-6] [ERROR] [1794582598.372107578] [ringquad_mission]: mission aborted: could not line up with the tunnel
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mission-6]: sending signal 'SIGINT' to process[mission-6]
+[INFO] [controller-5]: sending signal 'SIGINT' to process[controller-5]
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [gazebo-1]: sending signal 'SIGINT' to process[gazebo-1]
+[ERROR] [mission-6]: process has died [pid 1239, exit code -2, cmd '/home/ubuntu/ringquad_ws/install/ringquad_control/lib/ringquad_control/mission --ros-args --params-file /tmp/launch_params_32fc9fbn'].
+[parameter_bridge-4] [INFO] [1794582598.396744065] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-2] [INFO] [1794582598.398119585] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[controller-5] Traceback (most recent call last):
+[controller-5]   File "/home/ubuntu/ringquad_ws/install/ringquad_control/lib/ringquad_control/controller", line 33, in <module>
+[controller-5]     sys.exit(load_entry_point('ringquad-control', 'console_scripts', 'controller')())
+[controller-5]              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[controller-5]   File "/home/ubuntu/ringquad_ws/build/ringquad_control/ringquad_control/node.py", line 229, in main
+[controller-5]     rclpy.spin(node)
+[controller-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/__init__.py", line 247, in spin
+[controller-5]     executor.spin_once()
+[controller-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 926, in spin_once
+[controller-5]     self._spin_once_impl(timeout_sec)
+[controller-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 918, in _spin_once_impl
+[controller-5]     raise handler.exception()
+[controller-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/task.py", line 286, in _execute_coroutine_step
+[controller-5]     result = coro.send(None)
+[controller-5]              ^^^^^^^^^^^^^^^
+[controller-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 584, in handler
+[controller-5]     call_coroutine = take_from_wait_list(entity)
+[controller-5]                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[controller-5]   File "/opt/ros/jazzy/lib/python3.12/site-packages/rclpy/executors.py", line 470, in _take_subscription
+[controller-5]     msg_info = sub.handle.take_message(sub.msg_type, sub.raw)
+[controller-5]                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+[controller-5] RuntimeError: Unable to convert call argument '0' to Python object (#define PYBIND11_DETAILED_ERROR_MESSAGES or compile in debug mode for details)
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 1058]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 1054]
+[ERROR] [controller-5]: process has died [pid 1060, exit code 1, cmd '/home/ubuntu/ringquad_ws/install/ringquad_control/lib/ringquad_control/controller --ros-args --params-file /tmp/launch_params_r_kv1q0j'].
+[ERROR] [gazebo-1]: process[gazebo-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [gazebo-1]: sending signal 'SIGTERM' to process[gazebo-1]
+[ERROR] [gazebo-1]: process has died [pid 1052, exit code -15, cmd 'ruby /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz sim -r -s /home/ubuntu/ringquad_ws/install/ringquad_description/share/ringquad_description/worlds/demo.sdf --force-version 8'].

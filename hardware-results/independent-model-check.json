@@ -1,0 +1,10 @@
+{
+  "mass_kg": 1.98,
+  "independent_propellers": 4,
+  "wheel_drives": 4,
+  "actuator_peak_torque_Nm": 0.33,
+  "wheel_max_speed_rad_s": 20,
+  "flight_thrust_coefficient": 1.3158033130787039e-05,
+  "self_collision": true,
+  "passed": true
+}

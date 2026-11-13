@@ -1,0 +1,2 @@
+run 1: ROS domain 53, Gazebo partition ringquad-test-748e83e388424f9c9e54ffe50b6839cd
+run 1: PASS (hardware-results/redesign-bounded-matrix/servo_quarter_torque/run-1.log)

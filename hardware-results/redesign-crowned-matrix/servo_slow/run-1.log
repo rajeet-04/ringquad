@@ -1,0 +1,48 @@
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-15-20-22-230312-e61717a2ec2a-2617
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [2621]
+[INFO] [robot_state_publisher-2]: process started with pid [2622]
+[INFO] [create-3]: process started with pid [2623]
+[INFO] [parameter_bridge-4]: process started with pid [2624]
+[INFO] [controller-5]: process started with pid [2626]
+[create-3] [INFO] [1794583223.115465768] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1794583223.131093341] [robot_state_publisher]: Robot initialized
+[create-3] [INFO] [1794583223.589508064] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[create-3] [INFO] [1794583223.601652287] [ros_gz_sim]: Entity creation successful.
+[INFO] [create-3]: process has finished cleanly [pid 2623]
+[parameter_bridge-4] [INFO] [1794583224.140853721] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.141342431] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.145258700] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.146983041] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.147237709] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.147625419] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.149166135] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583224.149561220] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794583225.849013152] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/Float64 to Gazebo gz.msgs.Double (showing msg only once per type)
+[parameter_bridge-4] [INFO] [1794583225.849085777] [ros_gz_bridge]: Passing message from ROS actuator_msgs/msg/Actuators to Gazebo gz.msgs.Actuators (showing msg only once per type)
+[INFO] [mission-6]: process started with pid [2715]
+[mission-6] [INFO] [1794583234.057862843] [ringquad_mission]: 1/6 take off
+[controller-5] [INFO] [1794583234.106046860] [ringquad_controller]: mode idle -> fly
+[mission-6] [INFO] [1794583245.617597966] [ringquad_mission]: 2/6 climb and fly over the wall
+[mission-6] [INFO] [1794583266.362279504] [ringquad_mission]: 3/6 land at the tunnel pad, lined up, and fold into wheels
+[controller-5] [INFO] [1794583275.490212526] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794583281.367702336] [ringquad_controller]: touchdown, mode land -> idle
+[controller-5] [INFO] [1794583281.746637188] [ringquad_controller]: mode idle -> drive
+[mission-6] [INFO] [1794583313.345772151] [ringquad_mission]: folded on the line: heading +1.07 deg, cross-track +1.2 cm (attempt 1)
+[mission-6] [INFO] [1794583313.356513884] [ringquad_mission]: not lined up: compensate fold heading, unfold, hop and land again
+[controller-5] [INFO] [1794583313.363379544] [ringquad_controller]: mode drive -> idle
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mission-6]: sending signal 'SIGINT' to process[mission-6]
+[INFO] [controller-5]: sending signal 'SIGINT' to process[controller-5]
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [gazebo-1]: sending signal 'SIGINT' to process[gazebo-1]
+[parameter_bridge-4] [INFO] [1794583321.124673764] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[robot_state_publisher-2] [INFO] [1794583321.126607905] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 2624]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 2622]
+[INFO] [controller-5]: process has finished cleanly [pid 2626]
+[INFO] [mission-6]: process has finished cleanly [pid 2715]
+[ERROR] [gazebo-1]: process[gazebo-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [gazebo-1]: sending signal 'SIGTERM' to process[gazebo-1]
+[ERROR] [gazebo-1]: process has died [pid 2621, exit code -15, cmd 'ruby /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz sim -r -s /home/ubuntu/ringquad_ws/install/ringquad_description/share/ringquad_description/worlds/demo.sdf --force-version 8'].

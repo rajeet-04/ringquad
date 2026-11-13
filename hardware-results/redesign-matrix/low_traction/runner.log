@@ -1,0 +1,15 @@
+run 1: ROS domain 50, Gazebo partition ringquad-test-dd7e79a6102c41f1ab10d7e59bf9b46e
+run 1: FAIL (hardware-results/redesign-matrix/low_traction/run-1.log)
+[mission-6] [INFO] [1794582574.950492278] [ringquad_mission]: 1/6 take off
+[mission-6] [INFO] [1794582578.264188409] [ringquad_mission]: 2/6 climb and fly over the wall
+[mission-6] [INFO] [1794582585.714792621] [ringquad_mission]: 3/6 land at the tunnel pad, lined up, and fold into wheels
+[mission-6] [INFO] [1794582600.640915786] [ringquad_mission]: folded on the line: heading +0.56 deg, cross-track +4.0 cm (attempt 1)
+[mission-6] [INFO] [1794582600.644375420] [ringquad_mission]: 4/6 drive through the tunnel
+[mission-6] [INFO] [1794582600.648342812] [ringquad_mission]:   x  3.77 m  cross-track  +4.0 cm  heading  +0.6 deg  yaw-rate cmd -0.27
+[mission-6] [INFO] [1794582601.141354263] [ringquad_mission]:   x  3.94 m  cross-track  -0.8 cm  heading  -1.9 deg  yaw-rate cmd +0.10
+[mission-6] [INFO] [1794582601.641223191] [ringquad_mission]:   x  4.14 m  cross-track  -5.6 cm  heading  +3.3 deg  yaw-rate cmd +0.26
+[mission-6] [INFO] [1794582602.148035261] [ringquad_mission]:   x  4.35 m  cross-track  -9.8 cm  heading +11.6 deg  yaw-rate cmd +0.26
+[mission-6] [INFO] [1794582602.647766395] [ringquad_mission]:   x  4.57 m  cross-track -11.9 cm  heading +18.7 deg  yaw-rate cmd +0.16
+[mission-6] [INFO] [1794582603.194087796] [ringquad_mission]:   x  4.78 m  cross-track -12.8 cm  heading +22.6 deg  yaw-rate cmd +0.08
+[mission-6] [INFO] [1794582603.696998893] [ringquad_mission]:   x  5.00 m  cross-track -13.1 cm  heading +24.6 deg  yaw-rate cmd +0.03
+[mission-6] [ERROR] [1794582603.700816449] [ringquad_mission]: mission aborted: drifted -13.1 cm off the line, stopped

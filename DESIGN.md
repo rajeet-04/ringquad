@@ -1,5 +1,7 @@
 # Morphing Aerial-Ground Quad: Design Spec (v0.5)
 
+**Current simulation design:** independent lightweight propellers and wheel drives, upright 90° fold, 100 mm ring-axis standoff, rear wheel carriers, front steering with 25° stops, physical crowned rims and self-collision enabled. Nominal mass budget is 1.98 kg. See [REDESIGN.md](REDESIGN.md) for the mechanism and regression evidence. Earlier shared-motor results below are historical; hardware qualification remains open.
+
 Status: layout and fold geometry agreed, pre-build. Simulation first (ROS 2 Jazzy, Gazebo Harmonic), hardware later.
 
 Items marked **(default)** are my proposals, not yet confirmed.

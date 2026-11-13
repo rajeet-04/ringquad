@@ -61,7 +61,7 @@ def test_first_tuning_is_unstable_with_realistic_motors():
     first = Gains()
     first.k_att = np.array([150.0, 150.0, 2.0])
     first.k_rate = np.array([20.0, 20.0, 0.4])
-    *_, max_tilt = simulate([1, 0, 1], 0.0, 8.0, pos0=(0, 0, 1), gains=first)
+    *_, max_tilt = simulate([1, 0, 1], 0.0, 8.0, pos0=(0, 0, 1), gains=first, rotor=Rotor.ring(.06))
     assert max_tilt > 80
 
 

@@ -1,0 +1,56 @@
+[
+  {
+    "steering_deg": 0,
+    "heading_deg": -1,
+    "width_m": 0.4195468735529076,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.035226563223546205
+  },
+  {
+    "steering_deg": 0,
+    "heading_deg": 0,
+    "width_m": 0.4136194764648222,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.03819026176758889
+  },
+  {
+    "steering_deg": 0,
+    "heading_deg": 1,
+    "width_m": 0.4195468735529076,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.035226563223546205
+  },
+  {
+    "steering_deg": 10,
+    "heading_deg": -1,
+    "width_m": 0.4294040719198613,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.02742088573230742
+  },
+  {
+    "steering_deg": 10,
+    "heading_deg": 0,
+    "width_m": 0.43257187751060355,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.028714061244698223
+  },
+  {
+    "steering_deg": 10,
+    "heading_deg": 1,
+    "width_m": 0.4357705139774338,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.02423766470352118
+  },
+  {
+    "steering_deg": 25,
+    "heading_deg": -1,
+    "width_m": 0.483364101957937,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.0004408707132695965
+  },
+  {
+    "steering_deg": 25,
+    "heading_deg": 0,
+    "width_m": 0.48713999300515554,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": 0.0014300034974222319
+  },
+  {
+    "steering_deg": 25,
+    "heading_deg": 1,
+    "width_m": 0.490788795047876,
+    "conservative_cross_track_allowance_with_5mm_buffer_m": -0.0032714758316999227
+  }
+]

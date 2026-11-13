@@ -19,7 +19,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     share = get_package_share_directory('ringquad_description')
     robot_description = ParameterValue(
-        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering')]),
+        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering'), ' tread_collision:=', LaunchConfiguration('tread_collision'), ' self_collision:=', LaunchConfiguration('self_collision'), ' servo_torque:=', LaunchConfiguration('servo_torque'), ' servo_speed:=', LaunchConfiguration('servo_speed'), ' friction_scale:=', LaunchConfiguration('friction_scale'), ' knuckle_mass:=', LaunchConfiguration('knuckle_mass'), ' ring_offset:=', LaunchConfiguration('ring_offset'), ' steering_limit_deg:=', LaunchConfiguration('steering_limit_deg'), ' fold_ground_deg:=', LaunchConfiguration('fold_ground_deg'), ' drivetrain:=', LaunchConfiguration('drivetrain')]),
         value_type=str)
     world = PathJoinSubstitution([share, 'worlds', [LaunchConfiguration('world'), '.sdf']])
 
@@ -30,7 +30,17 @@ def generate_launch_description():
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true'),
-        DeclareLaunchArgument('steering', default_value='fixed', choices=['fixed', 'front']),
+        DeclareLaunchArgument('tread_collision', default_value='crowned', choices=['rounded','cylinder','crowned']),
+        DeclareLaunchArgument('self_collision', default_value='true'),
+        DeclareLaunchArgument('fold_ground_deg', default_value='90'),
+        DeclareLaunchArgument('drivetrain', default_value='separate', choices=['separate','shared']),
+        DeclareLaunchArgument('servo_torque', default_value='1.0'),
+        DeclareLaunchArgument('servo_speed', default_value='1.5'),
+        DeclareLaunchArgument('friction_scale', default_value='1.0'),
+        DeclareLaunchArgument('knuckle_mass', default_value='0.02'),
+        DeclareLaunchArgument('ring_offset', default_value='0.1'),
+        DeclareLaunchArgument('steering_limit_deg', default_value='25'),
+        DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),
         DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),

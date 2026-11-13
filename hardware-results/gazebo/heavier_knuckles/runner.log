@@ -1,0 +1,2 @@
+run 1: ROS domain 50, Gazebo partition ringquad-test-a456a35abe7b4796ac00996563e75568
+run 1: PASS (/home/ubuntu/ringquad_ws/hardware-results/gazebo/heavier_knuckles/run-1.log)

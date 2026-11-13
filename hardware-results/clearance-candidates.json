@@ -1,0 +1,377 @@
+[
+  {
+    "offset_m": 0.035,
+    "steering_limit_deg": 10,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        0,
+        0
+      ],
+      [
+        20,
+        0
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.035,
+    "steering_limit_deg": 15,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        0,
+        0
+      ],
+      [
+        20,
+        0
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.035,
+    "steering_limit_deg": 20,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        0,
+        0
+      ],
+      [
+        20,
+        0
+      ],
+      [
+        75,
+        20
+      ],
+      [
+        77.5,
+        20
+      ],
+      [
+        80,
+        20
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.035,
+    "steering_limit_deg": 25,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        0,
+        0
+      ],
+      [
+        20,
+        0
+      ],
+      [
+        75,
+        25
+      ],
+      [
+        77.5,
+        25
+      ],
+      [
+        80,
+        25
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.035,
+    "steering_limit_deg": 30,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        0,
+        0
+      ],
+      [
+        20,
+        0
+      ],
+      [
+        75,
+        30
+      ],
+      [
+        77.5,
+        30
+      ],
+      [
+        80,
+        30
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.035,
+    "steering_limit_deg": 35,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        0,
+        0
+      ],
+      [
+        20,
+        0
+      ],
+      [
+        75,
+        35
+      ],
+      [
+        77.5,
+        35
+      ],
+      [
+        80,
+        35
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.055,
+    "steering_limit_deg": 10,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.055,
+    "steering_limit_deg": 15,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.055,
+    "steering_limit_deg": 20,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.055,
+    "steering_limit_deg": 25,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.055,
+    "steering_limit_deg": 30,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        75,
+        30
+      ],
+      [
+        77.5,
+        30
+      ],
+      [
+        80,
+        30
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.055,
+    "steering_limit_deg": 35,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        75,
+        35
+      ],
+      [
+        77.5,
+        35
+      ],
+      [
+        80,
+        35
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.06,
+    "steering_limit_deg": 10,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.06,
+    "steering_limit_deg": 15,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.06,
+    "steering_limit_deg": 20,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.06,
+    "steering_limit_deg": 25,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.06,
+    "steering_limit_deg": 30,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        80,
+        30
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.06,
+    "steering_limit_deg": 35,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        75,
+        35
+      ],
+      [
+        77.5,
+        35
+      ],
+      [
+        80,
+        35
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.065,
+    "steering_limit_deg": 10,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.065,
+    "steering_limit_deg": 15,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.065,
+    "steering_limit_deg": 20,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.065,
+    "steering_limit_deg": 25,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.065,
+    "steering_limit_deg": 30,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.065,
+    "steering_limit_deg": 35,
+    "has_2mm_clearance_in_samples": false,
+    "failed_samples": [
+      [
+        75,
+        35
+      ],
+      [
+        77.5,
+        35
+      ],
+      [
+        80,
+        35
+      ]
+    ]
+  },
+  {
+    "offset_m": 0.07,
+    "steering_limit_deg": 10,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.07,
+    "steering_limit_deg": 15,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.07,
+    "steering_limit_deg": 20,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.07,
+    "steering_limit_deg": 25,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.07,
+    "steering_limit_deg": 30,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.07,
+    "steering_limit_deg": 35,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.075,
+    "steering_limit_deg": 10,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.075,
+    "steering_limit_deg": 15,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.075,
+    "steering_limit_deg": 20,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.075,
+    "steering_limit_deg": 25,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.075,
+    "steering_limit_deg": 30,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  },
+  {
+    "offset_m": 0.075,
+    "steering_limit_deg": 35,
+    "has_2mm_clearance_in_samples": true,
+    "failed_samples": []
+  }
+]

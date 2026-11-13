@@ -1,0 +1,26 @@
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-13-49-52-604468-e61717a2ec2a-1630
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [1634]
+[INFO] [robot_state_publisher-2]: process started with pid [1635]
+[INFO] [create-3]: process started with pid [1636]
+[INFO] [parameter_bridge-4]: process started with pid [1638]
+[INFO] [controller-5]: process started with pid [1639]
+[create-3] [INFO] [1794577796.196417031] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1794577796.438918727] [robot_state_publisher]: Robot initialized
+[create-3] [INFO] [1794577797.536074449] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[parameter_bridge-4] [INFO] [1794577797.538989931] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794577797.541486207] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[create-3] [INFO] [1794577797.558018441] [ros_gz_sim]: Entity creation successful.
+[parameter_bridge-4] [INFO] [1794577797.560689174] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794577797.570640781] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794577797.572100522] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794577797.573798262] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794577797.579352561] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794577797.580832261] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[INFO] [create-3]: process has finished cleanly [pid 1636]
+[parameter_bridge-4] [INFO] [1794577798.946523103] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/Float64 to Gazebo gz.msgs.Double (showing msg only once per type)
+[parameter_bridge-4] [INFO] [1794577798.946591145] [ros_gz_bridge]: Passing message from ROS actuator_msgs/msg/Actuators to Gazebo gz.msgs.Actuators (showing msg only once per type)
+[INFO] [mission-6]: process started with pid [1728]
+[mission-6] [INFO] [1794577811.006376175] [ringquad_mission]: 1/6 take off
+[controller-5] [INFO] [1794577811.067197181] [ringquad_controller]: mode idle -> fly
+[mission-6] [INFO] [1794577822.370888089] [ringquad_mission]: 2/6 climb and fly over the wall

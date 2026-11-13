@@ -6,10 +6,11 @@ import numpy as np
 GRAVITY = 9.81
 
 # Mass: body 1.0 + 4 x (arm with motor 0.11 + ring 0.06)
-MASS = 1.0 + 4 * (0.11 + 0.06)
+LEGACY_MASS = 1.0 + 4 * (0.11 + 0.06)
+MASS = LEGACY_MASS + 4 * (0.050 + 0.015)  # wheel drive budget + independent propeller
 
 # Rough inertia about the CoM in flight pose (body box + arms and rings as point masses + ring spin inertia).
-INERTIA = np.diag([0.021, 0.021, 0.039])
+INERTIA = np.diag([0.030, 0.030, 0.055])
 
 # Rotor centres in the body frame, flight pose: hinge (+-0.08, +-0.08) + 0.12 m along the 45 deg diagonal.
 ARM_XY = 0.08 + 0.12 * math.cos(math.radians(45))
@@ -32,7 +33,8 @@ RING_IZZ = 0.06 / 2 * (0.12 ** 2 + 0.135 ** 2)
 MOTOR_TAU_UP = 0.0125    # s, motor model timeConstantUp
 MOTOR_TAU_DOWN = 0.025   # s, motor model timeConstantDown
 
-K_THRUST = 1.56e-5      # N / (rad/s)^2
+LEGACY_K_THRUST = 1.56e-5
+K_THRUST = LEGACY_K_THRUST * (.115/.12)**4      # N / (rad/s)^2
 K_MOMENT = 0.016        # drag torque / thrust (m)
 MAX_ROTOR_SPEED = 800.0  # rad/s
 MAX_THRUST = K_THRUST * MAX_ROTOR_SPEED ** 2
@@ -53,9 +55,9 @@ def ring_izz(mass):
     """Spin inertia of a ring propeller of the given mass (same geometry as the model)."""
     return mass / 2 * (0.12 ** 2 + 0.135 ** 2)
 
-# Ground mode (geometry.py, 12 cm arm, 45 deg down, 10 deg camber)
+# Ground mode (geometry.py, 12 cm arm, upright rings, 80 mm axis standoff)
 FOLD_FLIGHT = 0.0
-FOLD_GROUND = math.radians(80)
+FOLD_GROUND = math.radians(90)
 WHEEL_RADIUS = 0.135
-TRACK = 0.305
+TRACK = 0.36
 LEFT = np.array([True, False, True, False])  # fl, fr, rl, rr

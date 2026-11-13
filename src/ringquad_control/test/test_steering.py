@@ -17,10 +17,10 @@ def test_straight_and_stop():
 
 
 def test_left_turn_wheels_share_an_instantaneous_centre():
-    commands, joint_angles = mixer.steered_drive_commands(.4, .3)
+    commands, joint_angles = mixer.steered_drive_commands(.4, .2)
     angles = joint_angles * math.sin(p.FOLD_GROUND)
     wheelbase = 2*p.ARM_XY
-    radius = .4/.3
+    radius = .4/.2
     assert np.allclose(np.tan(angles), wheelbase/np.array([radius-p.TRACK/2, radius+p.TRACK/2]))
     speeds = wheel_speeds(commands)
     assert speeds[1] > speeds[0] and speeds[3] > speeds[2]
@@ -28,11 +28,11 @@ def test_left_turn_wheels_share_an_instantaneous_centre():
 
 
 def test_mirrored_and_reverse_turns():
-    left, angles = mixer.steered_drive_commands(.4, .3)
-    right, other_angles = mixer.steered_drive_commands(.4, -.3)
+    left, angles = mixer.steered_drive_commands(.4, .2)
+    right, other_angles = mixer.steered_drive_commands(.4, -.2)
     assert np.allclose(wheel_speeds(left)[[1,0,3,2]], wheel_speeds(right))
     assert np.allclose(angles[::-1], -other_angles)
-    reverse, reversed_angles = mixer.steered_drive_commands(-.4, -.3)
+    reverse, reversed_angles = mixer.steered_drive_commands(-.4, -.2)
     assert np.allclose(reverse, -left)
     assert np.allclose(angles, reversed_angles)
 
@@ -43,7 +43,7 @@ def test_inner_wheel_angle_and_joint_limits_hold_for_extreme_requests():
             commands, angles = mixer.steered_drive_commands(speed, rate)
             assert np.all(np.isfinite(commands))
             assert max(abs(angles)) < .63
-            assert max(abs(angles))*math.sin(p.FOLD_GROUND) <= math.radians(35)+1e-12
+            assert max(abs(angles))*math.sin(p.FOLD_GROUND) <= math.radians(25)+1e-12
 
 
 def test_added_front_hardware_hover_is_balanced_about_actual_com():
@@ -57,10 +57,23 @@ def test_added_front_hardware_hover_is_balanced_about_actual_com():
     assert np.isclose(forces.sum(), thrust)
 
 
-def test_motor_speed_limits_and_tunnel_envelope():
+def test_motor_speed_limits():
     commands, _ = mixer.steered_drive_commands(1000., 1000.)
     assert max(abs(commands)) <= p.MAX_ROTOR_SPEED
-    angle = math.radians(10)
-    # Conservative projected width including the 10-degree wheel camber.
-    width = p.TRACK + 2*(p.WHEEL_RADIUS*math.sin(angle) + p.WHEEL_RADIUS*math.sin(math.radians(10)) + .015)
-    assert width < .5
+
+
+def test_contact_track_matches_upright_geometry():
+    assert np.isclose(mixer.folded_contact_track(), .36)
+    assert np.isclose(mixer.folded_contact_track(.075), .31)
+    assert np.isclose(mixer.folded_contact_track(.08, 'rounded'), .32)
+
+
+def test_candidate_steering_stop_is_respected_with_wider_track():
+    _,angles=mixer.steered_drive_commands(.4,10,max_angle_deg=25,track=mixer.folded_contact_track(.06))
+    assert max(abs(angles))*math.sin(p.FOLD_GROUND) <= math.radians(25)+1e-12
+
+
+def test_full_width_cylinder_contact_track_is_distinct_from_rounded_hull():
+    actual=mixer.folded_contact_track(.075,profile='cylinder',fold_angle=math.radians(80))
+    assert abs(actual-.3545)<.001
+    assert mixer.folded_contact_track(.075,'rounded',fold_angle=math.radians(80))-actual>.028

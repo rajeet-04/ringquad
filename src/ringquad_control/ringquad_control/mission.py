@@ -21,12 +21,14 @@ from std_msgs.msg import String
 
 from .ground import LineFollowGains, follow_line, wrap
 from . import params as p
+from .footprint import corridor_margin
+from . import mixer
+from .flight import quat_to_rot
 
 HINGES = ('hinge_fl', 'hinge_fr', 'hinge_rl', 'hinge_rr')
-FOLD_GROUND = math.radians(80)
 TICK = 0.05               # s
 CRUISE_ALT = 2.2          # m, wall is 1.5 m
-FLY_SPEED = 1.0           # m/s, carrot speed
+FLY_SPEED = 0.5           # m/s, carrot speed
 DRIVE_SPEED = 0.4         # m/s
 
 WALL_X = 2.5
@@ -41,7 +43,7 @@ ALIGN_HEADING_TOL = math.radians(1)
 ALIGN_CROSS_TOL = 0.05                  # m
 DRIVE_CROSS_ABORT = 0.05                # m, from TUNNEL_STRICT_FROM onward (tunnel: ~8 cm each side)
 APPROACH_CROSS_ABORT = 0.15             # m, on the open approach before that
-TUNNEL_STRICT_FROM = 5.2                # m (x): 0.3 m before the tunnel entrance
+TUNNEL_STRICT_FROM = 5.0                # m (x): 0.3 m before the tunnel entrance
 ALIGN_ATTEMPTS = 3
 GROUND_ALIGN_TIMEOUT = 60.0  # ground turning is slow; cheaper than another flight hop
 
@@ -53,7 +55,15 @@ class MissionAbort(Exception):
 class DemoMission(Node):
     def __init__(self):
         super().__init__('ringquad_mission')
-        self.active_steering = self.declare_parameter('steering', 'fixed').value == 'front'
+        self.active_steering = self.declare_parameter('steering', 'front').value == 'front'
+        self.fold_ground = math.radians(self.declare_parameter('fold_ground_deg', 90.0).value)
+        self.ring_offset = self.declare_parameter('ring_offset', .1).value
+        self.contact_track = mixer.folded_contact_track(self.ring_offset, 'cylinder', self.fold_ground)
+        self.steering_angles = {}
+        self.joint_time = -1.0
+        self.yaw_rate_measured = 0.0
+        self.ground_tilt = 0.0
+        self.minimum_margin = float('inf')
         self.pos = self.yaw = None
         self.vel = np.zeros(3)
         self.state = ''
@@ -81,10 +91,14 @@ class DemoMission(Node):
         p, q = msg.pose.pose.position, msg.pose.pose.orientation
         self.pos = np.array([p.x, p.y, p.z])
         self.yaw = math.atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
+        self.yaw_rate_measured = msg.twist.twist.angular.z
+        self.ground_tilt = math.acos(float(np.clip(1-2*(q.x*q.x+q.y*q.y), -1., 1.)))
         v = msg.twist.twist.linear
-        self.vel = np.array([v.x, v.y, v.z])
+        self.vel = quat_to_rot(q.x, q.y, q.z, q.w) @ np.array([v.x, v.y, v.z])
 
     def on_joints(self, msg):
+        self.joint_time = self.now()
+        self.steering_angles.update((n, a) for n, a in zip(msg.name, msg.position) if n.startswith('steer_'))
         self.hinges.update((n, a) for n, a in zip(msg.name, msg.position) if n in HINGES)
 
     # ---------- outputs ----------
@@ -121,7 +135,7 @@ class DemoMission(Node):
                 raise MissionAbort(f'timed out: {what}')
             yield
 
-    def fly_to(self, target, timeout=20.0, tol=0.15, yaw=0.0):
+    def fly_to(self, target, timeout=35.0, tol=0.15, yaw=0.0, settle_speed=0.2):
         """Move a carrot from the current position to target at FLY_SPEED; wait to arrive."""
         target = np.asarray(target, float)
         carrot = self.pos.copy() if self.goal is None else self.goal.copy()
@@ -133,11 +147,11 @@ class DemoMission(Node):
             self.goal = carrot
             self.send_goal(carrot, yaw)
             if (dist < 1e-6 and np.linalg.norm(self.pos - target) < tol
-                    and np.linalg.norm(self.vel) < 0.2
+                    and np.linalg.norm(self.vel) < settle_speed
                     and abs(wrap(self.yaw - yaw)) < math.radians(1.0)):
                 return
             if self.now() > end:
-                raise MissionAbort(f'timed out flying to {target.round(2).tolist()}; position {self.pos.round(2).tolist()}, speed {np.linalg.norm(self.vel):.2f} m/s, yaw error {math.degrees(wrap(self.yaw-yaw)):.1f} deg')
+                raise MissionAbort(f'joints at flight timeout: hinges={self.hinges}, steering={self.steering_angles}; timed out flying to {target.round(2).tolist()}; position {self.pos.round(2).tolist()}, speed {np.linalg.norm(self.vel):.2f} m/s, yaw error {math.degrees(wrap(self.yaw-yaw)):.1f} deg')
             yield
 
     def take_off(self):
@@ -154,7 +168,7 @@ class DemoMission(Node):
     def fold_into_wheels(self):
         yield from self.set_mode('drive')
         yield from self.wait_until(
-            lambda: len(self.hinges) == 4 and all(abs(a - FOLD_GROUND) < 0.05 for a in self.hinges.values()),
+            lambda: len(self.hinges) == 4 and all(abs(a - self.fold_ground) < 0.05 for a in self.hinges.values()),
             12.0, 'folding')
 
     def line_error(self, start, end):
@@ -168,7 +182,7 @@ class DemoMission(Node):
         line_yaw = math.atan2(end[1] - start[1], end[0] - start[0])
         landing_yaw = line_yaw
         for attempt in range(1, ALIGN_ATTEMPTS + 1):
-            yield from self.fly_to((start[0], start[1], 0.8), yaw=landing_yaw)
+            yield from self.fly_to((start[0], start[1], 0.8), timeout=40., tol=.025, yaw=landing_yaw, settle_speed=.04)
             yield from self.land()
             yield from self.fold_into_wheels()
             yield from self.pause(0.5)
@@ -213,9 +227,22 @@ class DemoMission(Node):
             if abs(cross) > limit:
                 self.send_cmd(0.0, 0.0)
                 raise MissionAbort(f'drifted {cross * 100:.1f} cm off the line, stopped')
+            if self.active_steering and TUNNEL_STRICT_FROM <= self.pos[0] <= 9.0:
+                if self.now()-self.joint_time > .2 or len(self.steering_angles) != 2 or self.ground_tilt > math.radians(3):
+                    self.send_cmd(0., 0.)
+                    raise MissionAbort('footprint unavailable or excessive ground tilt, stopped')
+                # Evaluate observed joints and a 0.4 s straight-line stopping horizon.
+                # Ten mm buffer also covers the planar model's small tilt approximation.
+                margin = min(corridor_margin(cross, self.yaw, self.hinges, self.steering_angles, self.ring_offset),
+                             corridor_margin(cross+self.vel[1]*.4, self.yaw+self.yaw_rate_measured*.4,
+                                             self.hinges, self.steering_angles, self.ring_offset))
+                self.minimum_margin = min(self.minimum_margin, margin)
+                if margin <= 0:
+                    self.send_cmd(0., 0.)
+                    raise MissionAbort(f'predicted tunnel footprint margin {margin*1000:.1f} mm, stopped')
             if remaining <= 0.02:
                 self.send_cmd(0.0, 0.0)
-                self.get_logger().info(f'drive done, worst cross-track {worst * 100:.1f} cm')
+                self.get_logger().info(f'drive done, worst cross-track {worst * 100:.1f} cm; minimum buffered footprint margin {self.minimum_margin*1000:.1f} mm')
                 return
             if self.now() > deadline:
                 self.send_cmd(0.0, 0.0)
@@ -223,7 +250,7 @@ class DemoMission(Node):
             if getattr(self, 'active_steering', False) and self.pos[0] >= TUNNEL_STRICT_FROM:
                 # Keep the swept front-ring envelope small in the narrow corridor.
                 tangent = math.tan(math.radians(10))
-                limit = abs(v) * tangent / (2*p.ARM_XY + p.TRACK/2*tangent)
+                limit = abs(v) * tangent / (2*p.ARM_XY + self.contact_track/2*tangent)
                 w = float(np.clip(w, -limit, limit))
             self.send_cmd(v, w)
             yield
@@ -262,7 +289,7 @@ class DemoMission(Node):
         yield from self.take_off()
 
         log('6/6 fly to the goal pad and land')
-        yield from self.fly_to((GOAL_PAD[0], GOAL_PAD[1], 1.0))
+        yield from self.fly_to((GOAL_PAD[0], GOAL_PAD[1], 1.0), tol=.05, settle_speed=.05)
         yield from self.land()
         err = np.linalg.norm(self.pos[:2] - np.array(GOAL_PAD))
         log(f'mission complete in {self.now() - self.started:.0f} s, {err * 100:.0f} cm from the goal pad centre')

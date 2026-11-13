@@ -1,0 +1,935 @@
+{
+  "hardware_qualified": false,
+  "reason": "default ring/chassis interference; full-width candidate fails ground mission; no material, thermal, finite-lock-strength or real-motor calibration qualification",
+  "default_intersecting_samples": 112,
+  "candidate_geometry": {
+    "candidate_ring_offset_m": 0.06,
+    "commanded_stop_deg": 25,
+    "audited_angle_including_stop_margin_deg": 26,
+    "body_box_inflation_m": 0.002,
+    "body_checks": 948,
+    "body_failures": [],
+    "ring_pair_failures": []
+  },
+  "physical_75mm_geometry": {
+    "candidate_ring_offset_m": 0.075,
+    "envelope": "full_30mm_rim_sweep",
+    "commanded_stop_deg": 25,
+    "audited_angle_including_stop_margin_deg": 26,
+    "body_box_inflation_m": 0.005,
+    "body_checks": 948,
+    "body_failures": [],
+    "ring_pair_failures": []
+  },
+  "physical_60mm_geometry": {
+    "candidate_ring_offset_m": 0.06,
+    "envelope": "full_30mm_rim_sweep",
+    "commanded_stop_deg": 25,
+    "audited_angle_including_stop_margin_deg": 26,
+    "body_box_inflation_m": 0.0,
+    "body_checks": 948,
+    "body_failures": [
+      {
+        "fold": 75,
+        "ring": "fl",
+        "angle": 26,
+        "witness": [
+          0.0678812391510716,
+          0.07967150250812223,
+          -0.016235188202062385
+        ],
+        "local_radial_m": 0.13471207526658807,
+        "local_axial_m": -0.014671502508122224
+      },
+      {
+        "fold": 75,
+        "ring": "fr",
+        "angle": -26,
+        "witness": [
+          0.06788123915107161,
+          -0.07967150250812223,
+          -0.01623518820206236
+        ],
+        "local_radial_m": 0.13471207526658807,
+        "local_axial_m": -0.014671502508122226
+      },
+      {
+        "fold": 76,
+        "ring": "fl",
+        "angle": 26,
+        "witness": [
+          0.06500560660307274,
+          0.07954559954640632,
+          -0.022178061814435494
+        ],
+        "local_radial_m": 0.13458613437382988,
+        "local_axial_m": -0.014545599546406303
+      },
+      {
+        "fold": 76,
+        "ring": "fr",
+        "angle": -26,
+        "witness": [
+          0.06500560660307293,
+          -0.07954559954640632,
+          -0.022178061814435084
+        ],
+        "local_radial_m": 0.13458613437382985,
+        "local_axial_m": -0.0145455995464063
+      },
+      {
+        "fold": 77,
+        "ring": "fl",
+        "angle": 26,
+        "witness": [
+          0.06506224089124868,
+          0.07938169185765956,
+          -0.02219457252866053
+        ],
+        "local_radial_m": 0.1344221773042791,
+        "local_axial_m": -0.014381691857659548
+      },
+      {
+        "fold": 77,
+        "ring": "fr",
+        "angle": -26,
+        "witness": [
+          0.06506224089124857,
+          -0.07938169185765956,
+          -0.022194572528660753
+        ],
+        "local_radial_m": 0.13442217730427913,
+        "local_axial_m": -0.014381691857659543
+      },
+      {
+        "fold": 78,
+        "ring": "fl",
+        "angle": 25,
+        "witness": [
+          0.0610152471108579,
+          0.07994889805547148,
+          -0.027754468626537614
+        ],
+        "local_radial_m": 0.1349895543854601,
+        "local_axial_m": -0.014948898055471477
+      },
+      {
+        "fold": 78,
+        "ring": "fl",
+        "angle": 26,
+        "witness": [
+          0.06247523799517165,
+          0.07918995676267884,
+          -0.028247625019223583
+        ],
+        "local_radial_m": 0.13423038444487495,
+        "local_axial_m": -0.014189956762678856
+      },
+      {
+        "fold": 78,
+        "ring": "fr",
+        "angle": -26,
+        "witness": [
+          0.06247523799517137,
+          -0.07918995676267884,
+          -0.02824762501922427
+        ],
+        "local_radial_m": 0.13423038444487495,
+        "local_axial_m": -0.014189956762678861
+      },
+      {
+        "fold": 78,
+        "ring": "fr",
+        "angle": -25,
+        "witness": [
+          0.06101524711085799,
+          -0.07994889805547148,
+          -0.027754468626537427
+        ],
+        "local_radial_m": 0.13498955438546006,
+        "local_axial_m": -0.014948898055471475
+      },
+      {
+        "fold": 79,
+        "ring": "fl",
+        "angle": 25,
+        "witness": [
+          0.06109530408866846,
+          0.07974269284331817,
+          -0.027785120293223515
+        ],
+        "local_radial_m": 0.13478328704944162,
+        "local_axial_m": -0.01474269284331817
+      },
+      {
+        "fold": 79,
+        "ring": "fl",
+        "angle": 26,
+        "witness": [
+          0.06016659689776477,
+          0.07897390313460735,
+          -0.03439550537096667
+        ],
+        "local_radial_m": 0.13401426572588593,
+        "local_axial_m": -0.013973903134607365
+      },
+      {
+        "fold": 79,
+        "ring": "fr",
+        "angle": -26,
+        "witness": [
+          0.06016659689776486,
+          -0.07897390313460736,
+          -0.03439550537096643
+        ],
+        "local_radial_m": 0.13401426572588593,
+        "local_axial_m": -0.013973903134607352
+      },
+      {
+        "fold": 79,
+        "ring": "fr",
+        "angle": -25,
+        "witness": [
+          0.06109530408866862,
+          -0.07974269284331817,
+          -0.027785120293223175
+        ],
+        "local_radial_m": 0.13478328704944162,
+        "local_axial_m": -0.014742692843318183
+      },
+      {
+        "fold": 80,
+        "ring": "fl",
+        "angle": 25,
+        "witness": [
+          0.05877136839721004,
+          0.07950124874700279,
+          -0.033968573525908076
+        ],
+        "local_radial_m": 0.13454177021277047,
+        "local_axial_m": -0.014501248747002784
+      },
+      {
+        "fold": 80,
+        "ring": "fl",
+        "angle": 26,
+        "witness": [
+          0.06026430011187777,
+          0.07871888259084768,
+          -0.034410634651415715
+        ],
+        "local_radial_m": 0.13375916835156648,
+        "local_axial_m": -0.013718882590847681
+      },
+      {
+        "fold": 80,
+        "ring": "fr",
+        "angle": -26,
+        "witness": [
+          0.06026430011187793,
+          -0.07871888259084768,
+          -0.03441063465141533
+        ],
+        "local_radial_m": 0.13375916835156645,
+        "local_axial_m": -0.01371888259084769
+      },
+      {
+        "fold": 80,
+        "ring": "fr",
+        "angle": -25,
+        "witness": [
+          0.05877136839721016,
+          -0.07950124874700279,
+          -0.03396857352590777
+        ],
+        "local_radial_m": 0.13454177021277047,
+        "local_axial_m": -0.01450124874700279
+      }
+    ],
+    "ring_pair_failures": []
+  },
+  "flight_cases": {
+    "nominal": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.017095184843608623,
+      "worst_tilt_deg": 17.555971092357247
+    },
+    "payload_100g": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.015136638861313133,
+      "worst_tilt_deg": 16.309104181444386
+    },
+    "payload_250g": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.04047598142819774,
+      "worst_tilt_deg": 16.643683067242975
+    },
+    "cg_x_5mm": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.1362740911945487,
+      "worst_tilt_deg": 28.381466053404704
+    },
+    "cg_x_10mm": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 3,
+      "worst_final_error_m": 1.2023117587157899,
+      "worst_tilt_deg": 60.98092374783453
+    },
+    "cg_y_5mm": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.12115139179691561,
+      "worst_tilt_deg": 17.293029581163953
+    },
+    "cg_y_10mm": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.5405519799055051,
+      "worst_tilt_deg": 22.768217583103013
+    },
+    "torque_030": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.020456787547527236,
+      "worst_tilt_deg": 23.799212832994467
+    },
+    "torque_025": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 3,
+      "worst_final_error_m": 0.6462231923986312,
+      "worst_tilt_deg": 60.67710711770189
+    },
+    "rim_drag_half": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.017648754949502864,
+      "worst_tilt_deg": 17.393207659163295
+    },
+    "rim_drag_double": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.01921646514501802,
+      "worst_tilt_deg": 22.488633269943566
+    },
+    "thrust_minus20pct": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 3,
+      "worst_final_error_m": 1.5672697967051579,
+      "worst_tilt_deg": 44.874974904286475
+    },
+    "one_motor_thrust_minus20pct": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 3,
+      "worst_final_error_m": 1.9268056473040815,
+      "worst_tilt_deg": 54.38105239088368
+    },
+    "inertia_minus20pct": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.01614163562893591,
+      "worst_tilt_deg": 16.783934229267373
+    },
+    "inertia_plus20pct": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.01939609115890467,
+      "worst_tilt_deg": 19.32590520083813
+    },
+    "delay_20ms": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.016640306218559938,
+      "worst_tilt_deg": 17.4103187226434
+    },
+    "delay_40ms": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.018552260340521227,
+      "worst_tilt_deg": 17.961882667421154
+    },
+    "sensor_noise_double": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.01634910743309254,
+      "worst_tilt_deg": 17.834002500372105
+    },
+    "gust_3N": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.01675215305216237,
+      "worst_tilt_deg": 21.092266074242275
+    },
+    "gust_5N": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.018777802638805432,
+      "worst_tilt_deg": 29.214276481753554
+    },
+    "ring_80g": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.013360740053096265,
+      "worst_tilt_deg": 17.96370029356772
+    },
+    "cg_x_5mm_16s": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.04381921599772133,
+      "worst_tilt_deg": 28.381466053404704
+    },
+    "cg_y_5mm_16s": {
+      "passed": 3,
+      "total": 3,
+      "crashes": 0,
+      "worst_final_error_m": 0.03803013591517802,
+      "worst_tilt_deg": 17.293029581163953
+    },
+    "cg_x_10mm_16s": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 3,
+      "worst_final_error_m": 1.2023117587157899,
+      "worst_tilt_deg": 60.98092374783453
+    },
+    "combined_adverse": {
+      "passed": 0,
+      "total": 3,
+      "crashes": 3,
+      "worst_final_error_m": 1.1963243854360264,
+      "worst_tilt_deg": 60.36412588054068
+    }
+  },
+  "gazebo_cases": [
+    {
+      "case": "clearance_candidate",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true"
+      },
+      "passed": true,
+      "returncode": 0,
+      "cached": true,
+      "completion": [
+        "mission complete in 68 s, 1 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 2.5 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 1,
+      "worst_cross_track_cm": 2.5,
+      "meets_hardware_accuracy_screen": true
+    },
+    {
+      "case": "servo_half_torque",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "servo_torque": ".5"
+      },
+      "passed": true,
+      "returncode": 0,
+      "cached": true,
+      "completion": [
+        "mission complete in 72 s, 1 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 0.5 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 1,
+      "worst_cross_track_cm": 0.5,
+      "meets_hardware_accuracy_screen": true
+    },
+    {
+      "case": "servo_quarter_torque",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "servo_torque": ".25"
+      },
+      "passed": true,
+      "returncode": 0,
+      "completion": [
+        "mission complete in 72 s, 1 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 0.7 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 1,
+      "worst_cross_track_cm": 0.7,
+      "meets_hardware_accuracy_screen": true
+    },
+    {
+      "case": "servo_slow",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "servo_speed": ".5"
+      },
+      "passed": true,
+      "returncode": 0,
+      "cached": true,
+      "completion": [
+        "mission complete in 68 s, 2 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 0.9 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 2,
+      "worst_cross_track_cm": 0.9,
+      "meets_hardware_accuracy_screen": true
+    },
+    {
+      "case": "low_traction",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "friction_scale": ".4"
+      },
+      "passed": true,
+      "returncode": 0,
+      "completion": [
+        "mission complete in 69 s, 2 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 1.0 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 2,
+      "worst_cross_track_cm": 1.0,
+      "meets_hardware_accuracy_screen": true
+    },
+    {
+      "case": "high_traction",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "friction_scale": "1.5"
+      },
+      "passed": true,
+      "returncode": 0,
+      "completion": [
+        "mission complete in 68 s, 2 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 3.9 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 2,
+      "worst_cross_track_cm": 3.9,
+      "meets_hardware_accuracy_screen": true
+    },
+    {
+      "case": "heavier_knuckles",
+      "settings": {
+        "ring_offset": ".06",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "knuckle_mass": ".04"
+      },
+      "passed": true,
+      "returncode": 0,
+      "completion": [
+        "mission complete in 62 s, 16 cm from the goal pad centre"
+      ],
+      "abort": [],
+      "drive": [
+        "drive done, worst cross-track 1.3 cm"
+      ],
+      "status": "mission_complete",
+      "goal_error_cm": 16,
+      "worst_cross_track_cm": 1.3,
+      "meets_hardware_accuracy_screen": false
+    },
+    {
+      "case": "legacy_self_collision",
+      "settings": {
+        "ring_offset": ".035",
+        "steering_limit_deg": "35",
+        "self_collision": "true"
+      },
+      "passed": false,
+      "returncode": 1,
+      "completion": [],
+      "abort": [
+        "mission aborted: timed out: take-off"
+      ],
+      "drive": [],
+      "status": "mission_abort",
+      "goal_error_cm": null,
+      "worst_cross_track_cm": null,
+      "meets_hardware_accuracy_screen": false
+    },
+    {
+      "case": "physical_rim_candidate",
+      "settings": {
+        "ring_offset": ".075",
+        "steering_limit_deg": "25",
+        "self_collision": "true",
+        "tread_collision": "cylinder"
+      },
+      "passed": false,
+      "returncode": 1,
+      "folder_override": "hardware-results/physical-candidate-mission",
+      "load_file": "hardware-results/physical-candidate-loads.csv",
+      "completion": [],
+      "abort": [
+        "mission aborted: drifted 9.3 cm off the line, stopped"
+      ],
+      "drive": [],
+      "status": "mission_abort",
+      "goal_error_cm": null,
+      "worst_cross_track_cm": null,
+      "meets_hardware_accuracy_screen": false
+    }
+  ],
+  "joint_transmitted_loads": {
+    "clearance_candidate": {
+      "other": {
+        "samples": 10473,
+        "axis_moment_peak_Nm": 1.87876,
+        "bending_peak_Nm": 7.4810098173241295,
+        "force_peak_N": 68.20248347331935,
+        "joint_angle_peak_deg": 4.3461312479192005,
+        "axis_moment_rms_Nm": 0.1377712751860504
+      },
+      "airborne_locked": {
+        "samples": 13242,
+        "axis_moment_peak_Nm": 1.58467,
+        "bending_peak_Nm": 2.1502055206436084,
+        "force_peak_N": 9.055631210875584,
+        "joint_angle_peak_deg": 0.09107794407179079,
+        "axis_moment_rms_Nm": 0.21494716400477049
+      },
+      "folding": {
+        "samples": 2663,
+        "axis_moment_peak_Nm": 0.414146,
+        "bending_peak_Nm": 15.161491501250792,
+        "force_peak_N": 123.0242397045188,
+        "joint_angle_peak_deg": 0.02804932074796799,
+        "axis_moment_rms_Nm": 0.0725647969325714
+      },
+      "folded_ground": {
+        "samples": 7240,
+        "axis_moment_peak_Nm": 0.825173,
+        "bending_peak_Nm": 3.8159991956761465,
+        "force_peak_N": 37.71155237006294,
+        "joint_angle_peak_deg": 7.774235139012088,
+        "axis_moment_rms_Nm": 0.061231828716033894
+      },
+      "_invalid_rows_skipped": 0
+    },
+    "servo_half_torque": {
+      "other": {
+        "samples": 10370,
+        "axis_moment_peak_Nm": 2.02021,
+        "bending_peak_Nm": 5.539949207739724,
+        "force_peak_N": 56.29162576387362,
+        "joint_angle_peak_deg": 0.4950527237268852,
+        "axis_moment_rms_Nm": 0.13418780175379122
+      },
+      "airborne_locked": {
+        "samples": 15952,
+        "axis_moment_peak_Nm": 2.5265,
+        "bending_peak_Nm": 2.8358408834631397,
+        "force_peak_N": 11.512725259082838,
+        "joint_angle_peak_deg": 0.11714179417229192,
+        "axis_moment_rms_Nm": 0.24214780571137098
+      },
+      "folding": {
+        "samples": 2706,
+        "axis_moment_peak_Nm": 0.775913,
+        "bending_peak_Nm": 14.641981689378012,
+        "force_peak_N": 111.4691317548495,
+        "joint_angle_peak_deg": 0.04140542531870359,
+        "axis_moment_rms_Nm": 0.10790364853335473
+      },
+      "folded_ground": {
+        "samples": 7076,
+        "axis_moment_peak_Nm": 0.455785,
+        "bending_peak_Nm": 3.3859374348744247,
+        "force_peak_N": 52.41409108915751,
+        "joint_angle_peak_deg": 0.5279221665179503,
+        "axis_moment_rms_Nm": 0.040577488794375255
+      },
+      "_invalid_rows_skipped": 0
+    },
+    "servo_quarter_torque": {
+      "other": {
+        "samples": 10712,
+        "axis_moment_peak_Nm": 1.76159,
+        "bending_peak_Nm": 8.730901215933402,
+        "force_peak_N": 66.6412594824216,
+        "joint_angle_peak_deg": 19.954286539462156,
+        "axis_moment_rms_Nm": 0.13067004533535467
+      },
+      "airborne_locked": {
+        "samples": 14704,
+        "axis_moment_peak_Nm": 1.66482,
+        "bending_peak_Nm": 2.393809268025337,
+        "force_peak_N": 10.392025497336117,
+        "joint_angle_peak_deg": 0.10218186614142614,
+        "axis_moment_rms_Nm": 0.2549735964002002
+      },
+      "folding": {
+        "samples": 2673,
+        "axis_moment_peak_Nm": 0.463866,
+        "bending_peak_Nm": 14.248326600210145,
+        "force_peak_N": 121.57107359866326,
+        "joint_angle_peak_deg": 0.030072721201472488,
+        "axis_moment_rms_Nm": 0.07797668257618226
+      },
+      "folded_ground": {
+        "samples": 7905,
+        "axis_moment_peak_Nm": 0.28781,
+        "bending_peak_Nm": 3.6140030671647194,
+        "force_peak_N": 47.93649679040804,
+        "joint_angle_peak_deg": 25.400995227314297,
+        "axis_moment_rms_Nm": 0.037814955111181825
+      },
+      "_invalid_rows_skipped": 0
+    },
+    "servo_slow": {
+      "other": {
+        "samples": 8710,
+        "axis_moment_peak_Nm": 2.16519,
+        "bending_peak_Nm": 4.344495534650714,
+        "force_peak_N": 29.846426602929554,
+        "joint_angle_peak_deg": 0.8237987178390976,
+        "axis_moment_rms_Nm": 0.13365947280785062
+      },
+      "airborne_locked": {
+        "samples": 13474,
+        "axis_moment_peak_Nm": 1.85199,
+        "bending_peak_Nm": 2.3378451506710194,
+        "force_peak_N": 9.180323506925015,
+        "joint_angle_peak_deg": 0.10514864160461355,
+        "axis_moment_rms_Nm": 0.22028793418635287
+      },
+      "folding": {
+        "samples": 2739,
+        "axis_moment_peak_Nm": 1.61842,
+        "bending_peak_Nm": 14.3720886105827,
+        "force_peak_N": 124.57117086493207,
+        "joint_angle_peak_deg": 0.04427325097067189,
+        "axis_moment_rms_Nm": 0.0857348459071777
+      },
+      "folded_ground": {
+        "samples": 7939,
+        "axis_moment_peak_Nm": 0.520942,
+        "bending_peak_Nm": 4.33373035886129,
+        "force_peak_N": 52.80067311450111,
+        "joint_angle_peak_deg": 20.146456583949032,
+        "axis_moment_rms_Nm": 0.03144769875886566
+      },
+      "_invalid_rows_skipped": 0
+    },
+    "low_traction": {
+      "other": {
+        "samples": 11655,
+        "axis_moment_peak_Nm": 1.45774,
+        "bending_peak_Nm": 8.295367021426419,
+        "force_peak_N": 62.351765858394906,
+        "joint_angle_peak_deg": 18.305829667091263,
+        "axis_moment_rms_Nm": 0.13791570306552214
+      },
+      "airborne_locked": {
+        "samples": 13468,
+        "axis_moment_peak_Nm": 1.78424,
+        "bending_peak_Nm": 2.3796515999818126,
+        "force_peak_N": 9.236349110261532,
+        "joint_angle_peak_deg": 0.10397522404018562,
+        "axis_moment_rms_Nm": 0.22470604572669722
+      },
+      "folding": {
+        "samples": 2745,
+        "axis_moment_peak_Nm": 0.881062,
+        "bending_peak_Nm": 14.018784118119553,
+        "force_peak_N": 117.35681826676114,
+        "joint_angle_peak_deg": 0.030563746031899607,
+        "axis_moment_rms_Nm": 0.11915442558638582
+      },
+      "folded_ground": {
+        "samples": 7875,
+        "axis_moment_peak_Nm": 0.901563,
+        "bending_peak_Nm": 5.090181127433875,
+        "force_peak_N": 43.08529442566686,
+        "joint_angle_peak_deg": 25.560850452155798,
+        "axis_moment_rms_Nm": 0.06278345405840571
+      },
+      "_invalid_rows_skipped": 1
+    },
+    "high_traction": {
+      "other": {
+        "samples": 9592,
+        "axis_moment_peak_Nm": 2.00411,
+        "bending_peak_Nm": 3.90225964694355,
+        "force_peak_N": 43.752974397872656,
+        "joint_angle_peak_deg": 25.353095955641365,
+        "axis_moment_rms_Nm": 0.15452222790453599
+      },
+      "airborne_locked": {
+        "samples": 13154,
+        "axis_moment_peak_Nm": 1.86026,
+        "bending_peak_Nm": 2.3132204941587386,
+        "force_peak_N": 9.147225362717428,
+        "joint_angle_peak_deg": 0.10742271109348779,
+        "axis_moment_rms_Nm": 0.22477336636028317
+      },
+      "folding": {
+        "samples": 2754,
+        "axis_moment_peak_Nm": 0.723568,
+        "bending_peak_Nm": 14.700304045167263,
+        "force_peak_N": 131.9302418750649,
+        "joint_angle_peak_deg": 0.02872369207283697,
+        "axis_moment_rms_Nm": 0.10238937266420736
+      },
+      "folded_ground": {
+        "samples": 8024,
+        "axis_moment_peak_Nm": 0.82462,
+        "bending_peak_Nm": 3.6186941077825296,
+        "force_peak_N": 51.182137859690854,
+        "joint_angle_peak_deg": 25.396411564953254,
+        "axis_moment_rms_Nm": 0.06506056081050375
+      },
+      "_invalid_rows_skipped": 1
+    },
+    "heavier_knuckles": {
+      "other": {
+        "samples": 9948,
+        "axis_moment_peak_Nm": 6.2666,
+        "bending_peak_Nm": 5.041413823359078,
+        "force_peak_N": 59.88988207132821,
+        "joint_angle_peak_deg": 14.714587502990776,
+        "axis_moment_rms_Nm": 0.29921406797719063
+      },
+      "airborne_locked": {
+        "samples": 10450,
+        "axis_moment_peak_Nm": 0.732778,
+        "bending_peak_Nm": 0.9939844565887336,
+        "force_peak_N": 4.075034492340321,
+        "joint_angle_peak_deg": 0.00015463959003242378,
+        "axis_moment_rms_Nm": 0.14399980010533528
+      },
+      "folding": {
+        "samples": 2759,
+        "axis_moment_peak_Nm": 0.583346,
+        "bending_peak_Nm": 13.597567432100345,
+        "force_peak_N": 125.21853447413446,
+        "joint_angle_peak_deg": 0.03614681867499289,
+        "axis_moment_rms_Nm": 0.10691388347422284
+      },
+      "folded_ground": {
+        "samples": 7363,
+        "axis_moment_peak_Nm": 0.771745,
+        "bending_peak_Nm": 3.307294814588049,
+        "force_peak_N": 42.03393862403332,
+        "joint_angle_peak_deg": 14.787983396547036,
+        "axis_moment_rms_Nm": 0.04997244476404004
+      },
+      "_invalid_rows_skipped": 1
+    },
+    "legacy_self_collision": {
+      "other": {
+        "samples": 573,
+        "axis_moment_peak_Nm": 331.946,
+        "bending_peak_Nm": 337.3511614055301,
+        "force_peak_N": 3775.1511549782294,
+        "joint_angle_peak_deg": 0.00025577179749317026,
+        "axis_moment_rms_Nm": 97.99490309657624
+      },
+      "folding": {
+        "samples": 6220,
+        "axis_moment_peak_Nm": 360.703,
+        "bending_peak_Nm": 409.0101331174328,
+        "force_peak_N": 4401.679724934562,
+        "joint_angle_peak_deg": 0.011233754306011999,
+        "axis_moment_rms_Nm": 174.62027457779305
+      },
+      "_invalid_rows_skipped": 1
+    },
+    "physical_rim_candidate": {
+      "other": {
+        "samples": 5916,
+        "axis_moment_peak_Nm": 1.05084,
+        "bending_peak_Nm": 3.7400446044423603,
+        "force_peak_N": 32.90672683231149,
+        "joint_angle_peak_deg": 7.245566981444877,
+        "axis_moment_rms_Nm": 0.07232069602263384
+      },
+      "airborne_locked": {
+        "samples": 5124,
+        "axis_moment_peak_Nm": 0.0327928,
+        "bending_peak_Nm": 0.6641068921107505,
+        "force_peak_N": 4.020109437012163,
+        "joint_angle_peak_deg": 0.00025745342862187924,
+        "axis_moment_rms_Nm": 0.008072948142643076
+      },
+      "folding": {
+        "samples": 1344,
+        "axis_moment_peak_Nm": 0.48096,
+        "bending_peak_Nm": 6.533805434165912,
+        "force_peak_N": 36.53624890025384,
+        "joint_angle_peak_deg": 0.026181191856943942,
+        "axis_moment_rms_Nm": 0.07128976689208327
+      },
+      "folded_ground": {
+        "samples": 2988,
+        "axis_moment_peak_Nm": 0.835632,
+        "bending_peak_Nm": 2.9746577610804237,
+        "force_peak_N": 41.62764708685803,
+        "joint_angle_peak_deg": 7.244994023649747,
+        "axis_moment_rms_Nm": 0.07185968545694696
+      },
+      "_invalid_rows_skipped": 1
+    }
+  },
+  "source_sha256": {
+    "src/ringquad_description/urdf/ringquad.urdf.xacro": "2c1f5a060b839f8566abebce15959be242e846e1c7905e1926de68dfafba8900",
+    "src/ringquad_description/plugins/SteeringLock.cc": "fe877c2599bb26f787ee65f127f6a10e0f413b217f3023beea388e893af97cb8",
+    "src/ringquad_control/ringquad_control/plant.py": "b8d2d620fdde1d7b464aad80bb6abade7e0f27dcede7a395bf557943d94892b3",
+    "src/ringquad_control/ringquad_control/mixer.py": "94af5baea13566febd2175cf57ef59a21a0998228c7cbff1d2a3485dc50d5a6c"
+  },
+  "load_semantics": "joint-frame transmitted wrench, not motor current or a measured material strength; ideal rigid constraint peaks are stiffness/time-step dependent"
+}

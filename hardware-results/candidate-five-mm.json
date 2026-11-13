@@ -1,0 +1,9 @@
+{
+  "candidate_ring_offset_m": 0.06,
+  "commanded_stop_deg": 25,
+  "audited_angle_including_stop_margin_deg": 26,
+  "body_box_inflation_m": 0.005,
+  "body_checks": 948,
+  "body_failures": [],
+  "ring_pair_failures": []
+}

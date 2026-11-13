@@ -20,7 +20,7 @@ class StalledGround:
         self.t += 1.0
         return self.t
 
-    def fly_to(self, position, yaw):
+    def fly_to(self, position, yaw, **kwargs):
         self.landings.append(yaw)
         # A repeatable fold offset can be cancelled by pre-compensating in flight.
         self.yaw = yaw + 0.1 if self.recover else 0.1

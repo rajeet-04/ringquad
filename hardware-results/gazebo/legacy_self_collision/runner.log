@@ -1,0 +1,4 @@
+run 1: ROS domain 50, Gazebo partition ringquad-test-c3b42d920d394b04ad4221d6c39a1e8e
+run 1: FAIL (/home/ubuntu/ringquad_ws/hardware-results/gazebo/legacy_self_collision/run-1.log)
+[mission-6] [INFO] [1794578385.451213012] [ringquad_mission]: 1/6 take off
+[mission-6] [ERROR] [1794578407.133028521] [ringquad_mission]: mission aborted: timed out: take-off

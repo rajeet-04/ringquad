@@ -1,0 +1,12 @@
+{
+  "case": "high_traction",
+  "settings": {
+    "friction_scale": "1.5"
+  },
+  "passed": true,
+  "returncode": 0,
+  "duration_s": 77,
+  "goal_error_cm": 1,
+  "cross_track_cm": 2.4,
+  "buffered_margin_mm": 61.0
+}

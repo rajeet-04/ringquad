@@ -1,0 +1,11 @@
+run 1: ROS domain 52, Gazebo partition ringquad-test-c875a125e8d542b6891b4da970b2075f
+run 1: FAIL (hardware-results/redesign-matrix/servo_quarter_torque/run-1.log)
+[mission-6] [INFO] [1794582483.862125175] [ringquad_mission]: 1/6 take off
+[mission-6] [INFO] [1794582487.244944415] [ringquad_mission]: 2/6 climb and fly over the wall
+[mission-6] [INFO] [1794582494.765000464] [ringquad_mission]: 3/6 land at the tunnel pad, lined up, and fold into wheels
+[mission-6] [INFO] [1794582508.539049817] [ringquad_mission]: folded on the line: heading +0.92 deg, cross-track -12.7 cm (attempt 1)
+[mission-6] [INFO] [1794582508.549233980] [ringquad_mission]: not lined up: compensate fold heading, unfold, hop and land again
+[mission-6] [INFO] [1794582550.446062393] [ringquad_mission]: folded on the line: heading +0.05 deg, cross-track +13.3 cm (attempt 2)
+[mission-6] [INFO] [1794582550.452501059] [ringquad_mission]: not lined up: compensate fold heading, unfold, hop and land again
+[mission-6] [INFO] [1794582598.367065463] [ringquad_mission]: folded on the line: heading -0.69 deg, cross-track +43.2 cm (attempt 3)
+[mission-6] [ERROR] [1794582598.372107578] [ringquad_mission]: mission aborted: could not line up with the tunnel

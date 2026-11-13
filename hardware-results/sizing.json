@@ -1,0 +1,49 @@
+{
+  "assumptions": {
+    "ring_mass_kg": 0.06,
+    "mean_radius_m": 0.1275,
+    "motor_KV": 700,
+    "motor_Kt_Nm_per_A": 0.013641852265019601,
+    "battery_usable_Wh": 35.52,
+    "electrical_to_shaft_efficiency": 0.7,
+    "mass_kg": 1.72
+  },
+  "rotor_states": [
+    {
+      "state": "stopped_fold_limit",
+      "speed_rad_s": 5.0,
+      "rpm": 47.7464829275686,
+      "outer_rim_speed_m_s": 0.675,
+      "stored_energy_per_rotor_J": 0.012609375,
+      "rim_tension_N_if_all_60g_is_uniform_rim": 0.030438382866324984,
+      "gyro_torque_Nm_at_fold_rate_04": 0.0019575000000000005,
+      "shaft_drag_Nm": 1.494565792063468e-05,
+      "ideal_torque_current_A_at_700KV": 0.0010955739462857469
+    },
+    {
+      "state": "hover",
+      "speed_rad_s": 520.0036982117014,
+      "rpm": 4965.669539787506,
+      "outer_rim_speed_m_s": 70.20049925857968,
+      "stored_energy_per_rotor_J": 136.38493990384617,
+      "rim_tension_N_if_all_60g_is_uniform_rim": 329.2262319103043,
+      "gyro_torque_Nm_at_fold_rate_04": 0.2035814478498811,
+      "shaft_drag_Nm": 0.1616545354015725,
+      "ideal_torque_current_A_at_700KV": 11.849896352864532
+    },
+    {
+      "state": "maximum",
+      "speed_rad_s": 800.0,
+      "rpm": 7639.437268410977,
+      "outer_rim_speed_m_s": 108.0,
+      "stored_energy_per_rotor_J": 322.8,
+      "rim_tension_N_if_all_60g_is_uniform_rim": 779.2226013779195,
+      "gyro_torque_Nm_at_fold_rate_04": 0.31320000000000003,
+      "shaft_drag_Nm": 0.3826088427682478,
+      "ideal_torque_current_A_at_700KV": 28.046693024915122
+    }
+  ],
+  "peak_motor_current_A_ideal": 29.321531433504738,
+  "ground_rpm_at_04m_s": 28.29421210522584,
+  "limits": "no strength allowance without actual material/section/joint data; no thermal or voltage-sag validation without resistance, motor/ESC maps and cooling data; no sensorless-startup/cogging model"
+}

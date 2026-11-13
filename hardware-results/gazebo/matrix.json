@@ -1,0 +1,91 @@
+[
+  {
+    "case": "clearance_candidate",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true"
+    },
+    "passed": true,
+    "returncode": 0,
+    "cached": true
+  },
+  {
+    "case": "servo_half_torque",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true",
+      "servo_torque": ".5"
+    },
+    "passed": true,
+    "returncode": 0,
+    "cached": true
+  },
+  {
+    "case": "servo_quarter_torque",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true",
+      "servo_torque": ".25"
+    },
+    "passed": true,
+    "returncode": 0
+  },
+  {
+    "case": "servo_slow",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true",
+      "servo_speed": ".5"
+    },
+    "passed": true,
+    "returncode": 0,
+    "cached": true
+  },
+  {
+    "case": "low_traction",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true",
+      "friction_scale": ".4"
+    },
+    "passed": true,
+    "returncode": 0
+  },
+  {
+    "case": "high_traction",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true",
+      "friction_scale": "1.5"
+    },
+    "passed": true,
+    "returncode": 0
+  },
+  {
+    "case": "heavier_knuckles",
+    "settings": {
+      "ring_offset": ".06",
+      "steering_limit_deg": "25",
+      "self_collision": "true",
+      "knuckle_mass": ".04"
+    },
+    "passed": true,
+    "returncode": 0
+  },
+  {
+    "case": "legacy_self_collision",
+    "settings": {
+      "ring_offset": ".035",
+      "steering_limit_deg": "35",
+      "self_collision": "true"
+    },
+    "passed": false,
+    "returncode": 1
+  }
+]

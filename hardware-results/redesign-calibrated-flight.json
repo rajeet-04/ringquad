@@ -1,0 +1,555 @@
+{
+  "reference_limits": {
+    "position_carrot_m_s": 0.5,
+    "yaw_carrot_rad_s": 0.2
+  },
+  "requires_measured_calibration": true,
+  "runs": [
+    {
+      "case": "nominal",
+      "seed": 0,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.042748977960138365,
+      "yaw_error_deg": 0.027301753732950244,
+      "final_speed_m_s": 0.016212186690005858,
+      "peak_tilt_deg": 9.536341986211639,
+      "peak_position_error_m": 1.2278777112695913,
+      "torque_saturation_fraction": 0.554,
+      "mean_final_shaft_power_w": 515.3278391756804,
+      "peak_gyro_lock_y_proxy_Nm": 0.22848568617557646,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "nominal",
+      "seed": 1,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.0348364603734311,
+      "yaw_error_deg": 0.2012841276551254,
+      "final_speed_m_s": 0.020697258022681134,
+      "peak_tilt_deg": 9.37281850010083,
+      "peak_position_error_m": 1.227881752088268,
+      "torque_saturation_fraction": 0.5585,
+      "mean_final_shaft_power_w": 519.432675185356,
+      "peak_gyro_lock_y_proxy_Nm": 0.21562060545947573,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "nominal",
+      "seed": 2,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.03691455465925735,
+      "yaw_error_deg": 0.18339059827063958,
+      "final_speed_m_s": 0.012498132842793488,
+      "peak_tilt_deg": 9.03213984910145,
+      "peak_position_error_m": 1.2279103571665877,
+      "torque_saturation_fraction": 0.5645,
+      "mean_final_shaft_power_w": 504.8651015176199,
+      "peak_gyro_lock_y_proxy_Nm": 0.22139141401846874,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "cg_x_10mm_16s",
+      "seed": 0,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.014082171758805375,
+      "yaw_error_deg": 0.012417071974109538,
+      "final_speed_m_s": 0.012374473587932772,
+      "peak_tilt_deg": 9.488257968120811,
+      "peak_position_error_m": 1.2360659150617441,
+      "torque_saturation_fraction": 0.57225,
+      "mean_final_shaft_power_w": 516.1447841830775,
+      "peak_gyro_lock_y_proxy_Nm": 0.23708365954569277,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.013833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "cg_x_10mm_16s",
+      "seed": 1,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.01423221109843589,
+      "yaw_error_deg": 0.03842804613838869,
+      "final_speed_m_s": 0.011386000446235604,
+      "peak_tilt_deg": 9.352309159334538,
+      "peak_position_error_m": 1.2360659150617441,
+      "torque_saturation_fraction": 0.57275,
+      "mean_final_shaft_power_w": 518.5703281101711,
+      "peak_gyro_lock_y_proxy_Nm": 0.2236232467063942,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.013833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "cg_x_10mm_16s",
+      "seed": 2,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.011422711242681146,
+      "yaw_error_deg": 0.11731450003215887,
+      "final_speed_m_s": 0.01282513809532317,
+      "peak_tilt_deg": 9.053384976913433,
+      "peak_position_error_m": 1.2360659150617441,
+      "torque_saturation_fraction": 0.57325,
+      "mean_final_shaft_power_w": 512.17923656805,
+      "peak_gyro_lock_y_proxy_Nm": 0.2300279676721799,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.013833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "cg_y_10mm",
+      "seed": 0,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.04391519234643773,
+      "yaw_error_deg": 0.03505844580995119,
+      "final_speed_m_s": 0.016289904588938187,
+      "peak_tilt_deg": 9.08409619765243,
+      "peak_position_error_m": 1.231983064270814,
+      "torque_saturation_fraction": 0.559,
+      "mean_final_shaft_power_w": 515.2823949175153,
+      "peak_gyro_lock_y_proxy_Nm": 0.22620188454308957,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.01,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "cg_y_10mm",
+      "seed": 1,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.035971524425276194,
+      "yaw_error_deg": 0.2104364384435655,
+      "final_speed_m_s": 0.020955580559118284,
+      "peak_tilt_deg": 8.839107376537902,
+      "peak_position_error_m": 1.231983064270814,
+      "torque_saturation_fraction": 0.569,
+      "mean_final_shaft_power_w": 519.1960249119484,
+      "peak_gyro_lock_y_proxy_Nm": 0.2136316278264109,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.01,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "cg_y_10mm",
+      "seed": 2,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.03768854942637486,
+      "yaw_error_deg": 0.18098444569459995,
+      "final_speed_m_s": 0.012808939839860235,
+      "peak_tilt_deg": 8.561273026061809,
+      "peak_position_error_m": 1.231983064270814,
+      "torque_saturation_fraction": 0.57,
+      "mean_final_shaft_power_w": 504.8755086227074,
+      "peak_gyro_lock_y_proxy_Nm": 0.22174305000108113,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.01,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "thrust_minus20pct",
+      "seed": 0,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.03581946072528896,
+      "yaw_error_deg": 0.007070796505486024,
+      "final_speed_m_s": 0.012564899097822057,
+      "peak_tilt_deg": 28.640763362136006,
+      "peak_position_error_m": 1.2459562148907628,
+      "torque_saturation_fraction": 0.726,
+      "mean_final_shaft_power_w": 642.0151053074952,
+      "peak_gyro_lock_y_proxy_Nm": 0.599721061948892,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.8,
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "case": "thrust_minus20pct",
+      "seed": 1,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.02984747173896365,
+      "yaw_error_deg": 0.16629422890774376,
+      "final_speed_m_s": 0.019623941733912992,
+      "peak_tilt_deg": 30.82768704625653,
+      "peak_position_error_m": 1.2459593741657176,
+      "torque_saturation_fraction": 0.7345,
+      "mean_final_shaft_power_w": 647.8818514523632,
+      "peak_gyro_lock_y_proxy_Nm": 0.709041792762973,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.8,
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "case": "thrust_minus20pct",
+      "seed": 2,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.03282215880290664,
+      "yaw_error_deg": 0.16155721147377197,
+      "final_speed_m_s": 0.016014714739092915,
+      "peak_tilt_deg": 29.95292586847541,
+      "peak_position_error_m": 1.2459562148907628,
+      "torque_saturation_fraction": 0.747,
+      "mean_final_shaft_power_w": 628.4716387164033,
+      "peak_gyro_lock_y_proxy_Nm": 0.6798205319825401,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.8,
+        0.8,
+        0.8,
+        0.8
+      ]
+    },
+    {
+      "case": "one_motor_thrust_minus20pct",
+      "seed": 0,
+      "passed": false,
+      "crash": false,
+      "position_error_m": 0.042575410314764715,
+      "yaw_error_deg": 11.959692804422732,
+      "final_speed_m_s": 0.015733244311824723,
+      "peak_tilt_deg": 15.335825048316199,
+      "peak_position_error_m": 1.2285561235742342,
+      "torque_saturation_fraction": 0.6235,
+      "mean_final_shaft_power_w": 545.3538883912353,
+      "peak_gyro_lock_y_proxy_Nm": 0.6559020739242966,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.8,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "one_motor_thrust_minus20pct",
+      "seed": 1,
+      "passed": false,
+      "crash": false,
+      "position_error_m": 0.03619116511239417,
+      "yaw_error_deg": 11.782773038758828,
+      "final_speed_m_s": 0.0216381170024501,
+      "peak_tilt_deg": 15.722982646791193,
+      "peak_position_error_m": 1.2284866435197723,
+      "torque_saturation_fraction": 0.6275,
+      "mean_final_shaft_power_w": 550.4020177697383,
+      "peak_gyro_lock_y_proxy_Nm": 0.7043502518973086,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.8,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "one_motor_thrust_minus20pct",
+      "seed": 2,
+      "passed": false,
+      "crash": false,
+      "position_error_m": 0.0375237425208301,
+      "yaw_error_deg": 11.811420018079922,
+      "final_speed_m_s": 0.012838848851031323,
+      "peak_tilt_deg": 15.78161577592769,
+      "peak_position_error_m": 1.2285926551178576,
+      "torque_saturation_fraction": 0.632,
+      "mean_final_shaft_power_w": 533.9898296718852,
+      "peak_gyro_lock_y_proxy_Nm": 0.6914022866691057,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.8,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "torque_025",
+      "seed": 0,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.04516336178781037,
+      "yaw_error_deg": 0.10193366440151572,
+      "final_speed_m_s": 0.005279765806543129,
+      "peak_tilt_deg": 9.667567530146254,
+      "peak_position_error_m": 1.2279162760983646,
+      "torque_saturation_fraction": 0.882,
+      "mean_final_shaft_power_w": 423.4284180291068,
+      "peak_gyro_lock_y_proxy_Nm": 0.23879678012039326,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "torque_025",
+      "seed": 1,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.037046779275443024,
+      "yaw_error_deg": 0.2300838934042058,
+      "final_speed_m_s": 0.019081856689569267,
+      "peak_tilt_deg": 9.643045646078658,
+      "peak_position_error_m": 1.2279110103629978,
+      "torque_saturation_fraction": 0.887,
+      "mean_final_shaft_power_w": 427.7432557554974,
+      "peak_gyro_lock_y_proxy_Nm": 0.23437176157186754,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "torque_025",
+      "seed": 2,
+      "passed": true,
+      "crash": false,
+      "position_error_m": 0.03459193854272632,
+      "yaw_error_deg": 0.2075756461206418,
+      "final_speed_m_s": 0.016226867264920213,
+      "peak_tilt_deg": 9.121195289147751,
+      "peak_position_error_m": 1.2279634103914292,
+      "torque_saturation_fraction": 0.8865,
+      "mean_final_shaft_power_w": 416.172658626137,
+      "peak_gyro_lock_y_proxy_Nm": 0.24190290031846798,
+      "calibrated_mass_kg": 1.72,
+      "calibrated_com_m": [
+        0.003833786366101993,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "case": "combined_adverse",
+      "seed": 0,
+      "passed": false,
+      "crash": true,
+      "position_error_m": 1.2142320219869658,
+      "yaw_error_deg": 41.76093768419597,
+      "final_speed_m_s": 2.5660186249676413,
+      "peak_tilt_deg": 60.164782102220265,
+      "peak_position_error_m": 1.2434012432776693,
+      "torque_saturation_fraction": 0.9936708860759493,
+      "mean_final_shaft_power_w": null,
+      "peak_gyro_lock_y_proxy_Nm": 0.04793155589352523,
+      "calibrated_mass_kg": 1.97,
+      "calibrated_com_m": [
+        0.008833786366101992,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.85,
+        0.85,
+        0.85,
+        0.85
+      ]
+    },
+    {
+      "case": "combined_adverse",
+      "seed": 1,
+      "passed": false,
+      "crash": true,
+      "position_error_m": 1.2116920318246744,
+      "yaw_error_deg": 43.27166555146126,
+      "final_speed_m_s": 2.5010554913929965,
+      "peak_tilt_deg": 60.16294079763482,
+      "peak_position_error_m": 1.2434012432776693,
+      "torque_saturation_fraction": 0.9935897435897436,
+      "mean_final_shaft_power_w": null,
+      "peak_gyro_lock_y_proxy_Nm": 0.02265045078175565,
+      "calibrated_mass_kg": 1.97,
+      "calibrated_com_m": [
+        0.008833786366101992,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.85,
+        0.85,
+        0.85,
+        0.85
+      ]
+    },
+    {
+      "case": "combined_adverse",
+      "seed": 2,
+      "passed": false,
+      "crash": true,
+      "position_error_m": 1.2106925963159496,
+      "yaw_error_deg": 41.822159144107125,
+      "final_speed_m_s": 2.469481685462348,
+      "peak_tilt_deg": 60.21945107082398,
+      "peak_position_error_m": 1.2434012432776693,
+      "torque_saturation_fraction": 0.9935483870967742,
+      "mean_final_shaft_power_w": null,
+      "peak_gyro_lock_y_proxy_Nm": 0.051495224194310976,
+      "calibrated_mass_kg": 1.97,
+      "calibrated_com_m": [
+        0.008833786366101992,
+        0.0,
+        0.0
+      ],
+      "calibrated_thrust_scale": [
+        0.85,
+        0.85,
+        0.85,
+        0.85
+      ]
+    }
+  ]
+}

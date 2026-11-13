@@ -28,7 +28,7 @@ from .ground import YawRateController
 
 MODES = ('idle', 'fly', 'land', 'drive')
 HINGES = ('hinge_fl', 'hinge_fr', 'hinge_rl', 'hinge_rr')
-FOLD_TOLERANCE = math.radians(3)
+FOLD_TOLERANCE = math.radians(0.5)
 TAKEOFF_HEIGHT = 1.0
 LAND_SPEED = 0.5
 TOUCHDOWN_HEIGHT = 0.06   # above the take-off height
@@ -41,8 +41,14 @@ FOLD_RATE = 0.4           # rad/s: ~3.5 s for the full 80 deg fold
 class RingQuadController(Node):
     def __init__(self):
         super().__init__('ringquad_controller')
-        self.active_steering = self.declare_parameter('steering', 'fixed').value == 'front'
-        self.flight = FlightController(mass=p.MASS + (0.04 if self.active_steering else 0.0))
+        self.separate_drive = self.declare_parameter('drivetrain', 'separate').value == 'separate'
+        self.base_mass = p.MASS if self.separate_drive else p.LEGACY_MASS
+        self.active_steering = self.declare_parameter('steering', 'front').value == 'front'
+        self.steering_limit_deg = self.declare_parameter('steering_limit_deg', 25.0).value
+        self.fold_ground = math.radians(self.declare_parameter('fold_ground_deg', 90.0).value)
+        self.knuckle_mass = self.declare_parameter('knuckle_mass', .02).value
+        self.contact_track = mixer.folded_contact_track(self.declare_parameter('ring_offset', .1).value, self.declare_parameter('tread_collision', 'crowned').value, self.fold_ground)
+        self.flight = FlightController(mass=self.base_mass + (2*self.knuckle_mass if self.active_steering else 0.0))
         self.steer_pubs = [self.create_publisher(Float64, '/ringquad/steer_' + name, 10) for name in ('fl', 'fr')]
         self.yaw_rate = YawRateController()
         self.mode = 'idle'
@@ -59,6 +65,7 @@ class RingQuadController(Node):
         self.cmd_vel, self.cmd_vel_t = (0.0, 0.0), -1.0
         self.last_imu_t = None
 
+        self.wheel_pub = self.create_publisher(Actuators, '/ringquad/wheel_speed', 10)
         self.motor_pub = self.create_publisher(Actuators, '/ringquad/motor_speed', 10)
         self.fold_pub = self.create_publisher(Float64, '/ringquad/fold', 10)
         self.state_pub = self.create_publisher(String, '/ringquad/state', 10)
@@ -119,7 +126,10 @@ class RingQuadController(Node):
         if mode == 'land':
             self.goal_pos = self.pos.copy()
             self.goal_yaw = yaw_of(self.rot)
-        self.flight.reset()
+        # Keep learned hover trim when entering descent; discarding it causes
+        # a lateral transient precisely where landing accuracy matters.
+        if not (self.mode == 'fly' and mode == 'land'):
+            self.flight.reset()
         self.yaw_rate.reset()
         self.fold_allowed = False
         self.fold_done = False
@@ -164,6 +174,10 @@ class RingQuadController(Node):
             return
         rate = np.array([msg.angular_velocity.x, msg.angular_velocity.y, msg.angular_velocity.z])
 
+        # Independent wheel drives brake in flight and throughout folding.
+        if self.separate_drive and (self.mode != 'drive' or not self.fold_reached(self.fold_ground)):
+            self.wheel_pub.publish(Actuators(velocity=[0.0]*4))
+
         if self.mode == 'drive':
             # Never fold spinning rings: tipping a spinning ring's axis makes a gyroscopic torque
             # that twists the whole robot (each 60 g ring holds ~0.4 Nms at landing speed).
@@ -173,8 +187,8 @@ class RingQuadController(Node):
                 self.fold_to(p.FOLD_FLIGHT, dt)
                 self.send_motors(np.zeros(4))
                 return
-            self.fold_to(p.FOLD_GROUND, dt)
-            if not self.fold_reached(p.FOLD_GROUND):
+            self.fold_to(self.fold_ground, dt)
+            if not self.fold_reached(self.fold_ground):
                 self.send_motors(np.zeros(4))
                 return
             if not self.fold_done:
@@ -182,13 +196,22 @@ class RingQuadController(Node):
                 self.fold_done = True
             speed, yaw_rate = self.cmd_vel if self.now() - self.cmd_vel_t < CMD_VEL_TIMEOUT else (0.0, 0.0)
             if self.active_steering:
-                motors, angles = mixer.steered_drive_commands(speed, yaw_rate)
+                motors, angles = mixer.steered_drive_commands(speed, yaw_rate, max_angle_deg=self.steering_limit_deg, track=self.contact_track, fold_angle=self.fold_ground)
                 for pub, angle in zip(self.steer_pubs, angles):
                     pub.publish(Float64(data=float(angle)))
-                self.send_motors(motors)
+                if self.separate_drive:
+                    self.send_motors(np.zeros(4))
+                    self.wheel_pub.publish(Actuators(velocity=[float(c) for c in motors]))
+                else:
+                    self.send_motors(motors)
             else:
                 yaw_cmd = self.yaw_rate.update(yaw_rate, rate[2], dt)
-                self.send_motors(mixer.drive_commands(speed, yaw_cmd))
+                motors = mixer.drive_commands(speed, yaw_cmd)
+                if self.separate_drive:
+                    self.send_motors(np.zeros(4))
+                    self.wheel_pub.publish(Actuators(velocity=[float(c) for c in motors]))
+                else:
+                    self.send_motors(motors)
             self.ground_z = self.pos[2]
             return
 
@@ -215,7 +238,7 @@ class RingQuadController(Node):
         thrust, torque = self.flight.update(self.pos, self.vel, self.rot, rate,
                                             self.goal_pos, self.goal_yaw, dt)
         self.send_motors(mixer.thrusts_to_commands(mixer.wrench_to_thrusts(thrust, torque,
-            [0.04 * p.ARM_XY / (p.MASS + 0.04), 0.0, 0.0] if self.active_steering else None)))
+            [2*self.knuckle_mass * p.ARM_XY / (self.base_mass + 2*self.knuckle_mass), 0.0, 0.0] if self.active_steering else None)))
 
 
 def main():

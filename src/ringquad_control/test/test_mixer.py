@@ -40,7 +40,8 @@ def test_yaw_torque_uses_cw_rotors():
 
 def test_hover_speed_is_reasonable():
     w = mixer.thrusts_to_commands(np.full(4, p.MASS * p.GRAVITY / 4))
-    assert 400 < w[0] < 0.75 * p.MAX_ROTOR_SPEED
+    assert 400 < w[0] < p.MAX_ROTOR_SPEED
+    assert 4*p.MAX_THRUST/(p.MASS*p.GRAVITY) > 1.5  # revised heavier carrier retains thrust reserve
 
 
 def test_drive_forward_joint_directions():

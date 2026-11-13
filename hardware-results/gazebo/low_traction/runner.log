@@ -1,0 +1,2 @@
+run 1: ROS domain 51, Gazebo partition ringquad-test-f775d9d22e24457baef63e1c6b8197a8
+run 1: PASS (/home/ubuntu/ringquad_ws/hardware-results/gazebo/low_traction/run-1.log)

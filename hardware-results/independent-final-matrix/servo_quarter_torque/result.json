@@ -1,0 +1,12 @@
+{
+  "case": "servo_quarter_torque",
+  "settings": {
+    "servo_torque": ".25"
+  },
+  "passed": true,
+  "returncode": 0,
+  "duration_s": 72,
+  "goal_error_cm": 4,
+  "cross_track_cm": 1.0,
+  "buffered_margin_mm": 42.3
+}

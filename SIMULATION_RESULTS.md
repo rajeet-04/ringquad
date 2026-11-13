@@ -1,5 +1,9 @@
 # Isolated simulation validation — 2026-11-13
 
+**Current simulation design:** independent lightweight propellers and wheel drives, upright 90° fold, 100 mm ring-axis standoff, rear wheel carriers, front steering with 25° stops, physical crowned rims and self-collision enabled. Nominal mass budget is 1.98 kg. See [REDESIGN.md](REDESIGN.md) for the mechanism and regression evidence. Earlier shared-motor results below are historical; hardware qualification remains open.
+
+The later [hardware audit](HARDWARE_VALIDATION.md) found default-geometry interference and failures with a full-width rim model. The mission results below describe the approximate simulation configuration, not build-ready hardware.
+
 Branch: `experiment/tunnel-control`, follow-up to `64a101b`.
 Environment: existing Podman image, ROS 2 Jazzy and Gazebo Harmonic; realistic motors, noisy IMU, rounded contact, DART/Bullet. The robot mechanism, torque and friction limits are unchanged by this follow-up.
 

@@ -16,14 +16,29 @@ import time
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--steering', choices=('fixed', 'front'), default='fixed')
-    parser.add_argument('--tread', choices=('rubber', 'mixed', 'omni'), default='omni')
+    parser.add_argument('--model-arg', nargs=2, action='append', default=[], metavar=('NAME','VALUE'))
+    parser.add_argument('--steering', choices=('fixed', 'front'), default='front')
+    parser.add_argument('--tread', choices=('rubber', 'mixed', 'omni'), default='rubber')
     parser.add_argument('--runs', type=int, default=3)
     parser.add_argument('--output', type=Path, default=Path('/tmp/ringquad-demo'))
     parser.add_argument('--timeout', type=float, default=180)
     args = parser.parse_args()
     if args.runs < 1:
         parser.error('--runs must be positive')
+    allowed = {'drivetrain','fold_ground_deg','servo_torque','servo_speed','friction_scale','knuckle_mass','ring_offset','steering_limit_deg','self_collision','tread_collision'}
+    for name, value in args.model_arg:
+        if name not in allowed:
+            parser.error(f'unsupported model argument: {name}')
+        if name == 'drivetrain':
+            if value not in ('shared','separate'):parser.error('unknown drivetrain')
+        elif name == 'tread_collision':
+            if value not in ('rounded','cylinder','crowned'):parser.error('unknown tread collision')
+        elif name == 'self_collision':
+            if value not in ('true','false'):parser.error('self_collision must be true or false')
+        else:
+            import math
+            if not math.isfinite(float(value)) or float(value) <= 0:
+                parser.error('numeric model arguments must be finite and positive')
     args.output.mkdir(parents=True, exist_ok=True)
     for run in range(1, args.runs + 1):
         path = args.output / f'run-{run}.log'
@@ -46,7 +61,7 @@ def main():
         with path.open('w') as log:
             process = subprocess.Popen(
                 ['ros2', 'launch', 'ringquad_control', 'demo.launch.py',
-                 f'tread:={args.tread}', f'steering:={args.steering}', 'rviz:=false', 'gui:=false'],
+                 f'tread:={args.tread}', f'steering:={args.steering}', 'rviz:=false', 'gui:=false'] + [f'{n}:={v}' for n,v in args.model_arg],
                 stdout=log, stderr=subprocess.STDOUT, start_new_session=True, env=env)
             try:
                 deadline = time.monotonic() + args.timeout

@@ -1,0 +1,55 @@
+[INFO] [launch]: All log files can be found below /home/ubuntu/.ros/log/2026-11-13-15-09-20-358638-e61717a2ec2a-1293
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [gazebo-1]: process started with pid [1297]
+[INFO] [robot_state_publisher-2]: process started with pid [1298]
+[INFO] [create-3]: process started with pid [1299]
+[INFO] [parameter_bridge-4]: process started with pid [1300]
+[INFO] [controller-5]: process started with pid [1302]
+[create-3] [INFO] [1794582561.432488646] [ros_gz_sim]: Requesting list of world names.
+[robot_state_publisher-2] [INFO] [1794582561.438527349] [robot_state_publisher]: Robot initialized
+[create-3] [INFO] [1794582561.979060598] [ros_gz_sim]: Waiting messages on topic [robot_description].
+[create-3] [INFO] [1794582561.990582330] [ros_gz_sim]: Entity creation successful.
+[INFO] [create-3]: process has finished cleanly [pid 1299]
+[parameter_bridge-4] [INFO] [1794582562.465359400] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/clock (gz.msgs.Clock) -> /clock (rosgraph_msgs/msg/Clock)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.465910407] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/joint_states (gz.msgs.Model) -> /joint_states (sensor_msgs/msg/JointState)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.470333422] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/odom (gz.msgs.Odometry) -> /odom (nav_msgs/msg/Odometry)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.472114737] [ros_gz_bridge]: Creating GZ->ROS Bridge: [/imu (gz.msgs.IMU) -> /imu (sensor_msgs/msg/Imu)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.472357448] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/fold (std_msgs/msg/Float64) -> /ringquad/fold (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.472743328] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/motor_speed (actuator_msgs/msg/Actuators) -> /ringquad/motor_speed (gz.msgs.Actuators)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.474549393] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fl (std_msgs/msg/Float64) -> /ringquad/steer_fl (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582562.474914439] [ros_gz_bridge]: Creating ROS->GZ Bridge: [/ringquad/steer_fr (std_msgs/msg/Float64) -> /ringquad/steer_fr (gz.msgs.Double)] (Lazy 0)
+[parameter_bridge-4] [INFO] [1794582563.569561113] [ros_gz_bridge]: Passing message from ROS std_msgs/msg/Float64 to Gazebo gz.msgs.Double (showing msg only once per type)
+[parameter_bridge-4] [INFO] [1794582563.569624572] [ros_gz_bridge]: Passing message from ROS actuator_msgs/msg/Actuators to Gazebo gz.msgs.Actuators (showing msg only once per type)
+[INFO] [mission-6]: process started with pid [1391]
+[mission-6] [INFO] [1794582574.950492278] [ringquad_mission]: 1/6 take off
+[controller-5] [INFO] [1794582574.999735953] [ringquad_controller]: mode idle -> fly
+[mission-6] [INFO] [1794582578.264188409] [ringquad_mission]: 2/6 climb and fly over the wall
+[mission-6] [INFO] [1794582585.714792621] [ringquad_mission]: 3/6 land at the tunnel pad, lined up, and fold into wheels
+[controller-5] [INFO] [1794582591.616832873] [ringquad_controller]: mode fly -> land
+[controller-5] [INFO] [1794582593.861451767] [ringquad_controller]: touchdown, mode land -> idle
+[controller-5] [INFO] [1794582593.987190740] [ringquad_controller]: mode idle -> drive
+[mission-6] [INFO] [1794582600.640915786] [ringquad_mission]: folded on the line: heading +0.56 deg, cross-track +4.0 cm (attempt 1)
+[mission-6] [INFO] [1794582600.644375420] [ringquad_mission]: 4/6 drive through the tunnel
+[mission-6] [INFO] [1794582600.648342812] [ringquad_mission]:   x  3.77 m  cross-track  +4.0 cm  heading  +0.6 deg  yaw-rate cmd -0.27
+[mission-6] [INFO] [1794582601.141354263] [ringquad_mission]:   x  3.94 m  cross-track  -0.8 cm  heading  -1.9 deg  yaw-rate cmd +0.10
+[mission-6] [INFO] [1794582601.641223191] [ringquad_mission]:   x  4.14 m  cross-track  -5.6 cm  heading  +3.3 deg  yaw-rate cmd +0.26
+[mission-6] [INFO] [1794582602.148035261] [ringquad_mission]:   x  4.35 m  cross-track  -9.8 cm  heading +11.6 deg  yaw-rate cmd +0.26
+[mission-6] [INFO] [1794582602.647766395] [ringquad_mission]:   x  4.57 m  cross-track -11.9 cm  heading +18.7 deg  yaw-rate cmd +0.16
+[mission-6] [INFO] [1794582603.194087796] [ringquad_mission]:   x  4.78 m  cross-track -12.8 cm  heading +22.6 deg  yaw-rate cmd +0.08
+[mission-6] [INFO] [1794582603.696998893] [ringquad_mission]:   x  5.00 m  cross-track -13.1 cm  heading +24.6 deg  yaw-rate cmd +0.03
+[mission-6] [ERROR] [1794582603.700816449] [ringquad_mission]: mission aborted: drifted -13.1 cm off the line, stopped
+[WARNING] [launch]: user interrupted with ctrl-c (SIGINT)
+[INFO] [mission-6]: sending signal 'SIGINT' to process[mission-6]
+[INFO] [controller-5]: sending signal 'SIGINT' to process[controller-5]
+[INFO] [parameter_bridge-4]: sending signal 'SIGINT' to process[parameter_bridge-4]
+[INFO] [robot_state_publisher-2]: sending signal 'SIGINT' to process[robot_state_publisher-2]
+[INFO] [gazebo-1]: sending signal 'SIGINT' to process[gazebo-1]
+[parameter_bridge-4] [INFO] [1794582603.766415413] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[ERROR] [mission-6]: process has died [pid 1391, exit code -2, cmd '/home/ubuntu/ringquad_ws/install/ringquad_control/lib/ringquad_control/mission --ros-args --params-file /tmp/launch_params_7gqtgh_p'].
+[robot_state_publisher-2] [INFO] [1794582603.767571472] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [parameter_bridge-4]: process has finished cleanly [pid 1300]
+[INFO] [robot_state_publisher-2]: process has finished cleanly [pid 1298]
+[INFO] [controller-5]: process has finished cleanly [pid 1302]
+[ERROR] [gazebo-1]: process[gazebo-1] failed to terminate '5' seconds after receiving 'SIGINT', escalating to 'SIGTERM'
+[INFO] [gazebo-1]: sending signal 'SIGTERM' to process[gazebo-1]
+[ERROR] [gazebo-1]: process has died [pid 1297, exit code -15, cmd 'ruby /opt/ros/jazzy/opt/gz_tools_vendor/bin/gz sim -r -s /home/ubuntu/ringquad_ws/install/ringquad_description/share/ringquad_description/worlds/demo.sdf --force-version 8'].

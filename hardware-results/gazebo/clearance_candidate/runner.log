@@ -1,0 +1,2 @@
+run 1: ROS domain 51, Gazebo partition ringquad-test-0b1f5c5a5cd74550b6d7ff8a179f987d
+run 1: PASS (/home/ubuntu/ringquad_ws/hardware-results/gazebo/clearance_candidate/run-1.log)

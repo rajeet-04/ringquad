@@ -1,0 +1,2 @@
+run 1: ROS domain 50, Gazebo partition ringquad-test-559e6b1913c04235aa4ad8de04967581
+run 1: PASS (hardware-results/redesign-matrix/heavier_knuckles_calibrated/run-1.log)

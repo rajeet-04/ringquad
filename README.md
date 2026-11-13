@@ -1,6 +1,10 @@
 # RingQuad
 
-A quadrotor whose ring propellers fold down into wheels. Flies over obstacles, drives through spaces it cannot fly through. ROS 2 Jazzy + Gazebo Harmonic. Design: [DESIGN.md](DESIGN.md).
+**Current simulation design:** independent lightweight propellers and wheel drives, upright 90° fold, 100 mm ring-axis standoff, rear wheel carriers, front steering with 25° stops, physical crowned rims and self-collision enabled. Nominal mass budget is 1.98 kg. See [REDESIGN.md](REDESIGN.md) for the mechanism and regression evidence. Earlier shared-motor results below are historical; hardware qualification remains open.
+
+**Hardware-validation update:** deeper checks found chassis/rim interference and strong contact-model sensitivity. The successful controller demos are not hardware qualification. See [HARDWARE_VALIDATION.md](HARDWARE_VALIDATION.md) before using this model as a build specification.
+
+A quadrotor whose propellers sit inside rings that fold down into independently driven wheels. Flies over obstacles, drives through spaces it cannot fly through. ROS 2 Jazzy + Gazebo Harmonic. Design: [DESIGN.md](DESIGN.md).
 
 ![Demo: fly over the wall, land, fold into wheels, drive through the tunnel, unfold, fly to the goal](media/demo.gif)
 
@@ -27,7 +31,7 @@ ros2 launch ringquad_description display.launch.py
 ```
 
 ```bash
-# demo course + autonomous mission (omni tread by default)
+# demo course + autonomous mission (front steering and rubber tread by default)
 ros2 launch ringquad_control demo.launch.py
 ```
 
@@ -107,7 +111,7 @@ The first version simulated ideal motors. Now the motors have a 0.4 Nm torque li
 
 ## Tunnel-control experiment
 
-The demo now defaults to `tread:=omni`. Rubber and mixed remain selectable. The validation runner isolates every ROS domain and Gazebo transport partition and removes server descendants after each run; see SIMULATION_RESULTS.md for tread-specific results. The simulated tyre collision is a convex rounded profile with the original 0.135 m outer radius and 0.03 m width; ring mass and inertia are unchanged. It approximates rounded tread contact, not individual omni rollers. DART uses the Bullet collision detector. These contact assumptions require hardware validation.
+The earlier experiment defaulted to `tread:=omni`; the redesign uses `tread:=rubber steering:=front`. Rubber and mixed remain selectable. The validation runner isolates every ROS domain and Gazebo transport partition and removes server descendants after each run; see SIMULATION_RESULTS.md for tread-specific results. The simulated tyre collision is a convex rounded profile with the original 0.135 m outer radius and 0.03 m width; ring mass and inertia are unchanged. It approximates rounded tread contact, not individual omni rollers. DART uses the Bullet collision detector. These contact assumptions require hardware validation.
 
 Before driving, the mission actively aligns its heading within 1 degree after folding. If ground alignment stalls for 60 simulated seconds, it stops, compensates the measured heading error in the next aerial landing, and retries, up to three landing attempts. Forward motion previously began with up to 10 degrees of heading error despite weak steering. Cross-track abort limits remain 5 cm at the tunnel and 15 cm on the open approach.
 
@@ -123,4 +127,4 @@ The test runner takes a file lock on its ROS domain so concurrent runs do not sh
 
 ## Optional front steering
 
-`steering:=front tread:=rubber` adds two simulated steering knuckles and Ackermann wheel control. The original mechanism remains the default (`steering:=fixed`). See [STEERING.md](STEERING.md) for hardware assumptions, flight trim, limitations and test commands.
+`steering:=front tread:=rubber` adds two simulated steering knuckles and Ackermann wheel control. The original mechanism is selectable with `steering:=fixed`; the redesigned default is `steering:=front`. See [STEERING.md](STEERING.md) for hardware assumptions, flight trim, limitations and test commands.

@@ -1,0 +1,2 @@
+run 1: ROS domain 50, Gazebo partition ringquad-test-e8fd43eafc0b475eb13143b7d7230b4c
+run 1: PASS (hardware-results/final-matrix/high_traction/run-1.log)

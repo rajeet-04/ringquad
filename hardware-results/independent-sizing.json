@@ -1,0 +1,14 @@
+{
+  "nominal_mass_kg": 1.98,
+  "hover_speed_rad_s": 607.4934718760347,
+  "hover_speed_rpm": 5801.1353367076945,
+  "static_max_thrust_to_weight": 1.7341902621945664,
+  "assumed_flight_spin_inertia_kg_m2": 0.00011,
+  "estimated_prop_and_bell_energy_at_hover_J_each": 20.297657510459924,
+  "estimated_prop_and_bell_energy_at_max_J_each": 35.2,
+  "estimated_legacy_spinning_rim_energy_at_legacy_hover_J_each": 136.38493990384617,
+  "wheel_energy_at_0_4m_s_J_each": 0.0042962962962962955,
+  "hover_angular_momentum_Nms_each": 0.06682428190636382,
+  "legacy_hover_angular_momentum_Nms_each": 0.5245537305710538,
+  "limits": "assumed rotor inertia/thrust coefficients; no aerodynamic interference, electrical, thermal, fatigue or containment certification"
+}

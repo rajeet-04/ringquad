@@ -1,0 +1,2 @@
+run 1: ROS domain 50, Gazebo partition ringquad-test-a6973666e1f9426f97f5e28ccb739aef
+run 1: PASS (/home/ubuntu/ringquad_ws/hardware-results/gazebo/servo_quarter_torque/run-1.log)

@@ -1,0 +1,7 @@
+PASS  take off to 1 m: error 1.7 cm
+PASS  fly to point + yaw 90: error 5.6 cm, yaw error 2.1 deg
+PASS  land and disarm: mode=idle z=0.04, height above start -0.6 cm
+PASS  fold into wheels: 89.7, 89.8, 90.0, 90.0
+PASS  drive forward at 0.5 m/s: 0.50 m/s forward, 0.00 m/s sideways
+PASS  turn request does not stall the drive (keeps > half the speed): 0.40 m/s while asking 0.4 m/s + 0.3 rad/s; achieved yaw rate 0.30 rad/s
+FAIL  unfold: 17.2, 16.3, 17.1, 16.1

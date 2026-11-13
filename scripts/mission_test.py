@@ -5,6 +5,7 @@ Take off, fly to a point while turning 90 deg, land, fold into wheels, drive, tu
 Run inside the container:  python3 ~/ringquad_ws/scripts/mission_test.py
 """
 import math
+from ringquad_control.params import FOLD_GROUND
 import sys
 import time
 
@@ -50,8 +51,11 @@ class MissionTest(Node):
 
     def wait(self, seconds):
         """Spin and resend the current mode, goal and cmd_vel at 10 Hz."""
-        end = time.time() + seconds
-        while time.time() < end:
+        end = self.sim_t + seconds
+        watchdog = time.monotonic() + max(30., seconds*20)
+        while self.sim_t < end:
+            if time.monotonic() > watchdog:
+                raise RuntimeError('simulation clock did not advance before wall-clock watchdog')
             if self.mode:
                 self.mode_pub.publish(String(data=self.mode))
             if self.goal:
@@ -121,7 +125,7 @@ def main():
     # 4. drive: fold into wheels, then 0.5 m/s forward (speeds use sim time: Gazebo runs slower than real time)
     n.mode = 'drive'
     n.wait(8.0)
-    folded = all(abs(a - math.radians(80)) < math.radians(3) for a in n.hinges.values())
+    folded = all(abs(a - FOLD_GROUND) < math.radians(3) for a in n.hinges.values())
     results.append(check('fold into wheels', folded and len(n.hinges) == 4,
                          ', '.join(f'{math.degrees(a):.1f}' for a in n.hinges.values())))
     heading = yaw_from(n.pose.orientation)

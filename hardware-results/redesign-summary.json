@@ -1,0 +1,336 @@
+{
+  "interface_checks": {
+    "interface_returncode": 0,
+    "returncode": 0,
+    "passed": true,
+    "measurements": [
+      {
+        "requested_yaw_rate": 0.2,
+        "measured_yaw_rate": 0.20021167934624373,
+        "steering": {
+          "steer_fl": 0.17919845909273852,
+          "steer_fr": 0.15004683661079163
+        },
+        "max_prop_speed_rad_s": 1.509140035160783e-13,
+        "mean_wheel_speed_rad_s": 2.98100506709262
+      },
+      {
+        "requested_yaw_rate": -0.2,
+        "measured_yaw_rate": -0.1999377257170428,
+        "steering": {
+          "steer_fl": -0.15014316006703238,
+          "steer_fr": -0.17925022845184282
+        },
+        "max_prop_speed_rad_s": 2.1213031331512866e-12,
+        "mean_wheel_speed_rad_s": 2.9859251839957053
+      }
+    ]
+  },
+  "source_hashes_match_matrix": true,
+  "flight_stress": {
+    "runs": 60,
+    "accuracy_passes": 51,
+    "crashes": 0
+  },
+  "base_commit": "8178394d22b7b0afe5d09e484e43e806fdc563cc",
+  "design": {
+    "fold_deg": 90,
+    "axis_standoff_m": 0.1,
+    "drivetrain": "independent_propeller_and_wheel",
+    "nominal_mass_kg": 1.98,
+    "carrier_drive_mass_budget_kg_each": 0.05,
+    "steering_stop_deg": 25,
+    "tread": "elliptical_crown_270x30mm",
+    "self_collision": true
+  },
+  "source_hashes": {
+    "src/ringquad_control/setup.py": "0f36d341daa05fbd0bb4b6a6e4f6a6d0ee4830571f7db5445c6350944d2ec1dc",
+    "src/ringquad_control/test/test_steering.py": "f2ca634707af6e910c03eedb6cfef50baaa7e7a5e66e7b5e5008231148b998d9",
+    "src/ringquad_control/test/test_ground.py": "9fe1c4572e4e79aa3f30d17428ce150015e8b3f0b6ab38c6ee6e29054cba5834",
+    "src/ringquad_control/test/test_mixer.py": "a062fbb66a30eb214e2d7d063a9bec710cb244e568631e1812cbbd9b9aa0d0d1",
+    "src/ringquad_control/test/test_mission_footprint.py": "c0289e82106c0d26cacb278cebdb4c5d9470a52d3eccee0fe362bbe1591720d1",
+    "src/ringquad_control/test/test_footprint.py": "28887d3cede5617268195a868a99ca4f848dc2632145da07ffcae1620a4d9290",
+    "src/ringquad_control/test/test_mission_recovery.py": "e946a4083080607868b123fe4dc7c5b520fb44361d741065ee3e5d7c8a3b576f",
+    "src/ringquad_control/test/test_flight.py": "cd0ef7398422fa8c435960481c86db4bdaa0f808da5c59f99905cd0bd67e307b",
+    "src/ringquad_control/test/test_hardware_plant.py": "477a9dfcb9a47326e5b1c52915fd6cceab2df5e238944f81cd1235726c145016",
+    "src/ringquad_control/launch/sim.launch.py": "66976bb6a7c63471aeff64ac73c57fb10068e7005ccf6637b2f388add52572f1",
+    "src/ringquad_control/launch/demo.launch.py": "ee0873c5aad252ebee1944d99cc1732ec974eb50869778f36d728ba6ec57fac0",
+    "src/ringquad_control/ringquad_control/params.py": "8bc02850d114cfe91ec1742243eb7226bc974d3dc4887d921b1f1c1bf1b427f6",
+    "src/ringquad_control/ringquad_control/footprint.py": "75503ebcb760644af0e3d0167a56c72a88d0de6cc374042126099ac288416e38",
+    "src/ringquad_control/ringquad_control/plant.py": "36a381fff972f81d0e1904e15ef984bedb59274b79af9f7d244eb3d9ecec8c2e",
+    "src/ringquad_control/ringquad_control/flight.py": "60c679a19e6e3044f04c0e3de820cd7d929af83832575ac7a13d6b7cba2564a1",
+    "src/ringquad_control/ringquad_control/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/ringquad_control/ringquad_control/mission.py": "ae3385f74197c04dfbbcfd6fddf2e97d5efa49e599f4b152aa366e3c7d4baedb",
+    "src/ringquad_control/ringquad_control/node.py": "f7dc4e2e33f9cf3d5ba23af4db65c50f39f02de1ac9d2d22697c3d0e597cb5b6",
+    "src/ringquad_control/ringquad_control/mixer.py": "07ecc14eb84810975d1af717474487c8f78adfd618965745ffc23127200eba0f",
+    "src/ringquad_control/ringquad_control/ground.py": "079472042efb2dd9c197e9d7bf0fd880336092878ebeffc8a55d12f9be52754a",
+    "src/ringquad_description/config/bridge.yaml": "a682457099ccf996c08d585dcfa65bbeb709b3c9f3ad6be99b9dd16fe06bdad5",
+    "src/ringquad_description/urdf/ringquad.urdf.xacro": "8a03a316ff9e065c6ae029ba685a86671adab3dfb651f8d01a3e1a8c22a2cb80",
+    "src/ringquad_description/plugins/SteeringLock.cc": "fe877c2599bb26f787ee65f127f6a10e0f413b217f3023beea388e893af97cb8",
+    "src/ringquad_description/launch/display.launch.py": "813344967ba8af6df81f3186a9007b567d3b57e138022a40f3e99a9a9b3b08b3",
+    "src/ringquad_description/launch/gazebo.launch.py": "0ab0823bdad5742909767eeeb4b225f21917cf9da60b4b3ca411257f026596b5",
+    "src/ringquad_description/worlds/demo.sdf": "d057e86835cf3b8aaca140054cf0f31c8759891c66ae266ef12dce2c36fcbd78",
+    "src/ringquad_description/worlds/ringquad.sdf": "7fb2cc044b3238a877a2c527a70ecf37cb0416a18e2c6fe7e492b17d2375f0bc",
+    "src/ringquad_description/meshes/crowned_rim.stl": "9683e2ff639a5aac8dfd6254351e545578c9f69e9b2e3f340d7f78cf83160e63",
+    "src/ringquad_description/meshes/crowned_tread_hull.stl": "c9da330c512e15f522546e1c8dec3c29be0e922eeee48c8be777b6ca51b2a0a0",
+    "src/ringquad_description/meshes/rounded_tread.stl": "1a81bcbc7ac892bbe88a43655f79bc6d350b342280334ffbc18aeff4388e2fd3"
+  },
+  "geometry": {
+    "candidate_ring_offset_m": 0.1,
+    "includes_rear_carrier": true,
+    "envelope_padding_m": 0.0002,
+    "envelope": "full_30mm_rim_sweep",
+    "fold_ground_deg": 90,
+    "commanded_stop_deg": 25,
+    "audited_angle_including_stop_margin_deg": 26,
+    "body_box_inflation_m": 0.005,
+    "body_checks": 2028,
+    "body_failures": [],
+    "ring_pair_failures": []
+  },
+  "nominal": [
+    {
+      "log": "hardware-results/final-default/run-1.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 74,
+      "goal_error_cm": 9,
+      "cross_track_cm": 1.4,
+      "buffered_margin_mm": 38.5,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/final-default/run-2.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 76,
+      "goal_error_cm": 2,
+      "cross_track_cm": 1.0,
+      "buffered_margin_mm": 39.6,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/final-default/run-3.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 74,
+      "goal_error_cm": 4,
+      "cross_track_cm": 1.4,
+      "buffered_margin_mm": 38.8,
+      "aborted": false
+    }
+  ],
+  "sensitivity": [
+    {
+      "case": "heavier_knuckles_calibrated",
+      "settings": {
+        "knuckle_mass": ".04"
+      },
+      "passed": true,
+      "returncode": 0,
+      "duration_s": 72,
+      "goal_error_cm": 2,
+      "cross_track_cm": 0.7,
+      "buffered_margin_mm": 37.8
+    },
+    {
+      "case": "high_traction",
+      "settings": {
+        "friction_scale": "1.5"
+      },
+      "passed": true,
+      "returncode": 0,
+      "duration_s": 76,
+      "goal_error_cm": 3,
+      "cross_track_cm": 1.1,
+      "buffered_margin_mm": 38.6
+    },
+    {
+      "case": "low_traction",
+      "settings": {
+        "friction_scale": ".4"
+      },
+      "passed": true,
+      "returncode": 0,
+      "duration_s": 75,
+      "goal_error_cm": 2,
+      "cross_track_cm": 0.1,
+      "buffered_margin_mm": 37.5
+    },
+    {
+      "case": "servo_quarter_torque",
+      "settings": {
+        "servo_torque": ".25"
+      },
+      "passed": true,
+      "returncode": 0,
+      "duration_s": 75,
+      "goal_error_cm": 2,
+      "cross_track_cm": 0.8,
+      "buffered_margin_mm": 37.6
+    },
+    {
+      "case": "servo_slow",
+      "settings": {
+        "servo_speed": ".5"
+      },
+      "passed": true,
+      "returncode": 0,
+      "duration_s": 72,
+      "goal_error_cm": 3,
+      "cross_track_cm": 1.1,
+      "buffered_margin_mm": 38.5
+    }
+  ],
+  "simulation_regressions_passed": true,
+  "hardware_qualified": false,
+  "earlier_upright_square_rim_iterations": [
+    {
+      "log": "hardware-results/redesign-90-initial/run-1.log",
+      "completed": true,
+      "passed": false,
+      "duration_s": 74,
+      "goal_error_cm": 2,
+      "cross_track_cm": null,
+      "buffered_margin_mm": null,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/redesign-default/run-1.log",
+      "completed": false,
+      "passed": false,
+      "duration_s": null,
+      "goal_error_cm": null,
+      "cross_track_cm": null,
+      "buffered_margin_mm": null,
+      "aborted": true
+    },
+    {
+      "log": "hardware-results/redesign-tight-landing/run-1.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 68,
+      "goal_error_cm": 1,
+      "cross_track_cm": 2.2,
+      "buffered_margin_mm": 58.6,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/redesign-tight-landing/run-2.log",
+      "completed": false,
+      "passed": false,
+      "duration_s": null,
+      "goal_error_cm": null,
+      "cross_track_cm": null,
+      "buffered_margin_mm": null,
+      "aborted": true
+    },
+    {
+      "log": "hardware-results/redesign-final-default/run-1.log",
+      "completed": false,
+      "passed": false,
+      "duration_s": null,
+      "goal_error_cm": null,
+      "cross_track_cm": null,
+      "buffered_margin_mm": null,
+      "aborted": true
+    },
+    {
+      "log": "hardware-results/redesign-crowned-default/run-1.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 70,
+      "goal_error_cm": 1,
+      "cross_track_cm": 2.6,
+      "buffered_margin_mm": 60.7,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/redesign-crowned-default/run-2.log",
+      "completed": false,
+      "passed": false,
+      "duration_s": null,
+      "goal_error_cm": null,
+      "cross_track_cm": 3.0,
+      "buffered_margin_mm": 61.2,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/redesign-bounded-default/run-1.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 91,
+      "goal_error_cm": 2,
+      "cross_track_cm": 3.7,
+      "buffered_margin_mm": 61.2,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/redesign-bounded-default/run-2.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 92,
+      "goal_error_cm": 1,
+      "cross_track_cm": 1.5,
+      "buffered_margin_mm": 62.5,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/redesign-bounded-default/run-3.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 118,
+      "goal_error_cm": 1,
+      "cross_track_cm": 3.4,
+      "buffered_margin_mm": 60.8,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/separate-drive-default/run-1.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 74,
+      "goal_error_cm": 3,
+      "cross_track_cm": 1.3,
+      "buffered_margin_mm": 61.8,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/separate-drive-default/run-2.log",
+      "completed": false,
+      "passed": false,
+      "duration_s": null,
+      "goal_error_cm": null,
+      "cross_track_cm": null,
+      "buffered_margin_mm": null,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/independent-final-default/run-1.log",
+      "completed": true,
+      "passed": true,
+      "duration_s": 74,
+      "goal_error_cm": 3,
+      "cross_track_cm": 2.2,
+      "buffered_margin_mm": 41.4,
+      "aborted": false
+    },
+    {
+      "log": "hardware-results/independent-final-default/run-2.log",
+      "completed": false,
+      "passed": false,
+      "duration_s": null,
+      "goal_error_cm": null,
+      "cross_track_cm": null,
+      "buffered_margin_mm": null,
+      "aborted": false
+    }
+  ],
+  "limitations": [
+    "sampled rigid geometry",
+    "uncalibrated contact law",
+    "ideal positive latch",
+    "unknown material and actuator maps",
+    "9 of 60 thrust-loss/combined challenge runs miss position accuracy; none crash"
+  ]
+}

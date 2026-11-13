@@ -1,0 +1,12 @@
+{
+  "case": "low_traction",
+  "settings": {
+    "friction_scale": ".4"
+  },
+  "passed": true,
+  "returncode": 0,
+  "duration_s": 75,
+  "goal_error_cm": 2,
+  "cross_track_cm": 0.1,
+  "buffered_margin_mm": 37.5
+}

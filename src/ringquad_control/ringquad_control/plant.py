@@ -20,9 +20,9 @@ def skew(v):
 
 @dataclass
 class Rotor:
-    izz: float = p.MOTOR_ROTOR_IZZ + p.RING_IZZ
+    izz: float = p.MOTOR_ROTOR_IZZ + p.PLAIN_PROP_IZZ
     max_torque: float = p.MOTOR_MAX_TORQUE
-    rim_drag: float = p.RIM_DRAG
+    rim_drag: float = 0.0
     tau: float = p.MOTOR_TAU_UP          # speed-loop time constant when not torque limited
 
     @classmethod
@@ -32,6 +32,7 @@ class Rotor:
 
     @classmethod
     def ring(cls, mass, **kw):
+        kw.setdefault('rim_drag', p.RIM_DRAG)
         return cls(izz=p.MOTOR_ROTOR_IZZ + p.ring_izz(mass), **kw)
 
     @classmethod
@@ -45,6 +46,8 @@ class Plant:
     mass: float = p.MASS
     inertia: np.ndarray = field(default_factory=lambda: p.INERTIA.copy())
     dt: float = 0.001
+    centre_of_mass: np.ndarray = field(default_factory=lambda: np.zeros(3))
+    thrust_scale: np.ndarray = field(default_factory=lambda: np.ones(4))
 
     def __post_init__(self):
         self.pos, self.vel = np.zeros(3), np.zeros(3)
@@ -66,8 +69,8 @@ class Plant:
         self.joint_vel += (torque - drag) / r.izz * self.dt
         self.motor_torque = torque
 
-        f = p.K_THRUST * self.joint_vel ** 2
-        x, y = p.ROTOR_XY[:, 0], p.ROTOR_XY[:, 1]
+        f = p.K_THRUST * self.joint_vel ** 2 * self.thrust_scale
+        x, y = p.ROTOR_XY[:, 0] - self.centre_of_mass[0], p.ROTOR_XY[:, 1] - self.centre_of_mass[1]
         rotor_h = np.array([0.0, 0.0, r.izz * float(self.joint_vel.sum())])
         gyro_torque = -np.cross(self.rate, rotor_h)
         body_torque = np.array([y @ f, -x @ f, -torque.sum()]) + gyro_torque

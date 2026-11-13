@@ -3,8 +3,7 @@
   Morphing ring-propeller quad (DESIGN.md v0.3, medium size).
   Frames: x forward, y left, z up. Hinges at the body corners, at CoM height.
 
-  Fold: every hinge turns 0 (flight, arms in X) to 80 deg (ground, arms 45 deg down,
-  rings upright with 10 deg camber). Left hinges use axis -x, right hinges +x, so the
+  Fold: every hinge turns 0 (flight, arms in X) to 90 deg (ground, rings upright without camber). Left hinges use axis -x, right hinges +x, so the
   same positive command folds all four.
 
   Ring spin on the ground: left ring axis points left, right ring axis points right.
@@ -18,8 +17,20 @@
     robot on casters; the only option that both turns and holds a line with realistic motors)
   -->
   <xacro:arg name="tread" default="rubber"/>
-  <xacro:arg name="steering" default="fixed"/>
+  <xacro:arg name="drivetrain" default="separate"/>
+  <xacro:property name="separate_drive" value="${'$(arg drivetrain)' == 'separate'}"/>
+  <xacro:arg name="steering" default="front"/>
+  <xacro:arg name="self_collision" default="true"/>
+  <xacro:arg name="tread_collision" default="crowned"/>
+  <gazebo><self_collide>$(arg self_collision)</self_collide></gazebo>
 
+  <xacro:arg name="fold_ground_deg" default="90"/>
+  <xacro:arg name="servo_torque" default="1.0"/>
+  <xacro:arg name="servo_speed" default="1.5"/>
+  <xacro:arg name="friction_scale" default="1.0"/>
+  <xacro:arg name="knuckle_mass" default="0.02"/>
+  <xacro:arg name="ring_offset" default="0.1"/>
+  <xacro:arg name="steering_limit_deg" default="25"/>
   <!-- ===== parameters (metres, kg) ===== -->
   <xacro:property name="body_l" value="0.16"/>
   <xacro:property name="body_w" value="0.16"/>
@@ -28,8 +39,8 @@
 
   <xacro:property name="arm_len" value="0.12"/>      <!-- hinge to ring centre -->
   <xacro:property name="arm_r" value="0.008"/>
-  <xacro:property name="arm_m" value="0.11"/>        <!-- arm + motor -->
-  <xacro:property name="ring_offset" value="0.035"/> <!-- ring plane offset along motor axis -->
+  <xacro:property name="arm_m" value="${0.16 if separate_drive else 0.11}"/>        <!-- arm + motor -->
+  <xacro:property name="ring_offset" value="$(arg ring_offset)"/> <!-- ring plane offset along motor axis -->
 
   <xacro:property name="ring_r_out" value="0.135"/>
   <xacro:property name="ring_r_in" value="0.12"/>
@@ -38,7 +49,7 @@
   <xacro:property name="ring_segments" value="24"/>
   <xacro:property name="blade_pitch" value="${radians(15)}"/>
 
-  <xacro:property name="fold_max" value="${radians(80)}"/>
+  <xacro:property name="fold_max" value="${radians(float('$(arg fold_ground_deg)'))}"/>
   <!-- sideways tread friction per axle. Rubber 0.6 when all four rings must scrub to turn (see
        the tyre friction note); real rubber 1.0 in mixed, where the rear rings never scrub; omni ~0.05 -->
   <xacro:property name="tread" value="$(arg tread)"/>
@@ -72,79 +83,14 @@
     </xacro:if>
   </xacro:macro>
 
-  <!-- ===== one arm + ring ===== -->
-  <xacro:macro name="corner" params="name x y yaw axis_x blade_mat lateral_mu">
-    <joint name="hinge_${name}" type="revolute">
-      <parent link="chassis"/>
-      <child link="arm_${name}"/>
-      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
-      <axis xyz="${axis_x} 0 0"/>
-      <limit lower="0" upper="${fold_max}" effort="20.0" velocity="2.0"/>
-      <dynamics damping="0.05" friction="0.01"/>
-    </joint>
-
-    <link name="arm_${name}">
-      <visual>
-        <origin xyz="${arm_len / 2 * cos(yaw)} ${arm_len / 2 * sin(yaw)} 0" rpy="0 ${pi / 2} ${yaw}"/>
-        <geometry><cylinder radius="${arm_r}" length="${arm_len}"/></geometry>
-        <material name="arm_black"/>
-      </visual>
-      <!-- motor bell at the arm tip -->
-      <visual>
-        <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset / 2}"/>
-        <geometry><cylinder radius="0.014" length="${ring_offset}"/></geometry>
-        <material name="arm_black"/>
-      </visual>
-      <inertial>
-        <origin xyz="${0.75 * arm_len * cos(yaw)} ${0.75 * arm_len * sin(yaw)} 0"/>
-        <mass value="${arm_m}"/>
-        <inertia ixx="1.5e-4" iyy="1.5e-4" izz="2.5e-4" ixy="0" ixz="0" iyz="0"/>
-      </inertial>
-    </link>
-
-    <xacro:property name="steered" value="${'$(arg steering)' == 'front' and name in ['fl', 'fr']}"/>
-    <xacro:if value="${steered}">
-      <joint name="steer_${name}" type="revolute">
-        <parent link="arm_${name}"/><child link="knuckle_${name}"/>
-        <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
-        <!-- Near vertical when folded, zero angle locked for flight. -->
-        <axis xyz="0 ${axis_x} 0"/>
-        <limit lower="-0.63" upper="0.63" effort="1.0" velocity="1.5"/>
-        <dynamics damping="0.05"/>
-      </joint>
-      <link name="knuckle_${name}">
-        <inertial><mass value="0.02"/><inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/></inertial>
-      </link>
-      <gazebo><plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
-        <joint_name>steer_${name}</joint_name><topic>/ringquad/steer_${name}</topic>
-        <p_gain>100</p_gain><d_gain>0.3</d_gain><cmd_max>1</cmd_max><cmd_min>-1</cmd_min>
-      </plugin></gazebo>
-    </xacro:if>
-    <joint name="spin_${name}" type="continuous">
-      <xacro:if value="${steered}"><parent link="knuckle_${name}"/><origin xyz="0 0 0"/></xacro:if>
-      <xacro:unless value="${steered}"><parent link="arm_${name}"/><origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/></xacro:unless>
-      <child link="ring_${name}"/>
-      <axis xyz="0 0 1"/>
-      <!--
-        Realistic motor (ringquad_control/params.py). The physics engine enforces the motor
-        model's speed with at most this torque, so spin-up is limited by the ring's inertia:
-        0.4 Nm peak motor torque minus the ~0.07 Nm blade drag at hover (which the motor model
-        applies to the body, not to this joint). Damping stands in for the rim's skin drag,
-        linearised at hover: 0.092 Nm / 514 rad/s.
-      -->
-      <limit effort="${motor_torque}" velocity="1000"/>
-      <dynamics damping="${rim_damping}"/>
-    </joint>
-
-    <link name="ring_${name}">
-      <xacro:ring_segment i="${ring_segments}"/>
+  <xacro:macro name="prop_visuals">
       <!-- hub -->
       <visual>
         <geometry><cylinder radius="0.02" length="0.012"/></geometry>
         <material name="arm_black"/>
       </visual>
       <!-- four pitched blades (spokes) from hub to rim -->
-      <xacro:property name="blade_len" value="${ring_r_in - 0.02}"/>
+      <xacro:property name="blade_len" value="${(.115 if separate_drive else ring_r_in) - 0.02}"/>
       <xacro:property name="blade_mid" value="${0.02 + blade_len / 2}"/>
       <visual>
         <origin xyz="${blade_mid} 0 0" rpy="${blade_pitch} 0 0"/>
@@ -166,17 +112,127 @@
         <geometry><box size="${blade_len} 0.025 0.003"/></geometry>
         <material name="${blade_mat}"/>
       </visual>
+  </xacro:macro>
+
+  <!-- Wheel supported by three rollers on a stationary rear carrier; no spokes cross the propeller plane. -->
+  <xacro:macro name="carrier_parts" params="cx cy cz">
+    <xacro:if value="${separate_drive}">
+      <xacro:carrier_spoke a="0" cx="${cx}" cy="${cy}" cz="${cz}"/>
+      <xacro:carrier_spoke a="${2*pi/3}" cx="${cx}" cy="${cy}" cz="${cz}"/>
+      <xacro:carrier_spoke a="${4*pi/3}" cx="${cx}" cy="${cy}" cz="${cz}"/>
+    </xacro:if>
+  </xacro:macro>
+  <xacro:macro name="carrier_spoke" params="a cx cy cz">
+    <visual><origin xyz="${cx+.065*cos(a)} ${cy+.065*sin(a)} ${cz-.030}" rpy="0 0 ${a}"/>
+      <geometry><box size=".13 .006 .006"/></geometry><material name="arm_black"/></visual>
+    <collision><origin xyz="${cx+.065*cos(a)} ${cy+.065*sin(a)} ${cz-.030}" rpy="0 0 ${a}"/>
+      <geometry><box size=".13 .006 .006"/></geometry></collision>
+    <visual><origin xyz="${cx+.1275*cos(a)} ${cy+.1275*sin(a)} ${cz-.021}" rpy="0 ${pi/2} ${a}"/>
+      <geometry><cylinder radius=".006" length=".010"/></geometry><material name="arm_black"/></visual>
+  </xacro:macro>
+
+  <!-- ===== one arm + ring ===== -->
+  <xacro:macro name="corner" params="name x y yaw axis_x blade_mat lateral_mu">
+    <joint name="hinge_${name}" type="revolute">
+      <parent link="chassis"/>
+      <child link="arm_${name}"/>
+      <origin xyz="${x} ${y} 0" rpy="0 0 0"/>
+      <axis xyz="${axis_x} 0 0"/>
+      <limit lower="0" upper="${fold_max}" effort="20.0" velocity="2.0"/>
+      <dynamics damping="0.05" friction="0.01"/>
+    </joint>
+
+    <link name="arm_${name}">
+      <visual>
+        <origin xyz="${arm_len / 2 * cos(yaw)} ${arm_len / 2 * sin(yaw)} 0" rpy="0 ${pi / 2} ${yaw}"/>
+        <geometry><cylinder radius="${arm_r}" length="${arm_len}"/></geometry>
+        <material name="arm_black"/>
+      </visual>
+      <xacro:unless value="${'$(arg steering)' == 'front' and name in ['fl','fr']}">
+        <xacro:carrier_parts cx="${arm_len*cos(yaw)}" cy="${arm_len*sin(yaw)}" cz="${ring_offset}"/>
+      </xacro:unless>
+      <!-- motor and drive package represented at the arm tip -->
+      <visual>
+        <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset / 2}"/>
+        <geometry><cylinder radius="0.014" length="${ring_offset}"/></geometry>
+        <material name="arm_black"/>
+      </visual>
+      <inertial>
+        <origin xyz="${0.75 * arm_len * cos(yaw)} ${0.75 * arm_len * sin(yaw)} 0"/>
+        <mass value="${arm_m}"/>
+        <inertia ixx="1.5e-4" iyy="1.5e-4" izz="2.5e-4" ixy="0" ixz="0" iyz="0"/>
+      </inertial>
+    </link>
+
+    <xacro:property name="steered" value="${'$(arg steering)' == 'front' and name in ['fl', 'fr']}"/>
+    <xacro:if value="${steered}">
+      <joint name="steer_${name}" type="revolute">
+        <parent link="arm_${name}"/><child link="knuckle_${name}"/>
+        <origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/>
+        <!-- Vertical at the 90-degree ground stop, zero angle locked for flight. -->
+        <axis xyz="0 ${axis_x} 0"/>
+        <limit lower="${-radians(float('$(arg steering_limit_deg)')) / sin(radians(float('$(arg fold_ground_deg)'))) - .005}" upper="${radians(float('$(arg steering_limit_deg)')) / sin(radians(float('$(arg fold_ground_deg)'))) + .005}" effort="$(arg servo_torque)" velocity="$(arg servo_speed)"/>
+        <dynamics damping="0.05"/>
+      </joint>
+      <link name="knuckle_${name}">
+        <xacro:carrier_parts cx="0" cy="0" cz="0"/>
+        <inertial><mass value="$(arg knuckle_mass)"/><inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/></inertial>
+      </link>
+      <gazebo><plugin filename="gz-sim-joint-position-controller-system" name="gz::sim::systems::JointPositionController">
+        <joint_name>steer_${name}</joint_name><topic>/ringquad/steer_${name}</topic>
+        <p_gain>100</p_gain><d_gain>0.3</d_gain><cmd_max>$(arg servo_torque)</cmd_max><cmd_min>${-float('$(arg servo_torque)')}</cmd_min>
+      </plugin></gazebo>
+    </xacro:if>
+    <joint name="${'wheel_' if separate_drive else 'spin_'}${name}" type="continuous">
+      <xacro:if value="${steered}"><parent link="knuckle_${name}"/><origin xyz="0 0 0"/></xacro:if>
+      <xacro:unless value="${steered}"><parent link="arm_${name}"/><origin xyz="${arm_len * cos(yaw)} ${arm_len * sin(yaw)} ${ring_offset}"/></xacro:unless>
+      <child link="ring_${name}"/>
+      <axis xyz="0 0 1"/>
+      <!--
+        Realistic motor (ringquad_control/params.py). The physics engine enforces the motor
+        model's speed with at most this torque, so spin-up is limited by the ring's inertia:
+        0.4 Nm peak motor torque minus the ~0.07 Nm blade drag at hover (which the motor model
+        applies to the body, not to this joint). Damping stands in for the rim's skin drag,
+        linearised at hover: 0.092 Nm / 514 rad/s.
+      -->
+      <limit effort="${motor_torque}" velocity="${20 if separate_drive else 1000}"/>
+      <dynamics damping="${0.002 if separate_drive else rim_damping}"/>
+    </joint>
+
+    <link name="ring_${name}">
+      <xacro:if value="${'$(arg tread_collision)' == 'crowned'}"><visual><geometry><mesh filename="package://ringquad_description/meshes/crowned_rim.stl"/></geometry><material name="tread"/></visual></xacro:if>
+      <xacro:unless value="${'$(arg tread_collision)' == 'crowned'}"><xacro:ring_segment i="${ring_segments}"/></xacro:unless>
+      <xacro:unless value="${separate_drive}"><xacro:prop_visuals/></xacro:unless>
       <!-- Convex rounded tread contact; outer dimensions match the ring. -->
-      <collision><geometry><mesh filename="package://ringquad_description/meshes/rounded_tread.stl"/></geometry></collision>
+      <collision><geometry>
+        <xacro:if value="${'$(arg tread_collision)' == 'cylinder'}"><cylinder radius="${ring_r_out}" length="${ring_w}"/></xacro:if>
+        <xacro:if value="${'$(arg tread_collision)' == 'crowned'}"><mesh filename="package://ringquad_description/meshes/crowned_tread_hull.stl"/></xacro:if>
+        <xacro:if value="${'$(arg tread_collision)' == 'rounded'}"><mesh filename="package://ringquad_description/meshes/rounded_tread.stl"/></xacro:if>
+      </geometry></collision>
       <inertial>
         <mass value="${ring_m}"/>
+        <xacro:property name="rim_ixx" value="${ring_m * (.1275**2/2 + 3*.0075**2/8 + .015**2/4) if '$(arg tread_collision)' == 'crowned' else ring_m / 12 * (3 * (ring_r_in**2 + ring_r_out**2) + ring_w**2)}"/>
+        <xacro:property name="rim_izz" value="${ring_m * (.1275**2 + 3*.0075**2/4) if '$(arg tread_collision)' == 'crowned' else ring_m / 2 * (ring_r_in**2 + ring_r_out**2)}"/>
         <!-- annulus: Izz = m/2 (ri^2 + ro^2), Ixx = m/12 (3 (ri^2 + ro^2) + w^2) -->
-        <inertia ixx="${ring_m / 12 * (3 * (ring_r_in**2 + ring_r_out**2) + ring_w**2)}"
-                 iyy="${ring_m / 12 * (3 * (ring_r_in**2 + ring_r_out**2) + ring_w**2)}"
-                 izz="${ring_m / 2 * (ring_r_in**2 + ring_r_out**2)}"
+        <inertia ixx="${rim_ixx}"
+                 iyy="${rim_ixx}"
+                 izz="${rim_izz}"
                  ixy="0" ixz="0" iyz="0"/>
       </inertial>
     </link>
+
+    <xacro:if value="${separate_drive}">
+      <joint name="spin_${name}" type="continuous">
+        <xacro:if value="${steered}"><parent link="knuckle_${name}"/><origin xyz="0 0 0"/></xacro:if>
+        <xacro:unless value="${steered}"><parent link="arm_${name}"/><origin xyz="${arm_len*cos(yaw)} ${arm_len*sin(yaw)} ${ring_offset}"/></xacro:unless>
+        <child link="prop_${name}"/><axis xyz="0 0 1"/>
+        <limit effort="${motor_torque}" velocity="1000"/>
+      </joint>
+      <link name="prop_${name}">
+        <xacro:prop_visuals/>
+        <inertial><mass value="0.015"/><inertia ixx="4e-5" iyy="4e-5" izz="8e-5" ixy="0" ixz="0" iyz="0"/></inertial>
+      </link>
+    </xacro:if>
 
     <!--
       Tyre friction. DART limits friction per direction (a pyramid, not a circle), so a tyre
@@ -186,8 +242,8 @@
       the turning a real tyre's friction circle gives; it must stay below 0.92 x forward.
     -->
     <gazebo reference="ring_${name}">
-      <mu1>${lateral_mu}</mu1>
-      <mu2>1.0</mu2>
+      <mu1>${lateral_mu * float('$(arg friction_scale)')}</mu1>
+      <mu2>$(arg friction_scale)</mu2>
       <fdir1>0 0 1</fdir1>
     </gazebo>
   </xacro:macro>
@@ -224,7 +280,7 @@
   <xacro:corner lateral_mu="${rear_lateral_mu}" name="rr" x="${-body_l / 2}" y="${-body_w / 2}" yaw="${radians(-135)}" axis_x="1"  blade_mat="blade_rear"/>
 
   <xacro:if value="${'$(arg steering)' == 'front'}">
-    <gazebo><plugin filename="libringquad_steering_lock.so" name="ringquad::SteeringLock"/></gazebo>
+    <gazebo><plugin filename="libringquad_steering_lock.so" name="ringquad::SteeringLock"><joint_limit>${radians(float('$(arg steering_limit_deg)')) / sin(radians(float('$(arg fold_ground_deg)'))) + .005}</joint_limit></plugin></gazebo>
   </xacro:if>
   <!-- ===== Gazebo Harmonic plugins ===== -->
   <gazebo>
@@ -292,12 +348,12 @@
       <plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
         <robotNamespace>ringquad</robotNamespace>
         <jointName>spin_${name}</jointName>
-        <linkName>ring_${name}</linkName>
+        <linkName>${'prop_' if separate_drive else 'ring_'}${name}</linkName>
         <turningDirection>${direction}</turningDirection>
         <timeConstantUp>0.0125</timeConstantUp>
         <timeConstantDown>0.025</timeConstantDown>
         <maxRotVelocity>800.0</maxRotVelocity>
-        <motorConstant>1.56e-05</motorConstant>
+        <motorConstant>${1.56e-5 * ((.115/.12)**4 if separate_drive else 1)}</motorConstant>
         <momentConstant>0.016</momentConstant>
         <commandSubTopic>motor_speed</commandSubTopic>
         <actuator_number>${number}</actuator_number>
@@ -308,6 +364,24 @@
       </plugin>
     </gazebo>
   </xacro:macro>
+
+  <!-- Independent geared wheel drives: zero aerodynamic force, finite torque/speed. -->
+  <xacro:macro name="wheel_drive" params="name number direction">
+    <xacro:if value="${separate_drive}">
+      <gazebo><plugin filename="gz-sim-multicopter-motor-model-system" name="gz::sim::systems::MulticopterMotorModel">
+        <robotNamespace>ringquad</robotNamespace><jointName>wheel_${name}</jointName><linkName>ring_${name}</linkName>
+        <turningDirection>${direction}</turningDirection><timeConstantUp>0.1</timeConstantUp><timeConstantDown>0.1</timeConstantDown>
+        <maxRotVelocity>20</maxRotVelocity><motorConstant>0</motorConstant><momentConstant>0</momentConstant>
+        <commandSubTopic>wheel_speed</commandSubTopic><actuator_number>${number}</actuator_number>
+        <rotorDragCoefficient>0</rotorDragCoefficient><rollingMomentCoefficient>0</rollingMomentCoefficient>
+        <rotorVelocitySlowdownSim>1</rotorVelocitySlowdownSim><motorType>velocity</motorType>
+      </plugin></gazebo>
+    </xacro:if>
+  </xacro:macro>
+  <xacro:wheel_drive name="fl" number="0" direction="ccw"/>
+  <xacro:wheel_drive name="fr" number="1" direction="cw"/>
+  <xacro:wheel_drive name="rl" number="2" direction="cw"/>
+  <xacro:wheel_drive name="rr" number="3" direction="ccw"/>
 
   <xacro:fold_controller name="fl"/>
   <xacro:fold_controller name="fr"/>

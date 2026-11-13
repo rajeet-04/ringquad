@@ -1,0 +1,62 @@
+[
+  {
+    "case": "servo_quarter_torque",
+    "settings": {
+      "servo_torque": ".25"
+    },
+    "passed": false,
+    "returncode": 1,
+    "duration_s": null,
+    "goal_error_cm": null,
+    "cross_track_cm": null,
+    "buffered_margin_mm": null
+  },
+  {
+    "case": "servo_slow",
+    "settings": {
+      "servo_speed": ".5"
+    },
+    "passed": true,
+    "returncode": 0,
+    "duration_s": 71,
+    "goal_error_cm": 1,
+    "cross_track_cm": 1.9,
+    "buffered_margin_mm": 59.7
+  },
+  {
+    "case": "low_traction",
+    "settings": {
+      "friction_scale": ".4"
+    },
+    "passed": false,
+    "returncode": 1,
+    "duration_s": null,
+    "goal_error_cm": null,
+    "cross_track_cm": null,
+    "buffered_margin_mm": null
+  },
+  {
+    "case": "high_traction",
+    "settings": {
+      "friction_scale": "1.5"
+    },
+    "passed": true,
+    "returncode": 0,
+    "duration_s": 77,
+    "goal_error_cm": 1,
+    "cross_track_cm": 2.4,
+    "buffered_margin_mm": 61.0
+  },
+  {
+    "case": "heavier_knuckles_calibrated",
+    "settings": {
+      "knuckle_mass": ".04"
+    },
+    "passed": true,
+    "returncode": 0,
+    "duration_s": 76,
+    "goal_error_cm": 1,
+    "cross_track_cm": 0.4,
+    "buffered_margin_mm": 59.7
+  }
+]

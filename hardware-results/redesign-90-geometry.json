@@ -1,0 +1,36 @@
+{
+  "candidate_ring_offset_m": 0.075,
+  "envelope": "full_30mm_rim_sweep",
+  "fold_ground_deg": 90,
+  "commanded_stop_deg": 25,
+  "audited_angle_including_stop_margin_deg": 26,
+  "body_box_inflation_m": 0.005,
+  "body_checks": 2028,
+  "body_failures": [
+    {
+      "fold": 90,
+      "ring": "fl",
+      "angle": 26,
+      "witness": [
+        0.055486370605532444,
+        0.0849855119320304,
+        -0.04498551193203038
+      ],
+      "local_radial_m": 0.13501067961313043,
+      "local_axial_m": -0.01498551193203038
+    },
+    {
+      "fold": 90,
+      "ring": "fr",
+      "angle": -26,
+      "witness": [
+        0.05548637060553248,
+        -0.0849855119320304,
+        -0.04498551193203039
+      ],
+      "local_radial_m": 0.1350106796131304,
+      "local_axial_m": -0.0149855119320304
+    }
+  ],
+  "ring_pair_failures": []
+}
