@@ -6,7 +6,7 @@ A quadrotor whose ring propellers fold down into wheels. Flies over obstacles, d
 
 The demo course ([worlds/demo.sdf](src/ringquad_description/worlds/demo.sdf)): a 1.5 m wall to fly over, then a tunnel 0.5 m wide and 0.4 m high. Spread out the drone is about 0.6 m wide and cannot fly through; folded it is about 0.36 m wide and drives through. GIF at 2x; [demo.mp4](media/demo.mp4) is real time.
 
-**This recording used ideal motors.** With them the run was autonomous and repeatable (46–51 s, worst sideways error in the tunnel 0.1–1.7 cm, landing within 0–8 cm of the goal pad centre, four runs). The simulation now defaults to realistic motors, drag and sensor noise, and with those the flight legs pass but the tunnel leg does not yet: see [Realistic tests](#realistic-tests).
+**This recording used ideal motors.** With them the run was autonomous and repeatable (46–51 s, worst sideways error in the tunnel 0.1–1.7 cm, landing within 0–8 cm of the goal pad centre, four runs). The simulation now defaults to realistic motors, drag and sensor noise, the original cylinder-contact tunnel tests failed. This branch adds rounded contact and active ground-heading alignment with omni tread; see [Tunnel-control experiment](#tunnel-control-experiment).
 
 ## Run (macOS or Linux with Podman)
 
@@ -27,8 +27,8 @@ ros2 launch ringquad_description display.launch.py
 ```
 
 ```bash
-# demo course + autonomous mission (see the realistic-tests note: the tunnel leg does not pass yet)
-ros2 launch ringquad_control demo.launch.py tread:=mixed
+# demo course + autonomous mission (omni tread by default)
+ros2 launch ringquad_control demo.launch.py
 ```
 
 From the Mac, `scripts/sim_restart.sh` (re)starts the simulation in the running container; it passes its arguments to `sim.launch.py` (for example `scripts/sim_restart.sh world:=demo`).
@@ -104,3 +104,17 @@ The first version simulated ideal motors. Now the motors have a 0.4 Nm torque li
 | `scripts/flight_log.py`, `scripts/motor_probe.py` | Diagnostics: log a take-off, hold a motor speed |
 | `geometry.py` | Fold geometry and sizing calculator |
 | `DESIGN.md` | Design spec |
+
+## Tunnel-control experiment
+
+The demo now defaults to `tread:=omni`. Rubber and mixed remain selectable; their ground steering is not validated by the demo results. The simulated tyre collision is a convex rounded profile with the original 0.135 m outer radius and 0.03 m width; ring mass and inertia are unchanged. It approximates rounded tread contact, not individual omni rollers. DART uses the Bullet collision detector. These contact assumptions require hardware validation.
+
+Before driving, the mission actively aligns its heading within 1 degree after folding, with a 30 s timeout. Forward motion previously began with up to 10 degrees of heading error despite weak steering. Cross-track abort limits remain 5 cm at the tunnel and 15 cm on the open approach.
+
+Headless repeatability check (inside the sourced ROS workspace):
+
+```bash
+python3 scripts/demo_test.py --runs 3 --tread omni
+```
+
+Each run starts a fresh world and fails on mission abort, timeout, or missing completion. Logs default to `/tmp/ringquad-demo`. To run without the Gazebo desktop, pass `gui:=false rviz:=false` to either launch command. `scripts/generate_tread.py` regenerates the collision mesh from the repository root.

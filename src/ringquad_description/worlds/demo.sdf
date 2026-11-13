@@ -2,7 +2,7 @@
 <!--
   Demo course, x forward from the start pad:
     wall    x = 2.5          1.5 m high, 4 m wide        fly over it
-    pad     x = 4.5          landing pad before the tunnel
+    pad     x = 3.8          landing pad before the tunnel
     tunnel  x = 5.5 .. 8.5   inside 0.5 m wide, 0.4 m high
                              spread drone ~0.6 m wide: cannot fly through
                              folded ~0.36 m wide, 0.26 m tall: drives through
@@ -12,6 +12,8 @@
   <world name="demo">
     <physics name="1ms" type="dart">
       <max_step_size>0.001</max_step_size>
+      <!-- Bullet narrow-phase handles the rounded tread collision mesh. -->
+      <dart><collision_detector>bullet</collision_detector></dart>
       <real_time_factor>1.0</real_time_factor>
     </physics>
 
@@ -55,7 +57,7 @@
     </model>
     <model name="tunnel_pad">
       <static>true</static>
-      <pose>4.5 0 0.001 0 0 0</pose>
+      <pose>3.8 0 0.001 0 0 0</pose>
       <link name="link">
         <visual name="visual">
           <geometry><cylinder><radius>0.5</radius><length>0.002</length></cylinder></geometry>

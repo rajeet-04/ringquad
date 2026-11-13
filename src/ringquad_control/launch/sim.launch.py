@@ -21,9 +21,10 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ringquad_description'), 'launch', 'gazebo.launch.py')),
         launch_arguments={'rviz': LaunchConfiguration('rviz'), 'world': LaunchConfiguration('world'),
-                          'tread': LaunchConfiguration('tread')}.items())
+                          'tread': LaunchConfiguration('tread'), 'gui': LaunchConfiguration('gui')}.items())
 
     return LaunchDescription([
+        DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),

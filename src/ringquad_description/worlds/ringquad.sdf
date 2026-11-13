@@ -3,6 +3,8 @@
   <world name="ringquad">
     <physics name="1ms" type="dart">
       <max_step_size>0.001</max_step_size>
+      <!-- Bullet narrow-phase handles the rounded tread collision mesh. -->
+      <dart><collision_detector>bullet</collision_detector></dart>
       <real_time_factor>1.0</real_time_factor>
     </physics>
 

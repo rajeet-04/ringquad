@@ -1,4 +1,4 @@
-from ringquad_control.ground import YawRateController
+from ringquad_control.ground import LineFollowGains, YawRateController, follow_line
 
 
 def run(rate_sp, seconds=3.0, dt=0.004, efficiency=0.8):
@@ -21,7 +21,6 @@ def test_tracks_turn_right_with_more_scrub():
 
 def test_no_windup_when_robot_cannot_turn():
     """Grippy floor: the robot does not turn at all. Command must stay small and bounded."""
-    from ringquad_control.ground import YawRateController
     ctl = YawRateController()
     for _ in range(2000):
         cmd = ctl.update(1.0, 0.0, 0.004)
@@ -35,7 +34,6 @@ def test_zero_request_stays_still():
 
 def drive_line(x, y, yaw, start=(0, 0), end=(4, 0), speed=0.4, dt=0.02):
     import math
-    from ringquad_control.ground import follow_line
     worst = 0.0
     for _ in range(int(30 / dt)):
         v, w, remaining, cross = follow_line((x, y), yaw, start, end, speed)
@@ -59,6 +57,31 @@ def test_line_follow_corrects_offset_and_heading():
 
 def test_line_follow_diagonal_line():
     import math
-    from ringquad_control.ground import follow_line
     v, w, remaining, cross = follow_line((0, 0), math.radians(45), (0, 0), (3, 3), 0.4)
     assert abs(cross) < 1e-9 and abs(w) < 1e-9 and abs(remaining - 3 * math.sqrt(2)) < 1e-9
+
+
+def test_coupled_line_follow_with_yaw_lag_and_lever_arm():
+    """Simulates tread:=mixed (pivot at rear axle 16.5 cm behind CoM + YawRateController + 0.08 s lag)
+    from the new tunnel pad at x = 3.8 m into the tunnel at x = 5.2 .. 8.5 m."""
+    import math
+    rear_x, rear_y, yaw = 3.8 - 0.165, 0.04, math.radians(-8)
+    yaw_ctl, rate = YawRateController(), 0.0
+    gains = LineFollowGains(axle_offset=-0.08)
+    dt = 0.004
+    worst_in_tunnel = 0.0
+    for _ in range(int(20.0 / dt)):
+        com_x = rear_x + 0.165 * math.cos(yaw)
+        com_y = rear_y + 0.165 * math.sin(yaw)
+        v, w_sp, remaining, cross = follow_line(
+            (com_x, com_y), yaw, (3.8, 0.0), (9.4, 0.0), 0.4, gains=gains)
+        if remaining <= 0.02:
+            break
+        cmd = yaw_ctl.update(w_sp, rate, dt)
+        rate += (cmd - rate) * dt / 0.08
+        yaw += rate * dt
+        rear_x += v * math.cos(yaw) * dt
+        rear_y += v * math.sin(yaw) * dt
+        if com_x >= 5.2:
+            worst_in_tunnel = max(worst_in_tunnel, abs(cross))
+    assert worst_in_tunnel < 0.025

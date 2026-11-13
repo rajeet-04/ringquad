@@ -11,7 +11,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -26,10 +26,11 @@ def generate_launch_description():
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(get_package_share_directory('ros_gz_sim'), 'launch', 'gz_sim.launch.py')),
-        launch_arguments={'gz_args': ['-r ', world]}.items())
+        launch_arguments={'gz_args': [PythonExpression(["'-r -s ' if '", LaunchConfiguration('gui'), "' == 'false' else '-r '"]), world]}.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('rviz', default_value='true'),
+        DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
         SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.dirname(share)),

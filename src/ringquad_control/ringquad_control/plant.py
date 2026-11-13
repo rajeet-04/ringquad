@@ -3,8 +3,8 @@
 Each motor is a speed controller (like FOC firmware) whose torque is limited:
     torque = clip(I_rot * (w_cmd - w) / tau + drag(w), -T_max, T_max)
     I_rot * dw/dt = torque - drag(w),      drag(w) = (PROP_DRAG + rim_drag) * w * |w|
-The body feels thrust k w^2 at each rotor and the reaction of every motor torque about z,
-which covers both the aerodynamic drag torque and the kick from spinning the rotor up or down.
+The body feels thrust k w^2 at each rotor, the reaction of every motor torque about z,
+and gyroscopic precession from the spinning rings.
 """
 from dataclasses import dataclass, field
 
@@ -68,7 +68,10 @@ class Plant:
 
         f = p.K_THRUST * self.joint_vel ** 2
         x, y = p.ROTOR_XY[:, 0], p.ROTOR_XY[:, 1]
-        body_torque = np.array([y @ f, -x @ f, -torque.sum()])
+        rotor_h = np.array([0.0, 0.0, r.izz * float(self.joint_vel.sum())])
+        gyro_torque = -np.cross(self.rate, rotor_h)
+        body_torque = np.array([y @ f, -x @ f, -torque.sum()]) + gyro_torque
+
         acc = self.rot @ E3 * f.sum() / self.mass - p.GRAVITY * E3 + self.ext_force / self.mass
         ang_acc = np.linalg.solve(self.inertia, body_torque - np.cross(self.rate, self.inertia @ self.rate))
         self.vel += acc * self.dt

@@ -50,6 +50,7 @@ class RingQuadController(Node):
         self.hinges = {}
         self.spin = {}
         self.fold_allowed = False  # latched once the rings have stopped in drive mode
+        self.fold_done = False     # latched once the 80 deg fold completes in drive mode
         self.fold_cmd = None       # ramped fold command (rad)
         self.goal_pos, self.goal_yaw = None, 0.0
         self.cmd_vel, self.cmd_vel_t = (0.0, 0.0), -1.0
@@ -68,15 +69,17 @@ class RingQuadController(Node):
         self.create_timer(0.1, self.publish_state)
 
     # ---------- inputs ----------
+
     def on_odom(self, msg):
         t = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
         pos = np.array([msg.pose.pose.position.x, msg.pose.pose.position.y, msg.pose.pose.position.z])
-        if self.pos is not None and self.last_odom_t is not None and t > self.last_odom_t:
-            self.vel = (pos - self.pos) / (t - self.last_odom_t)
-        elif self.vel is None:
-            self.vel = np.zeros(3)
         q = msg.pose.pose.orientation
-        self.pos, self.rot, self.last_odom_t = pos, quat_to_rot(q.x, q.y, q.z, q.w), t
+        rot = quat_to_rot(q.x, q.y, q.z, q.w)
+        v = msg.twist.twist.linear
+        body_vel = np.array([v.x, v.y, v.z])
+        # OdometryPublisher reports twist in base_link frame; rotate to world frame for FlightController
+        self.vel = rot @ body_vel
+        self.pos, self.rot, self.last_odom_t = pos, rot, t
         if self.ground_z is None:
             self.ground_z = pos[2]
 
@@ -115,10 +118,12 @@ class RingQuadController(Node):
         self.flight.reset()
         self.yaw_rate.reset()
         self.fold_allowed = False
+        self.fold_done = False
         self.get_logger().info(f'mode {self.mode} -> {mode}')
         self.mode = mode
 
     # ---------- helpers ----------
+
     def now(self):
         return self.get_clock().now().nanoseconds * 1e-9
 
@@ -146,6 +151,7 @@ class RingQuadController(Node):
         self.state_pub.publish(String(data=f'mode={self.mode} z={self.pos[2]:.2f}'))
 
     # ---------- control loop ----------
+
     def on_imu(self, msg):
         t = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
         dt = 0.004 if self.last_imu_t is None else min(max(t - self.last_imu_t, 1e-4), 0.02)
@@ -167,6 +173,9 @@ class RingQuadController(Node):
             if not self.fold_reached(p.FOLD_GROUND):
                 self.send_motors(np.zeros(4))
                 return
+            if not self.fold_done:
+                self.yaw_rate.reset()
+                self.fold_done = True
             speed, yaw_rate = self.cmd_vel if self.now() - self.cmd_vel_t < CMD_VEL_TIMEOUT else (0.0, 0.0)
             yaw_cmd = self.yaw_rate.update(yaw_rate, rate[2], dt)
             self.send_motors(mixer.drive_commands(speed, yaw_cmd))

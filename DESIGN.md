@@ -177,3 +177,11 @@ Next:
 3. State estimation from IMU instead of ground-truth odometry.
 4. Sensors (depth camera, 2D LiDAR) so the robot finds the wall and tunnel itself.
 5. GPU rendering (Vulkan through Podman's libkrun to Metal) to speed up the GUI and recording.
+
+## 17. Tunnel-control branch (2026-11-13)
+
+The experiment uses a convex rounded tread collision mesh and DART's Bullet collision detector. The full demo defaults to omni tread; mixed and rubber remain options but are not validated tunnel configurations. This is a contact approximation, not a model of individual passive rollers or proof of hardware capability.
+
+The mission now actively aligns on the ground to within 1 degree before forward motion, with a 30 s timeout, rather than accepting up to 10 degrees after folding. It uses ROS simulation time, a landing point at x=3.8 m, and retains the original 5 cm strict cross-track stop. Headless launch is available through `gui:=false`. `scripts/demo_test.py` starts fresh worlds and fails on abort, timeout, or missing completion; run it in the sourced ROS workspace.
+
+The historical mixed-tread failures in section 13 remain relevant. Successful omni-tread runs do not resolve them.

@@ -147,10 +147,8 @@
         <geometry><box size="${blade_len} 0.025 0.003"/></geometry>
         <material name="${blade_mat}"/>
       </visual>
-      <!-- the outer rim is the tyre: a disc of the rim's outer radius -->
-      <collision>
-        <geometry><cylinder radius="${ring_r_out}" length="${ring_w}"/></geometry>
-      </collision>
+      <!-- Convex rounded tread contact; outer dimensions match the ring. -->
+      <collision><geometry><mesh filename="package://ringquad_description/meshes/rounded_tread.stl"/></geometry></collision>
       <inertial>
         <mass value="${ring_m}"/>
         <!-- annulus: Izz = m/2 (ri^2 + ro^2), Ixx = m/12 (3 (ri^2 + ro^2) + w^2) -->
