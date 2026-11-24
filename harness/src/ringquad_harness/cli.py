@@ -25,7 +25,7 @@ def observation_payload(observation, output: Path) -> dict:
 
 
 def live(url: str, output: Path, *, max_frames: int | None, max_pose_age_ms: float,
-         reconnect_delay: float, max_reconnects: int | None) -> int:
+         reconnect_delay: float, max_reconnects: int | None, stop_after_observations: int | None = None) -> int:
     import urllib.request
     from .live import LiveIngest, LiveStreamError, iter_records
     if max_frames is not None and max_frames < 1:
@@ -44,6 +44,7 @@ def live(url: str, output: Path, *, max_frames: int | None, max_pose_age_ms: flo
         pipeline = PerceptionPipeline(output / "evidence")
         last_ns = 0
         last_status: dict = {}
+        seen_calibrations: set = set()
         stream = iter_records(lambda: urllib.request.urlopen(url, timeout=10),
                               reconnect_delay=reconnect_delay, max_reconnects=max_reconnects)
         for kind, item in stream:
@@ -81,6 +82,12 @@ def live(url: str, output: Path, *, max_frames: int | None, max_pose_age_ms: flo
                 pipeline = PerceptionPipeline(output / "evidence")
                 writer.write_event(SessionEvent(event_type="clock_reset", timestamp_ns=frame.capture_ns,
                                                 session_id=session_id, camera_id=frame.camera_id))
+            cal_id = frame.calibration_id
+            if cal_id and cal_id not in seen_calibrations and result.meta.get("calibration"):
+                seen_calibrations.add(cal_id)
+                writer.write_event(SessionEvent(event_type="calibration", timestamp_ns=frame.capture_ns,
+                                                session_id=session_id, camera_id=frame.camera_id,
+                                                data={"calibration_id": cal_id, "calibration": result.meta["calibration"]}))
             if result.pose is None:
                 writer.stats["stale_pose"] += 1
             writer.write_event(SessionEvent(
@@ -98,6 +105,8 @@ def live(url: str, output: Path, *, max_frames: int | None, max_pose_age_ms: flo
                     camera_id=frame.camera_id, sequence=frame.sequence, frame_id=frame.frame_id, data=data))
                 writer.stats["observations"] += 1
             if max_frames is not None and writer.stats["processed"] >= max_frames:
+                break
+            if stop_after_observations is not None and writer.stats["observations"] >= stop_after_observations:
                 break
         writer.finalize(session_id=session_id, video=url, stage="perception")
     except (LiveStreamError, OSError, ValueError) as exc:
@@ -202,6 +211,17 @@ def main(argv: list[str] | None = None) -> int:
     live_parser.add_argument("--max-pose-age-ms", type=float, default=200.0)
     live_parser.add_argument("--reconnect-delay", type=float, default=1.0)
     live_parser.add_argument("--max-reconnects", type=int)
+    live_parser.add_argument("--stop-after-observations", type=positive_int)
+    review_parser = commands.add_parser("review")
+    review_parser.add_argument("session", type=Path)
+    review_parser.add_argument("--model-path", type=Path, required=True)
+    review_parser.add_argument("--review-timeout", type=float, default=60.0)
+    inspect_parser = commands.add_parser("inspect")
+    inspect_parser.add_argument("session", type=Path)
+    inspect_parser.add_argument("--bridge", required=True)
+    inspect_parser.add_argument("--output", type=Path, required=True)
+    inspect_parser.add_argument("--poll-timeout", type=float, default=90.0)
+    inspect_parser.add_argument("--followup-timeout", type=float, default=30.0)
     evaluate_parser = commands.add_parser("evaluate")
     evaluate_parser.add_argument("manifest", type=Path)
     evaluate_parser.add_argument("--output", type=Path, required=True)
@@ -211,7 +231,25 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "live":
         return live(args.url, args.output, max_frames=args.max_frames, max_pose_age_ms=args.max_pose_age_ms,
-                    reconnect_delay=args.reconnect_delay, max_reconnects=args.max_reconnects)
+                    reconnect_delay=args.reconnect_delay, max_reconnects=args.max_reconnects,
+                    stop_after_observations=args.stop_after_observations)
+    if args.command == "review":
+        from .evaluate import review_session
+        from .model_mlx import MLXReviewBackend
+        try:
+            if not math.isfinite(args.review_timeout) or args.review_timeout <= 0:
+                raise ValueError("--review-timeout must be a positive finite number")
+            summary = asyncio.run(review_session(args.session, MLXReviewBackend(args.model_path, timeout=args.review_timeout),
+                                                 timeout=args.review_timeout))
+        except (OSError, ValueError, RuntimeError, KeyError) as exc:
+            print(f"review failed: {exc}")
+            return 1
+        print(json.dumps(summary))
+        return 1 if summary["failures"] else 0
+    if args.command == "inspect":
+        from .inspect_loop import run_inspection
+        return run_inspection(args.session, args.bridge, args.output, poll_timeout=args.poll_timeout,
+                              followup_timeout=args.followup_timeout)
     if args.command == "replay":
         return replay(args.video, args.output, args.stage, paced=args.paced, sample_every=args.sample_every,
                       model_path=args.model_path, review_timeout=args.review_timeout)

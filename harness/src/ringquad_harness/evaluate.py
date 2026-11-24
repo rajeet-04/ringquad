@@ -9,6 +9,8 @@ import uuid
 
 from .agent import ReviewBackend, ReviewRunner
 from .schemas import Decision, EvidenceFrame, Observation, SessionEvent
+from dataclasses import fields
+
 from .session import SessionWriter
 from .video import iter_video
 from .pipeline import PerceptionPipeline
@@ -18,7 +20,9 @@ def observation_from_event(data: dict[str, Any]) -> Observation:
     data = dict(data)
     data["evidence_frame_ids"] = tuple(data.get("evidence_frame_ids", ()))
     data["evidence"] = tuple(EvidenceFrame(**item) for item in data.get("evidence", ()))
-    return Observation(**data)
+    # Live sessions add telemetry (pose, world_target) the review does not use.
+    known = {f.name for f in fields(Observation)}
+    return Observation(**{k: v for k, v in data.items() if k in known})
 
 
 async def review_session(session_dir: Path, backend: ReviewBackend, *, timeout: float = 60,
