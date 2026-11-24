@@ -25,7 +25,8 @@ def generate_launch_description():
         candidates.insert(0, os.path.join(os.environ['RINGQUAD_PHYSICS_PREFIX'], 'lib'))
     engine = next((path for path in candidates if os.path.isfile(os.path.join(path, 'libgz-physics-ringquad-bullet-plugin.so'))), None)
     if engine is None:
-        raise RuntimeError('Build the required physics engine inside the ROS container: bash hardware-blockers/physics/build.sh build/ringquad-physics')
+        print('WARNING: Bullet physics plugin not found; using the default Gazebo engine. '
+              'Build it with: bash hardware-blockers/physics/build.sh build/ringquad-physics')
     robot_description = ParameterValue(
         Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering'), ' tread_collision:=', LaunchConfiguration('tread_collision'), ' self_collision:=', LaunchConfiguration('self_collision'), ' servo_torque:=', LaunchConfiguration('servo_torque'), ' servo_speed:=', LaunchConfiguration('servo_speed'), ' friction_scale:=', LaunchConfiguration('friction_scale'), ' knuckle_mass:=', LaunchConfiguration('knuckle_mass'), ' ring_offset:=', LaunchConfiguration('ring_offset'), ' steering_limit_deg:=', LaunchConfiguration('steering_limit_deg'), ' fold_ground_deg:=', LaunchConfiguration('fold_ground_deg'), ' drivetrain:=', LaunchConfiguration('drivetrain'), ' lock_break_torque:=', LaunchConfiguration('lock_break_torque')]),
         value_type=str)
@@ -37,7 +38,7 @@ def generate_launch_description():
         launch_arguments={'gz_args': [PythonExpression(["'-r -s ' if '", LaunchConfiguration('gui'), "' == 'false' else '-r '"]), world]}.items())
 
     return LaunchDescription([
-        SetEnvironmentVariable('GZ_SIM_PHYSICS_ENGINE_PATH', engine + os.pathsep + os.environ.get('GZ_SIM_PHYSICS_ENGINE_PATH', '')),
+        *([SetEnvironmentVariable('GZ_SIM_PHYSICS_ENGINE_PATH', engine + os.pathsep + os.environ.get('GZ_SIM_PHYSICS_ENGINE_PATH', ''))] if engine else []),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('tread_collision', default_value='crowned', choices=['rounded','cylinder','crowned']),
         DeclareLaunchArgument('self_collision', default_value='true'),
@@ -53,7 +54,7 @@ def generate_launch_description():
         DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),
         DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
-        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
+        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (default), omni (demo), or mixed'),
         SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.dirname(share)),
         SetEnvironmentVariable('GZ_SIM_SYSTEM_PLUGIN_PATH', os.path.join(share, '..', '..', 'lib') + os.pathsep + os.environ.get('GZ_SIM_SYSTEM_PLUGIN_PATH', '')),
         gz_sim,

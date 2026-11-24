@@ -4,8 +4,14 @@ from ringquad_control.flight import FlightController
 
 def test_persistent_position_bias_is_learned_outside_old_integral_zone():
     ctl=FlightController()
-    ctl.update(np.zeros(3),np.zeros(3),np.eye(3),np.zeros(3),np.array([1.,0.,0.]),0.,.004)
+    ctl.update(np.zeros(3),np.zeros(3),np.eye(3),np.zeros(3),np.array([.5,0.,0.]),0.,.004)
     assert ctl.integral[0]>0
+
+
+def test_large_step_at_rest_does_not_accumulate_position_bias():
+    ctl=FlightController()
+    ctl.update(np.zeros(3),np.zeros(3),np.eye(3),np.zeros(3),np.array([1.,0.,0.]),0.,.004)
+    assert np.allclose(ctl.integral,0.)
 
 
 def test_large_moving_transient_does_not_accumulate_position_bias():

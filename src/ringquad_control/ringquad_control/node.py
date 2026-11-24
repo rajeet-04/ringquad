@@ -28,14 +28,14 @@ from .ground import YawRateController
 
 MODES = ('idle', 'fly', 'land', 'drive')
 HINGES = ('hinge_fl', 'hinge_fr', 'hinge_rl', 'hinge_rr')
-FOLD_TOLERANCE = math.radians(0.5)
+FOLD_TOLERANCE = math.radians(2.0)   # below the mission's 0.05 rad fold check
 TAKEOFF_HEIGHT = 1.0
 LAND_SPEED = 0.5
 TOUCHDOWN_HEIGHT = 0.06   # above the take-off height
 ON_GROUND_HEIGHT = 0.15   # above the last ground height
 CMD_VEL_TIMEOUT = 0.5
 FOLD_SPIN_MAX = 5.0       # rad/s: rings must be (nearly) stopped before folding
-FOLD_RATE = 0.4           # rad/s: ~3.5 s for the full 80 deg fold
+FOLD_RATE = 0.4           # rad/s: ~3.5 s for the full fold
 
 
 class RingQuadController(Node):
@@ -52,7 +52,7 @@ class RingQuadController(Node):
         self.vehicle_mass = self.declare_parameter('vehicle_mass', nominal_mass).value
         nominal_com = 2*self.knuckle_mass*p.ARM_XY/self.vehicle_mass if self.active_steering else 0.
         self.centre_of_mass = np.array(self.declare_parameter('centre_of_mass', [nominal_com,0.,0.]).value)
-        self.thrust_coefficients = np.array(self.declare_parameter('thrust_coefficients', [p.K_THRUST]*4).value)
+        self.thrust_coefficients = np.array(self.declare_parameter('thrust_coefficients', [p.K_THRUST if self.separate_drive else p.LEGACY_K_THRUST]*4).value)
         if not np.isfinite(self.vehicle_mass) or self.vehicle_mass <= 0 or self.centre_of_mass.shape != (3,) or not np.all(np.isfinite(self.centre_of_mass)):
             raise ValueError('invalid measured mass or centre of mass')
         mixer.thrusts_to_commands(np.zeros(4), self.thrust_coefficients)
@@ -187,6 +187,10 @@ class RingQuadController(Node):
 
     # ---------- control loop ----------
 
+    def center_steering(self):
+        for pub in self.steer_pubs:
+            pub.publish(Float64(data=0.0))
+
     def on_imu(self, msg):
         t = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
         dt = 0.004 if self.last_imu_t is None else min(max(t - self.last_imu_t, 1e-4), 0.02)
@@ -205,11 +209,13 @@ class RingQuadController(Node):
             if not self.fold_allowed:
                 self.fold_allowed = len(self.spin) == 4 and max(abs(v) for v in self.spin.values()) < FOLD_SPIN_MAX
             if not self.fold_allowed:
+                self.center_steering()
                 self.fold_to(p.FOLD_FLIGHT, dt)
                 self.send_motors(np.zeros(4))
                 return
             self.fold_to(self.fold_ground, dt)
             if not self.fold_reached(self.fold_ground):
+                self.center_steering()
                 self.send_motors(np.zeros(4))
                 return
             if not self.fold_done:

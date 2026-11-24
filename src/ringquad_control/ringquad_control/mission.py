@@ -192,7 +192,7 @@ class DemoMission(Node):
                     self.send_cmd(0.0, 0.0)
                     self.get_logger().warn('ground alignment stalled; retrying in the air')
                     break
-                self.send_cmd((0.08 if int((deadline-self.now())/3) % 2 == 0 else -0.08) if getattr(self, 'active_steering', False) else 0.0,
+                self.send_cmd((0.15 if int((deadline-self.now())/3) % 2 == 0 else -0.15) if getattr(self, 'active_steering', False) else 0.0,
                               float(np.clip(3.0 * wrap(line_yaw - self.yaw), -0.8, 0.8)))
                 yield
             self.send_cmd(0.0, 0.0)
