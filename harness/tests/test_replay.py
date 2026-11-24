@@ -63,3 +63,17 @@ def test_invalid_video_returns_nonzero_without_completed_manifest(tmp_path: Path
 
     assert main() != 0
     assert not (out / "manifest.json").exists()
+
+
+def test_nonpositive_sampling_exits_before_creating_output(tmp_path: Path, monkeypatch) -> None:
+    clip = tmp_path / "unused.mp4"
+    out = tmp_path / "session"
+    monkeypatch.setattr("sys.argv", ["ringquad-harness", "replay", str(clip), "--output", str(out), "--sample-every", "0"])
+
+    try:
+        main()
+    except SystemExit as exc:
+        assert exc.code == 2
+    else:
+        raise AssertionError("argparse should reject a nonpositive sampling interval")
+    assert not out.exists()

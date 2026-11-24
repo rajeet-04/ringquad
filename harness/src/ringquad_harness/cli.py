@@ -11,6 +11,9 @@ from .video import VideoReplayError, iter_video
 
 
 def replay(video: Path, output: Path, stage: str, *, paced: bool = False, sample_every: int = 1) -> int:
+    if sample_every < 1:
+        print("replay failed: --sample-every must be at least 1")
+        return 2
     session_id = str(uuid.uuid4())
     writer: SessionWriter | None = None
     try:
@@ -36,6 +39,13 @@ def replay(video: Path, output: Path, stage: str, *, paced: bool = False, sample
     return 0
 
 
+def positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("must be at least 1")
+    return parsed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(prog="ringquad-harness")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -44,7 +54,7 @@ def main() -> int:
     replay_parser.add_argument("--output", type=Path, required=True)
     replay_parser.add_argument("--stage", default="ingest")
     replay_parser.add_argument("--paced", action="store_true")
-    replay_parser.add_argument("--sample-every", type=int, default=1)
+    replay_parser.add_argument("--sample-every", type=positive_int, default=1)
     args = parser.parse_args()
     if args.command == "replay":
         return replay(args.video, args.output, args.stage, paced=args.paced, sample_every=args.sample_every)
