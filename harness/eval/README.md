@@ -1,6 +1,6 @@
 # Perception regression fixtures
 
-These are **photo-derived regression fixtures, not field video** and cannot establish field accuracy. `manifest.json` records their labels, source session IDs, approximate image-space crop ranges, generated time bounds, expectations, and source SHA-256 values. Each clip is independently derived from one photograph, so no adjacent recording segments cross tuning and evaluation splits. The separate synthetic tests exercise persistence, camera translation, glints, and occlusion deterministically. The renderer keeps scale fixed and creates camera motion through image translation only.
+These are **photo-derived regression fixtures, not field video** and cannot establish field accuracy. `manifest.json` records their labels, source session IDs, approximate image-space crop ranges, generated time bounds, expectations, and source SHA-256 values. Each clip comes from a separate photograph. These fixtures were used during development and model selection. The separate synthetic tests exercise persistence, camera translation, glints, and occlusion deterministically. The renderer keeps scale fixed and creates camera motion through image translation only.
 
 The photographs are by Dwight Sipler, licensed CC BY 2.0. Attribution: “Photos by Dwight Sipler, used under CC BY 2.0”; source titles and original filenames are listed in the manifest and generator. Retrieval paths and expected checksums are kept in `prepare_photo_clips.py`. To retrieve originals and regenerate clips:
 
