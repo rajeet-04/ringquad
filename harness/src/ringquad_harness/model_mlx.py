@@ -46,6 +46,33 @@ print(json.dumps({'text':result.text, 'peak_memory_gb':getattr(result, 'peak_mem
 '''
 
 
+async def _communicate_cancel_safe(proc, payload: bytes):
+    """Send input, drain both output streams, and reap even when our caller cancels."""
+    communication = asyncio.create_task(proc.communicate(payload))
+    try:
+        return await asyncio.shield(communication)
+    except asyncio.CancelledError:
+        if proc.stdin and not proc.stdin.is_closing():
+            proc.stdin.close()
+        try:
+            proc.kill()
+        except ProcessLookupError:
+            pass
+        try:
+            await asyncio.shield(communication)
+        except asyncio.CancelledError:
+            try:
+                await proc.wait()
+            except ProcessLookupError:
+                pass
+        except Exception:
+            try:
+                await proc.wait()
+            except ProcessLookupError:
+                pass
+        raise
+
+
 class MLXReviewBackend:
     """One child process per inference so timeout cancellation can reap MLX."""
 
@@ -55,6 +82,8 @@ class MLXReviewBackend:
             raise FileNotFoundError(f"local MLX model directory does not exist: {self.model_path}")
         self.timeout = timeout
         self.python = python or sys.executable
+        self.metadata = {"provider": "mlx-vlm", "model": "mlx-community/Qwen3-VL-2B-Instruct-4bit",
+                         "local_path": str(self.model_path), "revision": self.model_path.name}
 
     @staticmethod
     def _paths(evidence: Sequence[EvidenceFrame]) -> tuple[EvidenceFrame, Path, Path]:
@@ -89,10 +118,8 @@ class MLXReviewBackend:
             )
             try:
                 started = time.monotonic()
-                stdout, stderr = await proc.communicate(json.dumps(payload).encode())
+                stdout, stderr = await _communicate_cancel_safe(proc, json.dumps(payload).encode())
             except asyncio.CancelledError:
-                proc.kill()
-                await proc.wait()
                 raise
             if proc.returncode:
                 raise RuntimeError(f"MLX worker exited {proc.returncode}: {stderr.decode(errors='replace')[-1200:]}")

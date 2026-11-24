@@ -4,6 +4,7 @@ import argparse
 import asyncio
 from dataclasses import asdict
 import json
+import math
 import uuid
 from pathlib import Path
 
@@ -21,6 +22,20 @@ def replay(video: Path, output: Path, stage: str, *, paced: bool = False, sample
     if stage not in {"ingest", "perception", "review"}:
         print("replay failed: --stage must be ingest, perception, or review")
         return 2
+    review_backend = None
+    if stage == "review":
+        if not math.isfinite(review_timeout) or review_timeout <= 0:
+            print("review failed: --review-timeout must be a positive finite number")
+            return 2
+        if model_path is None or not Path(model_path).expanduser().is_dir():
+            print("review failed: --model-path must name an existing local model directory")
+            return 2
+        from .model_mlx import MLXReviewBackend
+        try:
+            review_backend = MLXReviewBackend(model_path, timeout=review_timeout)
+        except (OSError, ValueError) as exc:
+            print(f"review failed: {exc}")
+            return 2
     session_id = str(uuid.uuid4())
     writer: SessionWriter | None = None
     try:
@@ -59,16 +74,14 @@ def replay(video: Path, output: Path, stage: str, *, paced: bool = False, sample
         print(f"replay failed: {exc}")
         return 1
     if stage == "review":
-        if model_path is None:
-            print("review failed: --model-path is required for local inference")
-            return 2
         from .evaluate import review_session
-        from .model_mlx import MLXReviewBackend
         try:
-            asyncio.run(review_session(output, MLXReviewBackend(model_path or DEFAULT_MODEL, timeout=review_timeout),
-                                       timeout=review_timeout))
+            summary = asyncio.run(review_session(output, review_backend, timeout=review_timeout))
         except (OSError, ValueError, RuntimeError) as exc:
             print(f"review failed: {exc}")
+            return 1
+        if summary["failures"]:
+            print(json.dumps({"session_id": session_id, "output": str(output), "review": summary}))
             return 1
     print(json.dumps({"session_id": session_id, "output": str(output)}))
     return 0
@@ -106,6 +119,8 @@ def main() -> int:
         from .evaluate import evaluate_manifest
         from .model_mlx import MLXReviewBackend
         try:
+            if not math.isfinite(args.review_timeout) or args.review_timeout <= 0:
+                raise ValueError("--review-timeout must be a positive finite number")
             report, code = evaluate_manifest(args.manifest, args.output, args.media_dir,
                 MLXReviewBackend(args.model_path, timeout=args.review_timeout), timeout=args.review_timeout)
         except (OSError, ValueError, RuntimeError, json.JSONDecodeError) as exc:
