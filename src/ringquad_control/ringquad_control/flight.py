@@ -74,7 +74,9 @@ class FlightController:
         e_pos = pos_sp - pos
         # Integrate near the reference or at a settled, biased equilibrium.
         # Freeze components that would push farther into translation saturation.
-        learning = (np.abs(e_pos) < g.i_zone) | (np.linalg.norm(vel) < g.i_settle_speed)
+        # The settled path only applies to moderate errors, so large steps cannot wind up.
+        learning = (np.abs(e_pos) < g.i_zone) | (
+            (np.linalg.norm(vel) < g.i_settle_speed) & (np.abs(e_pos) < 2 * g.i_zone))
         learning &= (self.acc_excess * e_pos <= 0) | (np.abs(self.acc_excess) < 1e-6)
         self.integral = np.clip(self.integral + learning * g.ki * e_pos * dt, -g.i_max, g.i_max)
         acc = g.kp * e_pos + g.kd * (vel_sp - vel) + self.integral

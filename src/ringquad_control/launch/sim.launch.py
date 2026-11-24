@@ -40,7 +40,7 @@ def generate_launch_description():
         DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad'),
-        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (spec) or omni'),
+        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (default), omni (demo), or mixed'),
         gazebo,
         Node(package='ringquad_control', executable='controller',
              parameters=[{'use_sim_time': True, 'drivetrain': LaunchConfiguration('drivetrain'), 'steering': LaunchConfiguration('steering'),

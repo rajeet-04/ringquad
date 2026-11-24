@@ -38,7 +38,7 @@ def generate_launch_description():
         DeclareLaunchArgument('gui', default_value='true'),
         DeclareLaunchArgument('rviz', default_value='false'),
         DeclareLaunchArgument('mission', default_value='true'),
-        DeclareLaunchArgument('tread', default_value='rubber', description='omni (demo), rubber, or mixed'),
+        DeclareLaunchArgument('tread', default_value='rubber', description='rubber (default), omni (demo), or mixed'),
         sim,
         # the mission waits for odometry and the controller itself; the delay just lets Gazebo settle
         TimerAction(period=10.0, actions=[
