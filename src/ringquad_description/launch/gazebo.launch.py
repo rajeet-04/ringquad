@@ -28,7 +28,7 @@ def generate_launch_description():
         print('WARNING: Bullet physics plugin not found; using the default Gazebo engine. '
               'Build it with: bash hardware-blockers/physics/build.sh build/ringquad-physics')
     robot_description = ParameterValue(
-        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' steering:=', LaunchConfiguration('steering'), ' tread_collision:=', LaunchConfiguration('tread_collision'), ' self_collision:=', LaunchConfiguration('self_collision'), ' servo_torque:=', LaunchConfiguration('servo_torque'), ' servo_speed:=', LaunchConfiguration('servo_speed'), ' friction_scale:=', LaunchConfiguration('friction_scale'), ' knuckle_mass:=', LaunchConfiguration('knuckle_mass'), ' ring_offset:=', LaunchConfiguration('ring_offset'), ' steering_limit_deg:=', LaunchConfiguration('steering_limit_deg'), ' fold_ground_deg:=', LaunchConfiguration('fold_ground_deg'), ' drivetrain:=', LaunchConfiguration('drivetrain'), ' lock_break_torque:=', LaunchConfiguration('lock_break_torque')]),
+        Command(['xacro ', os.path.join(share, 'urdf', 'ringquad.urdf.xacro'), ' tread:=', LaunchConfiguration('tread'), ' camera:=', LaunchConfiguration('camera'), ' steering:=', LaunchConfiguration('steering'), ' tread_collision:=', LaunchConfiguration('tread_collision'), ' self_collision:=', LaunchConfiguration('self_collision'), ' servo_torque:=', LaunchConfiguration('servo_torque'), ' servo_speed:=', LaunchConfiguration('servo_speed'), ' friction_scale:=', LaunchConfiguration('friction_scale'), ' knuckle_mass:=', LaunchConfiguration('knuckle_mass'), ' ring_offset:=', LaunchConfiguration('ring_offset'), ' steering_limit_deg:=', LaunchConfiguration('steering_limit_deg'), ' fold_ground_deg:=', LaunchConfiguration('fold_ground_deg'), ' drivetrain:=', LaunchConfiguration('drivetrain'), ' lock_break_torque:=', LaunchConfiguration('lock_break_torque')]),
         value_type=str)
     world = PathJoinSubstitution([share, 'worlds', [LaunchConfiguration('world'), '.sdf']])
 
@@ -53,6 +53,7 @@ def generate_launch_description():
         DeclareLaunchArgument('steering_limit_deg', default_value='25'),
         DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),
         DeclareLaunchArgument('gui', default_value='true'),
+        DeclareLaunchArgument('camera', default_value='false', description='add the scouting camera (needs a world with the Sensors system, e.g. demo_camera)'),
         DeclareLaunchArgument('world', default_value='ringquad', description='ringquad (empty) or demo'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (default), omni (demo), or mixed'),
         SetEnvironmentVariable('GZ_SIM_RESOURCE_PATH', os.path.dirname(share)),
@@ -65,6 +66,10 @@ def generate_launch_description():
         Node(package='ros_gz_bridge', executable='parameter_bridge',
              parameters=[{'config_file': os.path.join(share, 'config', 'bridge.yaml'),
                           'use_sim_time': True}]),
+        Node(package='ros_gz_bridge', executable='parameter_bridge',
+             parameters=[{'config_file': os.path.join(share, 'config', 'camera_bridge.yaml'),
+                          'use_sim_time': True}],
+             condition=IfCondition(LaunchConfiguration('camera'))),
         Node(package='rviz2', executable='rviz2',
              arguments=['-d', os.path.join(share, 'rviz', 'ringquad.rviz')],
              parameters=[{'use_sim_time': True}],

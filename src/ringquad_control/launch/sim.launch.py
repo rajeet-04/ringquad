@@ -11,6 +11,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -22,7 +23,7 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ringquad_description'), 'launch', 'gazebo.launch.py')),
         launch_arguments={'rviz': LaunchConfiguration('rviz'), 'world': LaunchConfiguration('world'),
-                          'tread': LaunchConfiguration('tread'), 'gui': LaunchConfiguration('gui'), 'steering': LaunchConfiguration('steering'), 'tread_collision': LaunchConfiguration('tread_collision'), 'self_collision': LaunchConfiguration('self_collision'), 'servo_torque': LaunchConfiguration('servo_torque'), 'servo_speed': LaunchConfiguration('servo_speed'), 'friction_scale': LaunchConfiguration('friction_scale'), 'knuckle_mass': LaunchConfiguration('knuckle_mass'), 'ring_offset': LaunchConfiguration('ring_offset'), 'steering_limit_deg': LaunchConfiguration('steering_limit_deg'), 'fold_ground_deg': LaunchConfiguration('fold_ground_deg'), 'drivetrain': LaunchConfiguration('drivetrain'), 'lock_break_torque': LaunchConfiguration('lock_break_torque')}.items())
+                          'tread': LaunchConfiguration('tread'), 'gui': LaunchConfiguration('gui'), 'camera': LaunchConfiguration('camera'), 'steering': LaunchConfiguration('steering'), 'tread_collision': LaunchConfiguration('tread_collision'), 'self_collision': LaunchConfiguration('self_collision'), 'servo_torque': LaunchConfiguration('servo_torque'), 'servo_speed': LaunchConfiguration('servo_speed'), 'friction_scale': LaunchConfiguration('friction_scale'), 'knuckle_mass': LaunchConfiguration('knuckle_mass'), 'ring_offset': LaunchConfiguration('ring_offset'), 'steering_limit_deg': LaunchConfiguration('steering_limit_deg'), 'fold_ground_deg': LaunchConfiguration('fold_ground_deg'), 'drivetrain': LaunchConfiguration('drivetrain'), 'lock_break_torque': LaunchConfiguration('lock_break_torque')}.items())
 
     return LaunchDescription([
         DeclareLaunchArgument('tread_collision', default_value='crowned', choices=['rounded','cylinder','crowned']),
@@ -38,10 +39,14 @@ def generate_launch_description():
         DeclareLaunchArgument('steering_limit_deg', default_value='25'),
         DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),
         DeclareLaunchArgument('gui', default_value='true'),
+        DeclareLaunchArgument('camera', default_value='false'),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('world', default_value='ringquad'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (default), omni (demo), or mixed'),
         gazebo,
+        Node(package='ringquad_inspection_bridge', executable='camera_bridge',
+             parameters=[{'use_sim_time': True}], output='screen',
+             condition=IfCondition(LaunchConfiguration('camera'))),
         Node(package='ringquad_control', executable='controller',
              parameters=[{'use_sim_time': True, 'drivetrain': LaunchConfiguration('drivetrain'), 'steering': LaunchConfiguration('steering'),
                           'fold_ground_deg': ParameterValue(LaunchConfiguration('fold_ground_deg'), value_type=float),

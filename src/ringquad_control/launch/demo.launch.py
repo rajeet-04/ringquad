@@ -10,7 +10,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -19,7 +19,7 @@ def generate_launch_description():
     sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(os.path.join(
             get_package_share_directory('ringquad_control'), 'launch', 'sim.launch.py')),
-        launch_arguments={'world': 'demo', 'rviz': LaunchConfiguration('rviz'),
+        launch_arguments={'world': PythonExpression(["'demo_camera' if '", LaunchConfiguration('camera'), "' == 'true' else 'demo'"]), 'camera': LaunchConfiguration('camera'), 'rviz': LaunchConfiguration('rviz'),
                           'tread': LaunchConfiguration('tread'), 'gui': LaunchConfiguration('gui'), 'steering': LaunchConfiguration('steering'), 'tread_collision': LaunchConfiguration('tread_collision'), 'self_collision': LaunchConfiguration('self_collision'), 'servo_torque': LaunchConfiguration('servo_torque'), 'servo_speed': LaunchConfiguration('servo_speed'), 'friction_scale': LaunchConfiguration('friction_scale'), 'knuckle_mass': LaunchConfiguration('knuckle_mass'), 'ring_offset': LaunchConfiguration('ring_offset'), 'steering_limit_deg': LaunchConfiguration('steering_limit_deg'), 'fold_ground_deg': LaunchConfiguration('fold_ground_deg'), 'drivetrain': LaunchConfiguration('drivetrain'), 'lock_break_torque': LaunchConfiguration('lock_break_torque')}.items())
 
     return LaunchDescription([
@@ -36,6 +36,7 @@ def generate_launch_description():
         DeclareLaunchArgument('steering_limit_deg', default_value='25'),
         DeclareLaunchArgument('steering', default_value='front', choices=['fixed', 'front']),
         DeclareLaunchArgument('gui', default_value='true'),
+        DeclareLaunchArgument('camera', default_value='false', description='stream the scouting camera to the harness (port 8765)'),
         DeclareLaunchArgument('rviz', default_value='false'),
         DeclareLaunchArgument('mission', default_value='true'),
         DeclareLaunchArgument('tread', default_value='rubber', description='rubber (default), omni (demo), or mixed'),
