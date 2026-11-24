@@ -1,0 +1,19 @@
+[project]
+name = "ringquad-harness"
+version = "0.1.0"
+description = "Deterministic video replay and session recording for RingQuad"
+requires-python = ">=3.12,<3.13"
+dependencies = ["av>=14.0.0", "numpy>=2.0", "pydantic>=2.10"]
+
+[project.scripts]
+ringquad-harness = "ringquad_harness.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.3"]
+
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ringquad_harness"]

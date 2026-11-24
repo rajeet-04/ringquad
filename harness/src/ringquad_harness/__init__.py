@@ -1,0 +1,1 @@
+"""RingQuad offline scouting harness."""
