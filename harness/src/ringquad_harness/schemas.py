@@ -60,3 +60,16 @@ class SessionEvent(BaseModel):
     sequence: int | None = None
     frame_id: str | None = None
     data: dict[str, Any] = Field(default_factory=dict)
+
+
+class Decision(BaseModel):
+    observation_id: str
+    outcome: str
+    evidence_frame_ids: tuple[str, ...] = ()
+    explanation: str
+    requested_view: str | None = None
+
+    @classmethod
+    def validate_contract(cls, value: Any) -> "Decision":
+        """Parse external model output without trusting its claimed evidence."""
+        return cls.model_validate(value)
