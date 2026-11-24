@@ -18,6 +18,7 @@ def make_video(path: Path) -> None:
     stream.height = 24
     stream.pix_fmt = "yuv420p"
     stream.time_base = Fraction(1, 1000)
+    stream.codec_context.time_base = Fraction(1, 1000)
     for pts in (0, 40, 115):
         frame = av.VideoFrame.from_ndarray(np.full((24, 32, 3), pts % 255, dtype=np.uint8), format="rgb24")
         frame.pts = pts
