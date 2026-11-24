@@ -1,0 +1,14 @@
+# Perception regression fixtures
+
+These are **photo-derived regression fixtures, not field video** and cannot establish field accuracy. `manifest.json` records their labels, source session IDs, approximate image-space crop ranges, generated time bounds, expectations, and source SHA-256 values. Each clip is independently derived from one photograph, so no adjacent recording segments cross tuning and evaluation splits. The separate synthetic tests exercise persistence, camera translation, glints, and occlusion deterministically.
+
+The photographs are by Dwight Sipler, licensed CC BY 2.0. Attribution: “Photos by Dwight Sipler, used under CC BY 2.0”; source titles and original filenames are listed in the manifest and generator. Retrieval paths and expected checksums are kept in `prepare_photo_clips.py`. To retrieve originals and regenerate clips:
+
+```sh
+uv run --project harness python harness/eval/prepare_photo_clips.py \
+  --source-dir ../photo-sources --output ../photo-clips
+```
+
+The generated MP4s and original photographs stay outside Git. The current environment has generated clips at `../photo-clips/{positive,healthy,ambiguous}.mp4`. Their crops are approximate labels: positive `[158,122,252,207]`, ambiguous `[389,190,437,243]`, healthy has no anomaly region.
+
+The OpenCV baseline uses low-value, low-saturation regions and temporal association. Expected false-alert sources include shadows/lighting that darken healthy leaves, soil/background entering the frame, global camera motion causing phase-correlation alignment errors, and lesion-like veins or normal leaf markings. A proposal is not a disease diagnosis.

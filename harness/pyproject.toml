@@ -3,7 +3,7 @@ name = "ringquad-harness"
 version = "0.1.0"
 description = "Deterministic video replay and session recording for RingQuad"
 requires-python = ">=3.12,<3.13"
-dependencies = ["av>=14.0.0", "numpy>=2.0", "pydantic>=2.10"]
+dependencies = ["av>=14.0.0", "numpy>=2.0", "opencv-python>=4.10", "pydantic>=2.10"]
 
 [project.scripts]
 ringquad-harness = "ringquad_harness.cli:main"

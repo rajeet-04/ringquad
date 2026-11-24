@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task": "single visible canopy discoloration proposal baseline",
+  "provenance_type": "photo-derived regression fixtures; not field video",
+  "source": {
+    "author": "Dwight Sipler",
+    "attribution": "Photos by Dwight Sipler, used under CC BY 2.0",
+    "titles": {"positive": "Late blight on tomato leaf (7871756748)", "healthy": "Healthy tomato leaves (7871755330)", "ambiguous": "Early blight on tomato leaves (7871930010)"},
+    "license": "CC BY 2.0",
+    "retrieval": "Wikimedia Commons original JPEG URLs embedded in prepare_photo_clips.py",
+    "source_sha256": {
+      "positive": "c307edf59875fa677c15ecdad3b10230d96886942fda2f743ebda8880ad2882e",
+      "healthy": "d18871798c866d452749fc1b54a53eff916e997ccd663622f17077fc375d480b",
+      "ambiguous": "f356736fc8203ef031bf6ea824e2c68b6d91edf6e385d92a99f5e7b3544db8"
+    }
+  },
+  "generation": {"frames": 24, "fps": 8, "size": "480x320", "camera_motion": "small deterministic pan and zoom", "ambiguous_blur_sigma": 7},
+  "split_policy": "Each source photograph is an independent source session and belongs to exactly one label; no portions of any source recording are split across tuning and evaluation. Synthetic tests are separate deterministic generated sessions.",
+  "clips": [
+    {"clip_id": "positive", "path": "positive.mp4", "label": "positive", "session_id": "source-positive-photo", "time_range_ns": [0, 2875000000], "fps": 8, "frames": 24, "region_xyxy_approx": [158, 122, 252, 207], "expected_observations": 1, "expected_review_outcome": "inspect_candidate", "evaluation_split": "held_out_photo_regression"},
+    {"clip_id": "healthy", "path": "healthy.mp4", "label": "healthy", "session_id": "source-healthy-photo", "time_range_ns": [0, 2875000000], "fps": 8, "frames": 24, "region_xyxy_approx": null, "expected_observations": 0, "expected_review_outcome": "monitor", "evaluation_split": "held_out_photo_regression"},
+    {"clip_id": "ambiguous", "path": "ambiguous.mp4", "label": "ambiguous", "session_id": "source-ambiguous-photo", "time_range_ns": [0, 2875000000], "fps": 8, "frames": 24, "region_xyxy_approx": [389, 190, 437, 243], "expected_observations": 1, "expected_review_outcome": "insufficient_evidence", "evaluation_split": "held_out_photo_regression"}
+  ],
+  "synthetic_regressions": ["persistent_candidate_three_views_camera_translation", "one_frame_glint", "one_view_occlusion"]
+}
