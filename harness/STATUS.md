@@ -51,7 +51,16 @@ On paddy, the `inspect` explanations describe dry yellow-brown vegetation, which
 
 ## Notes on the test footage
 
-The real clips are third-party YouTube videos used for internal testing only. They are not in this repository, and commercial use needs licences from the owners. One clip carries a burned-in caption naming the deficiency, which could leak the answer to the model on those frames.
+The real clips are third-party YouTube videos used for internal testing only. They are not in this repository, and commercial use needs licences from the owners.
+
+| Clip | Source |
+|---|---|
+| Wheat, low flight | [WXnFXSjcmWE](https://www.youtube.com/watch?v=WXnFXSjcmWE) "aerial drone close up low flight above ripe yellow wheat field" |
+| Paddy flight | [mGE_94bP_Vg](https://www.youtube.com/watch?v=mGE_94bP_Vg) "Drone Flight over Crops from a DJI PHANTOM" |
+| Corn nutrient deficiency | [1bQMEkWDsQs](https://www.youtube.com/watch?v=1bQMEkWDsQs) "Nutrient Def In Corn #636", channel Ag PhD |
+| Vlog | [vNN8RLy1qBo](https://www.youtube.com/watch?v=vNN8RLy1qBo) "Drone Scouting - Crop Update / Nitrogen Deficient Corn", channel iowANFarmer |
+
+None of these is reuse-licensed. Credit the channels when showing frames, and obtain a licence before any commercial use. One clip carries a burned-in caption naming the deficiency, which could leak the answer to the model on those frames.
 
 ## Next
 
