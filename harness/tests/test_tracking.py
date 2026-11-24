@@ -37,6 +37,21 @@ def test_persistent_candidate_survives_camera_translation_and_emits_once(tmp_pat
     for i in range(5, 8):
         emitted.extend(tracker.update(frame(i), [candidate()]))
     assert len(emitted) == 1
+    assert tracker._tracks[0].pending == []
+    retained = tuple(tracker._tracks[0].evidence)
+    for i in range(8, 60):
+        emitted.extend(tracker.update(frame(i), [candidate()]))
+    assert len(emitted) == 1
+    assert tracker._tracks[0].pending == []
+    assert tuple(tracker._tracks[0].evidence) == retained
+
+
+def test_pending_sharp_views_are_bounded_before_review() -> None:
+    tracker = Tracker(TrackerConfig(min_views=80, max_pending_evidence_views=3))
+    for i in range(50):
+        assert tracker.update(frame(i), [candidate()]) == []
+        assert len(tracker._tracks[0].pending) <= 3
+    assert len(tracker._tracks[0].pending) == 3
 
 
 def test_one_frame_glint_never_becomes_reviewable() -> None:

@@ -17,6 +17,7 @@ class TrackerConfig:
     max_gap_ns: int = 2_000_000_000
     max_centroid_distance_fraction: float = 0.20
     max_tracks: int = 64
+    max_pending_evidence_views: int = 3
     evidence_dir: Path | None = None
 
 
@@ -51,7 +52,7 @@ class Tracker:
     """Greedy temporal tracker with global image translation compensation.
 
     A phase-correlation estimate aligns consecutive frames before IoU and
-    centroid association, tolerating the smooth camera pan/zoom in replay clips.
+    centroid association, tolerating small image translation in replay clips.
     One brief missing sample is retained and an emitted track is never re-emitted.
     """
 
@@ -97,7 +98,7 @@ class Tracker:
             track.views += 1
             track.missed = 0
             track.candidate = candidate
-            track.pending.append((frame, candidate, self._sharpness(frame, candidate)))
+            self._remember_pending(track, frame, candidate)
         for ti, track in enumerate(self._tracks):
             if ti not in used_tracks:
                 track.missed += 1
@@ -106,7 +107,7 @@ class Tracker:
                 break
             candidate = candidates[ci]
             track = _Track(str(uuid.uuid4()), frame.capture_ns, frame.capture_ns, candidate.bbox, views=1, candidate=candidate)
-            track.pending.append((frame, candidate, self._sharpness(frame, candidate)))
+            self._remember_pending(track, frame, candidate)
             self._tracks.append(track)
         ready: list[Observation] = []
         for track in self._tracks:
@@ -118,6 +119,7 @@ class Tracker:
             selected = sorted(sorted(track.pending, key=lambda item: item[2], reverse=True)[:3],
                               key=lambda item: item[0].capture_ns)
             track.evidence = [ev for ev in (self._save_evidence(f, c, track.observation_id) for f, c, _ in selected) if ev]
+            track.pending.clear()
             ids = tuple(item.frame_id for item in track.evidence)
             latest = track.evidence[-1] if track.evidence else None
             ready.append(Observation(track.observation_id, frame.session_id, frame.camera_id,
@@ -126,6 +128,13 @@ class Tracker:
                                      latest.crop_path if latest else None))
         self._sequence += 1
         return ready
+
+    def _remember_pending(self, track: _Track, frame: Frame, candidate: Candidate) -> None:
+        if track.reviewed:
+            return
+        track.pending.append((frame, candidate, self._sharpness(frame, candidate)))
+        track.pending.sort(key=lambda item: (item[2], item[0].capture_ns), reverse=True)
+        del track.pending[max(0, self.config.max_pending_evidence_views):]
 
     @staticmethod
     def _sharpness(frame: Frame, candidate: Candidate) -> float:
