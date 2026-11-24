@@ -93,4 +93,3 @@ class ReviewRunner:
 
     async def close(self) -> None:
         await self.queue.put(None)
-
