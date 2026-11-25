@@ -53,6 +53,7 @@ def main():
     ap.add_argument('--model-path', required=True)
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--scenario', choices=('success', 'stale', 'interrupted'), default='success')
+    ap.add_argument('--attempts', type=int, default=3, help='observation sessions to try before giving up')
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
 
@@ -62,9 +63,9 @@ def main():
     time.sleep(5)  # settle
 
     # The 2B model sometimes fails or says monitor on a rendered frame; both are valid outcomes, so
-    # observe again (up to 3 sessions) until one observation gets an inspect decision.
+    # observe again (up to --attempts sessions) until one observation gets an inspect decision.
     session = None
-    for attempt in range(1, 4):
+    for attempt in range(1, args.attempts + 1):
         session = args.out / f'{args.scenario}-session-{attempt}'
         if run(HARNESS + ['live', '--url', BRIDGE + '/stream', '--output', session, '--stop-after-observations', '1',
                           '--max-frames', '600']).returncode:

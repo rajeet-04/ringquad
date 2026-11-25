@@ -18,16 +18,18 @@ Video goes in, and a decision comes out: `inspect`, `monitor` or `insufficient_e
 
 **Simulation, end to end.** The demo mission, camera streaming with pause and reconnect, and the inspection loop in three scenarios (success, stale pose, interrupted) all ran with the real Qwen model.
 
+**Simulation video.** [eval/demo/success.mp4](eval/demo/success.mp4) shows the full loop with harness overlays; see [eval/demo/README.md](eval/demo/README.md). The model needed 4 observation sessions to reach `inspect`.
+
 **Real video, perception** (every 5th frame, 1280x720):
 
 | Clip | Expected | Before detector fix | After |
 |---|---|---|---|
 | Wheat, healthy | 0 | 19 | 0 |
-| Paddy aerial, dry patch only | few | 78 | 7 |
-| Corn close-ups | few | 1,081 | 280 |
-| Vlog | few | 735 | 245 |
+| Paddy aerial, dry patch only | few | 78 | 8 |
+| Corn close-ups | few | 1,081 | 336 |
+| Vlog | few | 735 | 280 |
 
-The before and after counts use different counting methods (events vs distinct tracks), so the size of the drop is approximate.
+After the fix, yellow-green also counts as vegetation, so lesions with yellow halos are not rejected; that added a few tracks (paddy 7 to 8, corn 280 to 336, vlog 245 to 280). The before and after counts use different counting methods (events vs distinct tracks), so the size of the drop is approximate.
 
 **Real video, model review** (31 tracks):
 
