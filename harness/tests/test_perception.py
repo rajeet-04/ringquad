@@ -28,3 +28,10 @@ def test_small_speck_is_ignored_at_high_resolution_but_not_at_reference() -> Non
     # a 20x20 px mark: a lesion in a 480x320 frame, a shadow in 1440x960
     assert len(speck((320, 480), 1)) == 1
     assert speck((960, 1440), 1) == [] or speck((960, 1440), 1)[0].bbox[2] - speck((960, 1440), 1)[0].bbox[0] > 20
+
+
+def test_dark_patch_with_yellow_halo_on_foliage_is_found() -> None:
+    f = frame_of((50, 140, 50), patch=(100, 160, 60, 80))
+    f.image[85:175, 140:260] = (170, 160, 40)  # yellow-green halo ring
+    f.image[100:160, 160:240] = (60, 40, 25)
+    assert len(detect_candidates(f)) == 1

@@ -22,9 +22,9 @@ class PerceptionConfig:
     max_aspect: float = 2.8
     blur_kernel: int = 5
     # A lesion sits on foliage: the ring around it must be at least this green.
-    # Dark soil clods on bare soil have no green ring and are dropped.
+    # Yellow-green counts (chlorotic halos); dark soil clods on bare soil have no such ring and are dropped.
     min_context_green: float = 0.25
-    context_margin: float = 0.5
+    context_margin: float = 0.75
 
 
 def detect_candidates(frame: Frame, config: PerceptionConfig | None = None) -> list[Candidate]:
@@ -45,7 +45,7 @@ def detect_candidates(frame: Frame, config: PerceptionConfig | None = None) -> l
     min_area = config.min_area * scale
     min_extent = config.min_extent_px * scale ** 0.5
     max_area = int(height * width * config.max_area_fraction)
-    green = cv2.inRange(hsv, np.array([35, 40, 40]), np.array([90, 255, 255]))
+    green = cv2.inRange(hsv, np.array([25, 40, 50]), np.array([90, 255, 255]))
     candidates: list[Candidate] = []
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     for contour in contours:
