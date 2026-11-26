@@ -11,6 +11,7 @@ Usage: scripts/scouting_sim_test.py --model-path DIR --out DIR [--scenario succe
 """
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -21,6 +22,20 @@ CONTAINER = 'ringquad-harness'
 BRIDGE = 'http://127.0.0.1:8765'
 ROOT = Path(__file__).resolve().parent.parent
 HARNESS = ['uv', 'run', '--project', str(ROOT / 'harness'), '--extra', 'mlx', 'ringquad-harness']
+
+
+STATE = {}
+STATE_FILE = None
+
+
+def note(**kw):
+    """Merge fields into the dashboard state file (atomic replace); no-op without --state-file."""
+    STATE.update(kw, updated=time.time())
+    if STATE_FILE:
+        tmp = STATE_FILE + '.tmp'
+        with open(tmp, 'w') as f:
+            json.dump(STATE, f)
+        os.replace(tmp, STATE_FILE)
 
 
 def ros(cmd, timeout=30):
@@ -53,11 +68,16 @@ def main():
     ap.add_argument('--model-path', required=True)
     ap.add_argument('--out', type=Path, required=True)
     ap.add_argument('--scenario', choices=('success', 'stale', 'interrupted'), default='success')
+    ap.add_argument('--state-file', help='write live stage/decision JSON here for the dashboard')
     ap.add_argument('--attempts', type=int, default=3, help='observation sessions to try before giving up')
     args = ap.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
+    global STATE_FILE
+    STATE_FILE = args.state_file
+    note(stage='starting', scenario=args.scenario, decision=None, explanation=None, request=[], track_bbox=None, result=None, attempt=0)
 
     wait_for(lambda: json.load(urllib.request.urlopen(BRIDGE + '/health', timeout=5))['calibrated'], 60, 'camera bridge')
+    note(stage='taking off')
     ros('ros2 topic pub --once /ringquad/mode std_msgs/msg/String "{data: fly}"')
     wait_for(lambda: state().startswith('mode=fly') and float(state().split('z=')[1]) > 1.0, 60, 'hover')
     time.sleep(5)  # settle
@@ -67,15 +87,23 @@ def main():
     session = None
     for attempt in range(1, args.attempts + 1):
         session = args.out / f'{args.scenario}-session-{attempt}'
+        note(stage='scouting', attempt=attempt, decision=None, explanation=None)
         if run(HARNESS + ['live', '--url', BRIDGE + '/stream', '--output', session, '--stop-after-observations', '1',
                           '--max-frames', '600']).returncode:
             sys.exit('FAIL: live observation')
+        note(stage='reviewing')
         run(HARNESS + ['review', session, '--model-path', args.model_path, '--review-timeout', '120'])  # rc 1 = some reviews failed
         events = [json.loads(line) for line in (session / 'events.jsonl').read_text().splitlines()]
+        obs = next((e['data'] for e in events if e['event_type'] == 'observation'), None)
+        rev = next((e['data'] for e in events if e['event_type'] == 'review'), None)
+        dec = (rev or {}).get('decision') or {}
+        note(decision=dec.get('outcome') or ('failed' if rev else 'no track'), explanation=dec.get('explanation') or (rev or {}).get('error'),
+             track_bbox=obs['bbox'] if obs else None)
         if any(e['event_type'] == 'review' and (e['data'].get('decision') or {}).get('outcome') == 'inspect' for e in events):
             break
         print(f'attempt {attempt}: no inspect decision, observing again')
     else:
+        note(stage='failed', result='the model never proposed an inspection')
         sys.exit('FAIL: the model never proposed an inspection')
 
     if args.scenario == 'stale':
@@ -91,6 +119,7 @@ def main():
             'ros2 topic pub -t 6 -r 5 /ringquad/mode std_msgs/msg/String "{data: land}"'],
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         time.sleep(3)  # let the subscription come up before the request is submitted
+    note(stage='inspecting')
     inspect = subprocess.Popen(HARNESS + ['inspect', session, '--bridge', BRIDGE, '--output', args.out / f'{args.scenario}-inspection'],
                                text=True)
     code = inspect.wait(timeout=300)
@@ -100,6 +129,7 @@ def main():
     trace = next((line['trace'] for line in lines if line['event'] == 'trace'), [])
     result = next(line for line in lines if line['event'] == 'result')
     states = [t['state'] for t in trace]
+    note(stage='done', request=states, result=result['outcome'])
     print(json.dumps({'scenario': args.scenario, 'exit': code, 'states': states, 'result': result}, indent=2))
     expected = {'success': (0, ['accepted', 'running', 'completed'], 'closed'),
                 'stale': (1, ['rejected'], 'rejected'),
