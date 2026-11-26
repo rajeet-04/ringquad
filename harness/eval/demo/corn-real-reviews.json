@@ -1,0 +1,50 @@
+[
+  {
+    "t": 2.3,
+    "outcome": "inspect",
+    "attempts": 1,
+    "explanation": "The image displays a close-up of a corn leaf showing a yellowish discoloration along the midrib. This is a localized change in color, which is a form of nutrient deficiency. The text overlay confirms this observation as 'Nutrient Deficiency In Corn'. The discoloration is visible and distinct, and there is no evidence of other symptoms or disease. The text is clear and legible, and the discoloration is well-defined and isolated to a specific area of the leaf. Therefore, the visual evidence is sufficient to warrant a closer inspection of the discoloration."
+  },
+  {
+    "t": 3.7,
+    "outcome": "inspect",
+    "attempts": 1,
+    "explanation": "The image displays a close-up view of a green, grassy surface with a noticeable yellowish-brown discoloration streak running diagonally across the frame. The text overlay 'Nutrient Deficiency In Corn' is visible, indicating the subject of the observation. The discoloration appears as a linear pattern, consistent with a nutrient deficiency in the plant's foliage. The text is partially obscured by the discoloration, but the pattern is clear enough to be identified as a localized change in color and texture. The image is somewhat blurry, but the discoloration is distinct enough to warrant a closer inspection."
+  },
+  {
+    "t": 4.1,
+    "outcome": "insufficient_evidence",
+    "attempts": 1,
+    "explanation": "The provided image shows a field of young plants, likely corn, in a tilled and somewhat dry soil. The plants are green and appear to be in the early growth stage. There are no visible signs of discoloration or abnormal growth patterns that would suggest a canopy discoloration. The image is somewhat blurry and lacks clear detail, particularly in the close-up crop. However, the overall scene is consistent with healthy plant growth, and there is no immediate evidence of a localized color change. The close-up crop is too blurry to discern any specific details of the plant or soil, but it does not reveal any clear discoloration. Therefore, the evidence is insufficient to determine if there is a canopy discoloration, and the image quality is low enough to prevent a definitive conclusion."
+  },
+  {
+    "t": 4.7,
+    "outcome": "monitor",
+    "attempts": 1,
+    "explanation": "The provided image shows a field of young plants, likely corn, in a tilled soil. The plants are mostly green and appear to be in a healthy state. There are no visible signs of discoloration, such as spots or patches of different color. The soil is dark and appears to be dry, with some dry plant material scattered on the ground. The plants are evenly spaced and seem to be growing uniformly. There is no immediate evidence of a localized color change in the crop that would warrant a closer inspection. The image is somewhat blurry, but the overall scene is clear enough to assess the plants' health and growth pattern. Since there is no visible discoloration, and the image is not too blurry, the decision is to monitor the situation without taking a closer image."
+  },
+  {
+    "t": 5.4,
+    "outcome": "monitor",
+    "attempts": 1,
+    "explanation": "The provided image shows a field of young plants, likely corn, in a tilled soil. The plants are mostly green and appear to be in a healthy state. There is no visible evidence of discoloration or abnormal growth patterns that would suggest a problem. The image is somewhat blurry and lacks clear detail, particularly in the lower right section where the plants are clustered. However, the overall appearance of the plants and soil is consistent, and there are no immediate signs of disease or damage. The focus is on the plants, and while the image quality is low, it is possible to assess the general health of the crop. Therefore, the evidence is sufficient to determine the status of the plants, and no specific localized discoloration is visible in the image provided. The image is not too blurry, and the details are discernible enough to make a reasonable assessment of the plants' health."
+  },
+  {
+    "t": 7.6,
+    "outcome": "insufficient_evidence",
+    "attempts": 1,
+    "explanation": "The crop shows a single, distinct plant with a green, healthy-looking stem and leaves. The surrounding soil is dark and appears to be dry and compacted. There are no visible signs of discoloration or abnormal growth patterns on the plant itself. The background includes other plants and soil, but no specific discoloration is visible on the candidate plant. The image is somewhat blurry and lacks clear detail, particularly on the leaves and stem, making it difficult to confirm the health of the plant. However, there is no clear evidence of a localized color change that would warrant a closer inspection. The image is not clear enough to determine if the plant is diseased or if there is any other issue. Therefore, the evidence is insufficient to make a decision on the need for a closer image."
+  },
+  {
+    "t": 7.8,
+    "outcome": "insufficient_evidence",
+    "attempts": 1,
+    "explanation": "The image shows a close-up of a young plant, likely a corn seedling, emerging from dark soil. The main focus is on the central plant, which has a green, healthy appearance. To the left, another plant is partially visible, but it is blurry and not in focus. The background consists of soil and some dry plant material. There is no clear evidence of discoloration on the main plant. The image is somewhat blurry, particularly on the left plant, and the details are not very clear. The main plant appears to be healthy and green, with no obvious signs of discoloration. The image quality is low, and the focus is not sharp on the main plant. Therefore, the evidence is insufficient to determine if there is a discoloration. The image is not clear enough to make a definitive judgment on the plant's health or any discoloration."
+  },
+  {
+    "t": 7.9,
+    "outcome": "failed",
+    "attempts": 3,
+    "explanation": "UnexpectedModelBehavior: Exceeded maximum output retries (0)"
+  }
+]

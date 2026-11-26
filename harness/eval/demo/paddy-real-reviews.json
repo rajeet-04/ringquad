@@ -1,0 +1,50 @@
+[
+  {
+    "t": 18.8,
+    "outcome": "failed",
+    "attempts": 3,
+    "explanation": "UnexpectedModelBehavior: Exceeded maximum output retries (0)"
+  },
+  {
+    "t": 20.2,
+    "outcome": "inspect",
+    "attempts": 1,
+    "explanation": "The crop shows a distinct, narrow, and elongated patch of discoloration that is significantly different in color and texture from the surrounding green vegetation. The discoloration appears as a lighter, almost yellowish-brown area, which contrasts sharply with the surrounding dark green grass. This localized change in color and texture is a clear indicator of a potential issue, such as a nutrient deficiency or stress, in the plant. The pattern is consistent with a localized change in the crop, and the change is visible and distinct enough to warrant a closer inspection."
+  },
+  {
+    "t": 20.2,
+    "outcome": "monitor",
+    "attempts": 1,
+    "explanation": "The crop shows a distinct patch of discolored, dry, and brownish material on the right side of the image. This area appears to be a localized change in the ground cover, contrasting with the surrounding green vegetation. The discoloration is concentrated and appears to be a patch of dry soil or organic matter, possibly indicating stress or a change in soil moisture. The area is relatively small and isolated, with no visible signs of disease or other notable features. The image quality is clear enough to discern the texture and color difference, and there is no evidence of occlusion or shadows that would prevent a clear assessment of the discoloration. Therefore, the visual evidence is sufficient to determine the nature of the discoloration and the location of the patch."
+  },
+  {
+    "t": 20.8,
+    "outcome": "inspect",
+    "attempts": 1,
+    "explanation": "The crop shows a distinct patch of yellowing and browning in the lower right area, with some dry, brownish leaves and a noticeable change in color from green to yellow and brown. This is a localized discoloration that stands out against the surrounding green vegetation. The change is concentrated in a small area and appears to be a localized issue, possibly due to stress or nutrient deficiency, but it is not widespread or severe enough to be considered a major problem. The image is clear enough to identify the discoloration, and there is no evidence of occlusion or shadows that would prevent a clear assessment of the area. Therefore, the visual evidence is sufficient to determine the nature of the discoloration and the location of the change."
+  },
+  {
+    "t": 20.8,
+    "outcome": "inspect",
+    "attempts": 1,
+    "explanation": "The crop shows a distinct patch of discolored vegetation, with a noticeable change in color from green to a brownish-yellow. This localized discoloration is concentrated in a small area and appears to be a localized change in the plant's coloration. The surrounding vegetation remains green, and the discoloration is not widespread. The change is visible and appears to be a localized issue, which may warrant closer inspection."
+  },
+  {
+    "t": 21.0,
+    "outcome": "inspect",
+    "attempts": 1,
+    "explanation": "The crop shows a patch of green vegetation with a noticeable area of yellowing and browning on the right side. This discoloration is concentrated in a small, isolated section of the field, which is consistent with a localized change in the plant's color. The area appears to be a small, distinct patch of discoloration, and there is no evidence of widespread or systemic discoloration. The image is clear enough to identify the pattern and location of the discoloration, and the zoomed-in view confirms the presence of a localized change in color."
+  },
+  {
+    "t": 21.4,
+    "outcome": "failed",
+    "attempts": 3,
+    "explanation": "UnexpectedModelBehavior: Exceeded maximum output retries (0)"
+  },
+  {
+    "t": 22.0,
+    "outcome": "failed",
+    "attempts": 3,
+    "explanation": "UnexpectedModelBehavior: Exceeded maximum output retries (0)"
+  }
+]

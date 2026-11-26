@@ -33,3 +33,17 @@ Read before quoting this as a result:
   yellow halo, so the model never saw the new patch. Fixed in the commit that precedes this one.
 - The drone's own shadow and propellers are visible in the lower left of the frame. That is a sim rendering artefact.
 - The sim camera is a plain-colour render, not crop imagery.
+
+## Real-footage clips
+
+`paddy-real.mp4` and `corn-real.mp4` come from `harness/eval/render_real_demo.py`: the detector and tracker run over a window
+of a third-party YouTube clip (paddy `mGE_94bP_Vg`, corn `1bQMEkWDsQs`, not in this repo), the first 8 confirmed tracks go
+to the local Qwen3-VL-2B model (failed reviews retried up to 2 times), and the window is re-rendered with boxes and the
+decisions. The `*-reviews.json` files hold the outcomes and explanations.
+
+- Recorded offline run, not a live result. Outcomes are whatever the model returned; none were filtered.
+- Paddy: 4 inspect, 1 monitor, 3 failed. Corn: 2 inspect, 2 monitor, 3 insufficient_evidence, 1 failed.
+- Boxes come from the colour detector and are small; on paddy they sit near the dry patch, not around it. The first corn
+  `inspect` box sits on a shadow, and its explanation quotes the burned-in caption.
+- Reviews are not deterministic: an earlier paddy render gave 7 inspect of 8.
+- No accuracy number: there is no labelled ground truth. Footage is credited to its channels and used for internal testing only.
